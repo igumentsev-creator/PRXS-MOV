@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моніторинг ПЕД та Хімічного стану України</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
+        .container { max-width: 100%; margin: auto; }
+        .card { background: white; border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        
+        .header-main {
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        .header-main img {
+            height: 80px; 
+            width: auto;
+            object-fit: contain;
+        }
+        .header-main h1 {
+            font-size: 28px;
+            color: #1e3a8a;
+            margin: 0;
+            max-width: 700px;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #map { height: 500px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #cbd5e1; z-index: 1; }
+        
+        .table-wrapper { 
+            overflow-x: auto; 
+            max-height: 750px; 
+            overflow-y: auto; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 12px; 
+        }
+        
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            table-layout: fixed; 
+            min-width: 1300px; 
+        }
+        
+        th { 
+            position: sticky; 
+            top: 0; 
+            background: #1e40af; 
+            color: white; 
+            z-index: 10; 
+            font-size: 10px; 
+            white-space: normal; 
+            line-height: 1.1;
+            padding: 8px 2px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+        
+        th, td { border: 1px solid #cbd5e1; padding: 6px 2px; text-align: center; vertical-align: middle; font-size: 11px; overflow: hidden; }
+        
+        th:nth-child(1)  { width: 3%; }   
+        th:nth-child(2)  { width: 7%; }   
+        th:nth-child(3)  { width: 7%; }   
+        th:nth-child(4)  { width: 7%; }   
+        th:nth-child(5)  { width: 8%; }   
+        th:nth-child(6)  { width: 6%; }   
+        th:nth-child(7)  { width: 4%; }   
+        th:nth-child(8)  { width: 6%; }   
+        th:nth-child(9)  { width: 8%; }   
+        th:nth-child(10) { width: 12%; }  
+        th:nth-child(11) { width: 12%; }  
+        th:nth-child(12) { width: 9%; }   
+        th:nth-child(13) { width: 8%; }   
+        th:nth-child(14) { width: 3%; }   
+
+        .region-header-row { 
+            background: #e2e8f0 !important; 
+            color: #1e3a8a; 
+            font-weight: bold;
+            text-align: left;
+            font-size: 21px; 
+        }
+        .region-header-row td { padding: 15px 20px; width: 100% !important; }
+        
+        .btn-action {
+            border: none;
+            padding: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: bold;
+            transition: 0.2s;
+            width: 90%;
+        }
+        .add-row-btn { background: #16a34a; color: white; float: right; width: auto; padding: 5px 12px; font-size: 12px; }
+        .del-row-btn { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        
+        td[contenteditable="true"] { background: #ffffff; white-space: normal; word-break: break-all; }
+        td[contenteditable="true"]:focus { outline: 2px solid #2563eb; background: #eff6ff; }
+        .readonly { background: #f8fafc; color: #64748b; font-weight: bold; }
+        
+        .bg-normal { background-color: #d1fae5 !important; color: #065f46; font-weight: bold; }
+        .bg-warning { background-color: #fef3c7 !important; color: #92400e; font-weight: bold; }
+        .bg-danger { background-color: #fee2e2 !important; color: #991b1b; font-weight: bold; }
+
+        .toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
+        button.main-btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
+        button.main-btn:hover { background: #1d4ed8; }
+        .status { text-align: center; color: #166534; font-size: 14px; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="header-main">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Lesser_Coat_of_Arms_of_Ukraine.svg" alt="Герб України">
+            <h1>Радіаційне та хімічне спостереження України</h1>
+        </div>
+        
+        <div class="toolbar">
+            <button class="main-btn" onclick="saveTable(true)">💾 Зберегти дані</button>
+            <button class="main-btn" onclick="exportTable()">📥 Експорт JSON</button>
+            <button class="main-btn" style="background: #dc2626;" onclick="clearChartHistory()">🧹 Очистити історію графіка</button>
+        </div>
+        <div class="status" id="saveStatus">Система готова</div>
+    </div>
+
+    <div class="card"><div id="map"></div></div>
+
+    <div class="card">
+        <h2 style="text-align: center; color: #1e3a8a; margin-bottom: 15px; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Динаміка зміни ПЕД за останні 30 днів</h2>
+        <div style="position: relative; height: 320px; width: 100%;">
+            <canvas id="pedChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-wrapper">
+            <table id="radiationTable">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Район</th>
+                        <th>Громада</th>
+                        <th>Населений пункт</th>
+                        <th>Координати</th>
+                        <th>Дата</th>
+                        <th>Час</th>
+                        <th>ПЕД (мкЗв/год)</th>
+                        <th>Тип приладів РХ розвідки</th>
+                        <th>Назва небезпечної хімічної речовини, її концентрація</th>
+                        <th>Напрямок, швидкість вітру, стійкість повітря та температура повітря С</th>
+                        <th>Прізвище, ініціали чергового диспетчета</th>
+                        <th>Телефон</th>
+                        <th>Дія</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const regions = ['Вінницька область','Волинська область','Дніпропетровська область','Донецька область','Житомирська область','Закарпатська область','Запорізька область','Івано-Франківська область','Київська область','Кіровоградська область','Луганська область','Львівська область','Миколаївська область','Одеська область','Полтавська область','Рівненська область','Сумська область','Тернопільська область','Харківська область','Херсонська область','Хмельницька область','Черкаська область','Чернівецька область','Чернігівська область','м. Київ'];
+
+const regionCoordinates = {
+    'Вінницька область': [49.2331, 28.4682], 'Волинська область': [50.7472, 25.3254], 'Дніпропетровська область': [48.4647, 35.0462], 'Донецька область': [48.0159, 37.8028], 'Житомирська область': [50.2547, 28.6587], 'Закарпатська область': [48.6208, 22.2879], 'Запорізька область': [47.8388, 35.1396], 'Івано-Франківська область': [48.9226, 24.7111], 'Київська область': [50.4501, 30.5234], 'Кіровоградська область': [48.5079, 32.2623], 'Луганська область': [48.5740, 39.3078], 'Львівська область': [49.8397, 24.0297], 'Миколаївська область': [46.9750, 31.9946], 'Одеська область': [46.4825, 30.7233], 'Полтавська область': [49.5883, 34.5514], 'Рівненська область': [50.6199, 26.2516], 'Сумська область': [50.9077, 34.7981], 'Тернопільська область': [49.5535, 25.5948], 'Харківська область': [49.9935, 36.2304], 'Херсонська область': [46.6354, 32.6169], 'Хмельницька область': [49.4230, 26.9871], 'Черкаська область': [49.4444, 32.0597], 'Чернівецька область': [48.2908, 25.9345], 'Чернігівська область': [51.4982, 31.2893], 'м. Київ': [50.4501, 30.5234]
+};
+
+let map, activeMarkers = {};
+let pedChart = null; 
+
+function getCurrentDateTime() {
+    const now = new Date();
+    return {
+        date: now.toLocaleDateString('uk-UA'),
+        time: now.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })
+    };
+}
+
+function parseCoordinates(str) {
+    if (!str) return null;
+    const cleanStr = str.replace(/[()]/g, '').replace(/,/g, ' ');
+    const arr = cleanStr.trim().split(/\s+/);
+    if (arr.length >= 2) {
+        const val1 = parseFloat(arr[0]);
+        const val2 = parseFloat(arr[1]);
+        if (isNaN(val1) || isNaN(val2)) return null;
+        let lat = null, lng = null;
+        if (val1 >= 44 && val1 <= 53 && val2 >= 22 && val2 <= 41) { lat = val1; lng = val2; } 
+        else if (val2 >= 44 && val2 <= 53 && val1 >= 22 && val1 <= 41) { lat = val2; lng = val1; }
+        if (lat !== null && lng !== null) return [lat, lng];
+    }
+    return null;
+}
+
+function createDataRow(regionName, initialData = null) {
+    const row = document.createElement('tr');
+    row.setAttribute('data-region', regionName);
+    const rowId = initialData?.id || 'row_' + Math.random().toString(36).substr(2, 9);
+    row.setAttribute('data-id', rowId);
+    
+    const d = initialData || {
+        district: '', hromada: '', settlement: '', coords: '',
+        date: '', time: '', ped: '', deviceType: '', chem: '', weather: '', name: '', phone: ''
+    };
+
+    row.innerHTML = `
+        <td class="readonly index-cell"></td>
+        <td contenteditable="true">${d.district}</td>
+        <td contenteditable="true">${d.hromada}</td>
+        <td contenteditable="true" class="settlement-cell">${d.settlement}</td>
+        <td contenteditable="true" class="coords-cell">${d.coords}</td>
+        <td contenteditable="true" class="date-cell">${d.date}</td>
+        <td contenteditable="true" class="time-cell">${d.time}</td>
+        <td contenteditable="true" class="ped-cell">${d.ped}</td>
+        <td contenteditable="true" class="device-cell">${d.deviceType || ''}</td>
+        <td contenteditable="true" class="chem-cell">${d.chem}</td>
+        <td contenteditable="true">${d.weather}</td>
+        <td contenteditable="true">${d.name}</td>
+        <td contenteditable="true">${d.phone}</td>
+        <td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>
+    `;
+
+    row.addEventListener('input', (e) => {
+        const cellIndex = e.target.cellIndex;
+        if (cellIndex === 7 || cellIndex === 9) {
+            const pedText = row.cells[7].innerText.trim();
+            const chemText = row.cells[9].innerText.trim();
+            const dateCell = row.cells[5];
+            const timeCell = row.cells[6];
+
+            if (pedText !== "" || chemText !== "") {
+                const dt = getCurrentDateTime();
+                dateCell.innerText = dt.date;
+                timeCell.innerText = dt.time;
+            } else {
+                dateCell.innerText = "";
+                timeCell.innerText = "";
+            }
+        }
+        updateMapFromTable();
+        saveTable(false); 
+    });
+    return row;
+}
+
+function removeRow(btn) {
+    if (confirm('Видалити цей рядок?')) {
+        const row = btn.closest('tr');
+        const rowId = row.getAttribute('data-id');
+        if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
+        row.remove();
+        reindexTable();
+        saveTable(true);
+        updateMapFromTable();
+    }
+}
+
+function reindexTable() {
+    let currentNumber = 1;
+    document.querySelectorAll('#tableBody tr').forEach((row) => {
+        if (row.classList.contains('region-header-row')) { currentNumber = 1; } 
+        else { const indexCell = row.querySelector('.index-cell'); if (indexCell) indexCell.innerText = currentNumber++; }
+    });
+}
+
+function addUserRow(regionName, buttonElement) {
+    const headerRow = buttonElement.closest('tr');
+    const newRow = createDataRow(regionName);
+    headerRow.after(newRow);
+    reindexTable();
+    saveTable(true);
+    newRow.cells[1].focus();
+}
+
+function createTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    regions.forEach((region) => {
+        const headRow = document.createElement('tr');
+        headRow.classList.add('region-header-row');
+        headRow.innerHTML = `<td colspan="14">📍 ${region} <button class="btn-action add-row-btn" onclick="addUserRow('${region}', this)">➕ Додати ПРХС</button></td>`;
+        tbody.appendChild(headRow);
+        tbody.appendChild(createDataRow(region));
+    });
+    reindexTable();
+}
+
+function updateMapFromTable() {
+    const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
+    
+    rows.forEach(row => {
+        const rowId = row.getAttribute('data-id');
+        const region = row.getAttribute('data-region');
+        const settlement = row.cells[3].innerText.trim();
+        const coordsStr = row.cells[4].innerText.trim();
+        const pedCell = row.cells[7];
+        const pedVal = pedCell.innerText.trim();
+        const chemCell = row.cells[9]; 
+        const chemVal = chemCell.innerText.trim();
+        
+        pedCell.className = "ped-cell";
+        chemCell.className = "chem-cell";
+        
+        let color = null; 
+        let num = parseFloat(pedVal.replace(',', '.'));
+        
+        if (chemVal !== "") { color = '#dc2626'; chemCell.classList.add('bg-danger'); }
+
+        if (!isNaN(num) && pedVal !== "") {
+            if (num > 0.3) { color = '#dc2626'; pedCell.classList.add('bg-danger'); } 
+            else if (num > 0.15) { if (!color) color = '#f59e0b'; pedCell.classList.add('bg-warning'); } 
+            else { if (!color) color = '#16a34a'; pedCell.classList.add('bg-normal'); }
+        }
+
+        let finalCoords = parseCoordinates(coordsStr);
+        if (pedVal === "" && chemVal === "" && !finalCoords) {
+            if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
+            return; 
+        }
+
+        if (!finalCoords) { finalCoords = regionCoordinates[region]; }
+        if (!color) { color = '#64748b'; }
+
+        let popupText = `<b>${region}</b><br>${settlement ? settlement : 'ПРХС спостереження'}<br>`;
+        popupText += `ПЕД: ${pedVal || 'не вказано'} мкЗв/год`;
+        if (chemVal !== "") { popupText += `<br><span style="color: #dc2626; font-weight: bold;">Хімія: ${chemVal}</span>`; }
+
+        if (activeMarkers[rowId]) {
+            activeMarkers[rowId].setLatLng(finalCoords);
+            activeMarkers[rowId].setStyle({ fillColor: color });
+            activeMarkers[rowId].getPopup().setContent(popupText);
+        } else {
+            const m = L.circleMarker(finalCoords, { radius: 10, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.9 }).addTo(map);
+            m.bindPopup(popupText);
+            activeMarkers[rowId] = m;
+        }
+    });
+
+    updateChartFromHistory();
+}
+
+// Нова функція: будує графік на основі окремо збереженої історії
+function updateChartFromHistory() {
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('radiationHistory_v17')) || [];
+    } catch(e) { history = []; }
+
+    const dailyData = {};
+    const dangerPoints = [];
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    history.forEach(item => {
+        if (!item.date || !item.ped) return;
+        const pedVal = parseFloat(item.ped.replace(',', '.'));
+        if (isNaN(pedVal)) return;
+
+        const parts = item.date.split('.');
+        if (parts.length !== 3) return;
+        const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+        if (isNaN(dateObj.getTime())) return;
+
+        const checkDate = new Date(dateObj);
+        checkDate.setHours(0,0,0,0);
+        const daysDiff = (now - checkDate) / (1000 * 60 * 60 * 24);
+        if (daysDiff > 30 || daysDiff < -1) return; // Відсікаємо старіші за 30 днів
+
+        const prhsName = item.settlement || item.district || item.region || "Невідомий ПРХС";
+
+        if (!dailyData[item.date]) {
+            dailyData[item.date] = { sum: 0, count: 0, dateObj: checkDate, maxVal: pedVal, maxPrhs: prhsName };
+        } else {
+            if (pedVal > dailyData[item.date].maxVal) {
+                dailyData[item.date].maxVal = pedVal;
+                dailyData[item.date].maxPrhs = prhsName;
+            }
+        }
+        dailyData[item.date].sum += pedVal;
+        dailyData[item.date].count += 1;
+
+        if (pedVal > 0.3) {
+            dangerPoints.push({ x: item.date, y: pedVal, prhs: prhsName, dateObj: checkDate });
+        }
+    });
+
+    const sortedDates = Object.keys(dailyData).sort((a, b) => dailyData[a].dateObj - dailyData[b].dateObj);
+    const labels = sortedDates;
+    const avgData = sortedDates.map(d => (dailyData[d].sum / dailyData[d].count).toFixed(3));
+    const maxDataObjects = sortedDates.map(d => ({ x: d, y: dailyData[d].maxVal, prhs: dailyData[d].maxPrhs }));
+    dangerPoints.sort((a, b) => a.dateObj - b.dateObj);
+
+    if (sortedDates.length === 0 && dangerPoints.length === 0) {
+        if (pedChart) {
+            pedChart.data.labels = []; pedChart.data.datasets[0].data = [];
+            pedChart.data.datasets[1].data = []; pedChart.data.datasets[2].data = [];
+            pedChart.update();
+        }
+        return;
+    }
+
+    if (!pedChart) {
+        const ctx = document.getElementById('pedChart').getContext('2d');
+        pedChart = new Chart(ctx, {
+            data: {
+                labels: labels,
+                datasets: [
+                    { type: 'line', label: 'Середній ПЕД (мкЗв/год)', data: avgData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.05)', borderWidth: 2, tension: 0.2, fill: true, order: 3 },
+                    { type: 'line', label: 'Максимальний ПЕД України (мкЗв/год)', data: maxDataObjects, borderColor: '#10b981', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4, tension: 0.1, order: 2 },
+                    { type: 'scatter', label: 'Перевищення норми (>0.3 мкЗв/год)', data: dangerPoints, backgroundColor: '#dc2626', borderColor: '#991b1b', borderWidth: 1, pointRadius: 6, pointHoverRadius: 8, order: 1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'мкЗв/год', font: { size: 11, weight: 'bold' } } },
+                    x: { type: 'category', title: { display: true, text: 'Дата спостереження', font: { size: 11, weight: 'bold' } } }
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { boxWidth: 15, font: { size: 11 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const rawData = context.raw;
+                                if (context.dataset.type === 'scatter') return `🚨 ПРХС: ${rawData.prhs} | ПЕД: ${rawData.y} мкЗв/год`;
+                                if (context.datasetIndex === 1) return `🔝 Макс у ПРХС: ${rawData.prhs} | ПЕД: ${rawData.y} мкЗв/год`;
+                                return `${context.dataset.label}: ${context.parsed.y} мкЗв/год`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        pedChart.data.labels = labels;
+        pedChart.data.datasets[0].data = avgData;
+        pedChart.data.datasets[1].data = maxDataObjects; 
+        pedChart.data.datasets[2].data = dangerPoints;
+        pedChart.update();
+    }
+}
+
+function saveTable(showVisualStatus = false) {
+    const rows = [...document.querySelectorAll('#radiationTable tbody tr:not(.region-header-row)')];
+    
+    // 1. Формуємо поточний стан таблиці
+    const currentTableData = [];
+    
+    // 2. Завантажуємо існуючу історію
+    let history = [];
+    try { history = JSON.parse(localStorage.getItem('radiationHistory_v17')) || []; } catch(e) { history = []; }
+
+    rows.forEach(row => {
+        const rowId = row.getAttribute('data-id') || "";
+        const region = row.getAttribute('data-region') || "";
+        const cells = [...row.cells].map(cell => cell.innerText.trim());
+        
+        currentTableData.push({ isHeader: false, region: region, id: rowId, cells: cells });
+
+        // Якщо в рядку є дата та ПЕД — перевіряємо чи додавати в приховану історію графіка
+        const dateStr = cells[5];
+        const pedStr = cells[7];
+        if (dateStr && pedStr) {
+            // Шукаємо чи є вже точний запис для цього ID на цю саму дату
+            const exactMatchIndex = history.findIndex(h => h.rowId === rowId && h.date === dateStr);
+            
+            const historyItem = {
+                rowId: rowId, region: region, district: cells[1], hromada: cells[2],
+                settlement: cells[3], date: dateStr, time: cells[6], ped: pedStr
+            };
+
+            if (exactMatchIndex !== -1) {
+                // Якщо за сьогодні вже був запис — оновлюємо його на випадок, якщо черговий помилився і переправив цифру
+                history[exactMatchIndex] = historyItem;
+            } else {
+                // Якщо на цю дату запису ще не було — додаємо нову точку в історію
+                history.push(historyItem);
+            }
+        }
+    });
+
+    // Також зберігаємо рядки-заголовки областей для структури
+    const allRowsData = [];
+    document.querySelectorAll('#radiationTable tbody tr').forEach(row => {
+        const isHeader = row.classList.contains('region-header-row');
+        allRowsData.push({
+            isHeader: isHeader,
+            region: row.getAttribute('data-region') || "",
+            id: row.getAttribute('data-id') || "",
+            cells: [...row.cells].map(cell => cell.innerText)
+        });
+    });
+
+    // Записуємо все у пам'ять браузера
+    localStorage.setItem('radiationData_v17', JSON.stringify(allRowsData));
+    localStorage.setItem('radiationHistory_v17', JSON.stringify(history));
+    
+    if (showVisualStatus) {
+        document.getElementById('saveStatus').innerText = '✅ Дані та історію збережено: ' + new Date().toLocaleTimeString();
+    }
+    updateChartFromHistory();
+}
+
+function loadTable() {
+    const saved = localStorage.getItem('radiationData_v17');
+    if (!saved) { createTable(); updateMapFromTable(); return; }
+    
+    Object.values(activeMarkers).forEach(m => map.removeLayer(m));
+    activeMarkers = {};
+    
+    const data = JSON.parse(saved);
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    
+    data.forEach(rowData => {
+        let row;
+        if (rowData.isHeader) {
+            row = document.createElement('tr');
+            row.classList.add('region-header-row');
+            let regionName = rowData.cells[0].replace('📍 ', '').split('➕')[0].trim();
+            row.innerHTML = `<td colspan="14">📍 ${regionName} <button class="btn-action add-row-btn" onclick="addUserRow('${regionName}', this)">➕ Додати ПРХС</button></td>`;
+        } else {
+            const hasNewColumn = rowData.cells.length === 14;
+            const d = {
+                id: rowData.id,
+                district: rowData.cells[1] || '', hromada: rowData.cells[2] || '', settlement: rowData.cells[3] || '',
+                coords: rowData.cells[4] || '', date: rowData.cells[5] || '', time: rowData.cells[6] || '',
+                ped: rowData.cells[7] || '', deviceType: hasNewColumn ? rowData.cells[8] : '', 
+                chem: hasNewColumn ? rowData.cells[9] : (rowData.cells[8] || ''), 
+                weather: hasNewColumn ? rowData.cells[10] : (rowData.cells[9] || ''), 
+                name: hasNewColumn ? rowData.cells[11] : (rowData.cells[10] || ''), 
+                phone: hasNewColumn ? rowData.cells[12] : (rowData.cells[11] || '')
+            };
+            row = createDataRow(rowData.region, d);
+        }
+        tbody.appendChild(row);
+    });
+    
+    reindexTable();
+    updateMapFromTable();
+}
+
+function clearChartHistory() {
+    if (confirm('Ви впевнені, що хочете повністю очистити накопичену історію графіка? Поточна таблиця залишиться.')) {
+        localStorage.removeItem('radiationHistory_v17');
+        saveTable(true);
+        alert('Історію очищено!');
+    }
+}
+
+function initMap() {
+    map = L.map('map').setView([48.4, 31.2], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+}
+
+function exportTable() {
+    const tableData = localStorage.getItem('radiationData_v17');
+    const historyData = localStorage.getItem('radiationHistory_v17');
+    if (!tableData) { alert("Немає даних для експорту!"); return; }
+    
+    // Експортуємо єдиним файлом і таблицю, і накопичену історію
+    const exportObj = { table: JSON.parse(tableData), history: historyData ? JSON.parse(historyData) : [] };
+    const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `monitoring_full_export_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+}
+
+window.onload = () => { initMap(); loadTable(); };
+</script>
+</body>
+</html>
