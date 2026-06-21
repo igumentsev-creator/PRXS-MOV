@@ -284,6 +284,7 @@ function updateMapFromTable() {
     const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
     rows.forEach(row => {
         const rowId = row.getAttribute('data-id'); const region = row.getAttribute('data-region');
+        const district = row.cells[1].innerText.trim(); const hromada = row.cells[2].innerText.trim();
         const settlement = row.cells[3].innerText.trim(); const coordsStr = row.cells[4].innerText.trim();
         const pedCell = row.cells[7]; const pedVal = pedCell.innerText.trim();
         const chemCell = row.cells[9]; const chemVal = chemCell.innerText.trim();
@@ -296,14 +297,33 @@ function updateMapFromTable() {
             else if (num > 0.15) { if (!color) color = '#f59e0b'; pedCell.classList.add('bg-warning'); } 
             else { if (!color) color = '#16a34a'; pedCell.classList.add('bg-normal'); }
         }
-        let finalCoords = parseCoordinates(coordsStr);
-        if (pedVal === "" && chemVal === "" && !finalCoords) {
-            if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; } return; 
+        
+        // Перевіряємо чи є хоч якісь дані в рядку взагалі
+        const hasAnyContent = district || hromada || settlement || coordsStr || pedVal || chemVal;
+        if (!hasAnyContent) {
+            if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
+            return; 
         }
-        if (!finalCoords) { finalCoords = regionCoordinates[region]; }
-        if (!color) { color = '#64748b'; }
-        let popupText = `<b>${region}</b><br>${settlement ? settlement : '📍 Спостереження ПРХС'}<br>ПЕД: ${pedVal || 'не вказано'} мкЗв/год`;
+
+        let finalCoords = parseCoordinates(coordsStr);
+        if (!finalCoords) { 
+            // Якщо координати не задані, беремо дефолтні координати області та додаємо легкий випадковий зсув,
+            // щоб маркери з однієї області не перекривали один одного абсолютно повністю.
+            const base = regionCoordinates[region] || [48.4, 31.2];
+            const jitterLat = (Math.random() - 0.5) * 0.12;
+            const jitterLng = (Math.random() - 0.5) * 0.12;
+            finalCoords = [base[0] + jitterLat, base[1] + jitterLng];
+        }
+        
+        if (!color) { color = '#64748b'; } // Сірий колір за замовчуванням для порожніх значень ПЕД/Хімії
+        
+        let popupText = `<b>${region}</b>`;
+        if (district) popupText += `<br>Район: ${district}`;
+        if (hromada) popupText += `<br>Громада: ${hromada}`;
+        if (settlement) popupText += `<br>НП: ${settlement}`;
+        popupText += `<br>ПЕД: ${pedVal || 'не вказано'} мкЗв/год`;
         if (chemVal !== "") { popupText += `<br><span style="color: #dc2626; font-weight: bold;">Хімія: ${chemVal}</span>`; }
+        
         if (activeMarkers[rowId]) {
             activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].setStyle({ fillColor: color }); activeMarkers[rowId].getPopup().setContent(popupText);
         } else {
@@ -366,21 +386,38 @@ async function saveTable(showVisualStatus = false) {
         allRowsData.push({ isHeader: row.classList.contains('region-header-row'), region: row.getAttribute('data-region') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) });
     });
 
+    const bodyData = { id: 'global_state', data: { table: allRowsData, history: globalHistory } };
+
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
-            method: 'POST',
+        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.global_state`, {
+            method: 'PATCH',
             headers: { 
                 'Content-Type': 'application/json', 
                 'apikey': SUPABASE_KEY, 
                 'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge'
+                'Prefer': 'return=representation'
             },
-            body: JSON.stringify({ id: 'global_state', data: { table: allRowsData, history: globalHistory } })
+            body: JSON.stringify(bodyData)
         });
         
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`Код ${response.status}: ${errText}`);
+        let resJson = [];
+        try { resJson = await response.json(); } catch(e) {}
+
+        if (!response.ok || resJson.length === 0) {
+            response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'apikey': SUPABASE_KEY, 
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                },
+                body: JSON.stringify(bodyData)
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Код ${response.status}: ${errText}`);
+            }
         }
 
         if (showVisualStatus) document.getElementById('saveStatus').innerText = '✅ Дані успішно збережено в хмарі: ' + new Date().toLocaleTimeString();
