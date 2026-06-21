@@ -175,8 +175,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // === НАЛАШТУВАННЯ БАЗИ ДАНИХ SUPABASE ===
-const SUPABASE_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1";
-const SUPABASE_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOuja_CZIprR_z";
+// ⚠️ ЗАМІНІТЬ ЦІ ЗНАЧЕННЯ НА ВЛАСНІ З SUPABASE PROJECT SETTINGS
+const SUPABASE_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1"; 
+const SUPABASE_KEY = "ЗАМІНІТЬ_НА_ВАШ_СПРАВЖНІЙ_LONG_JWT_ANON_KEY"; 
 
 const regions = ['Вінницька область','Волинська область','Дніпропетровська область','Донецька область','Житомирська область','Закарпатська область','Запорізька область','Івано-Франківська область','Київська область','Кіровоградська область','Луганська область','Львівська область','Миколаївська область','Одеська область','Полтавська область','Рівненська область','Сумська область','Тернопільська область','Харківська область','Херсонська область','Хмельницька область','Черкаська область','Чернівецька область','Чернігівська область','м. Київ'];
 const regionCoordinates = { 'Вінницька область': [49.2331, 28.4682], 'Волинська область': [50.7472, 25.3254], 'Дніпропетровська область': [48.4647, 35.0462], 'Донецька область': [48.0159, 37.8028], 'Житомирська область': [50.2547, 28.6587], 'Закарпатська область': [48.6208, 22.2879], 'Запорізька область': [47.8388, 35.1396], 'Івано-Франківська область': [48.9226, 24.7111], 'Київська область': [50.4501, 30.5234], 'Кіровоградська область': [48.5079, 32.2623], 'Луганська область': [48.5740, 39.3078], 'Львівська область': [49.8397, 24.0297], 'Миколаївська область': [46.9750, 31.9946], 'Одеська область': [46.4825, 30.7233], 'Полтавська область': [49.5883, 34.5514], 'Рівненська область': [50.6199, 26.2516], 'Сумська область': [50.9077, 34.7981], 'Тернопільська область': [49.5535, 25.5948], 'Харківська область': [49.9935, 36.2304], 'Херсонська область': [46.6354, 32.6169], 'Хмельницька область': [49.4230, 26.9871], 'Черкаська область': [49.4444, 32.0597], 'Чернівецька область': [48.2908, 25.9345], 'Чернігівська область': [51.4982, 31.2893], 'м. Київ': [50.4501, 30.5234] };
@@ -367,14 +368,27 @@ async function saveTable(showVisualStatus = false) {
     });
 
     try {
-        await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.global_state`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` },
-            body: JSON.stringify({ data: { table: allRowsData, history: globalHistory } })
+        // Використовуємо метод POST з заголовком Prefer: resolution=merge (замість PATCH), щоб автоматично створювати запис, якщо його немає
+        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'apikey': SUPABASE_KEY, 
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Prefer': 'resolution=merge'
+            },
+            body: JSON.stringify({ id: 'global_state', data: { table: allRowsData, history: globalHistory } })
         });
+        
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Код ${response.status}: ${errText}`);
+        }
+
         if (showVisualStatus) document.getElementById('saveStatus').innerText = '✅ Дані успішно збережено в хмарі: ' + new Date().toLocaleTimeString();
     } catch (err) {
-        console.error(err); document.getElementById('saveStatus').innerText = '❌ Помилка з’єднання з базою';
+        console.error(err); 
+        document.getElementById('saveStatus').innerText = '❌ Помилка збереження: ' + err.message;
     }
     updateChartFromHistory();
 }
@@ -385,9 +399,14 @@ async function loadTable() {
             method: 'GET',
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
+        
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Код ${response.status}: ${errText}`);
+        }
+
         const resData = await response.json();
         
-        // Очищення маркерів перед завантаженням
         Object.values(activeMarkers).forEach(m => map.removeLayer(m)); activeMarkers = {};
         const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
 
@@ -418,7 +437,10 @@ async function loadTable() {
         });
         reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Синхронізовано з базою';
     } catch (err) {
-        console.error(err); createTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Помилка завантаження (Режим офлайн)';
+        console.error(err); 
+        createTable(); 
+        updateMapFromTable(); 
+        document.getElementById('saveStatus').innerText = 'Помилка завантаження: ' + err.message + ' (Режим офлайн)';
     }
 }
 
@@ -433,8 +455,8 @@ function exportTable() {
 }
 
 window.onload = () => { 
-    initMap(); // Спершу створюємо карту
-    loadTable(); // Потім робимо запит до бази даних та будуємо таблицю
+    initMap(); 
+    loadTable(); 
 };
 </script>
 </body>
