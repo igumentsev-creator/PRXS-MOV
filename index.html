@@ -292,10 +292,20 @@ function updateMapFromTable() {
         pedCell.className = "ped-cell"; chemCell.className = "chem-cell";
         let color = null; let num = parseFloat(pedVal.replace(',', '.'));
         if (chemVal !== "") { color = '#dc2626'; chemCell.classList.add('bg-danger'); }
+        
         if (!isNaN(num) && pedVal !== "") {
-            if (num > 0.3) { color = '#dc2626'; pedCell.classList.add('bg-danger'); } 
-            else if (num > 0.15) { if (!color) color = '#f59e0b'; pedCell.classList.add('bg-warning'); } 
-            else { if (!color) color = '#16a34a'; pedCell.classList.add('bg-normal'); }
+            if (num > 0.3) { 
+                color = '#dc2626'; 
+                pedCell.classList.add('bg-danger'); 
+            } 
+            else if (num === 0.3) { 
+                if (!color) color = '#f59e0b'; 
+                pedCell.classList.add('bg-warning'); 
+            } 
+            else { 
+                if (!color) color = '#16a34a'; 
+                pedCell.classList.add('bg-normal'); 
+            }
         }
         
         const hasAnyContent = district || hromada || settlement || coordsStr || pedVal || chemVal;
@@ -386,7 +396,6 @@ async function saveTable(showVisualStatus = false) {
     const bodyData = { id: 'global_state', data: { table: allRowsData, history: globalHistory } };
 
     try {
-        // Использование "POST" с заголовком "Prefer: resolution=merge-duplicates" превращает запрос в чистый UPSERT
         let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
             method: 'POST',
             headers: { 
