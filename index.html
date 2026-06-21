@@ -329,7 +329,7 @@ function updateMapFromTable() {
         if (hromada) popupText += `<br>Громада: ${hromada}`;
         if (settlement) popupText += `<br>НП: ${settlement}`;
         popupText += `<br>ПЕД: ${pedVal || 'не вказано'} мкЗв/год`;
-        if (chemVal !== "") { popupText += `<br><span style="color: #dc2626; font-weight: bold;">Хімія: ${chemVal}</span>`; }
+        if (chemVal !== "") { popupText += `<br><span style="color: #dc2626; font-weight: bold;">НХР: ${chemVal}</span>`; }
         
         if (activeMarkers[rowId]) {
             activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].setStyle({ fillColor: color }); activeMarkers[rowId].getPopup().setContent(popupText);
