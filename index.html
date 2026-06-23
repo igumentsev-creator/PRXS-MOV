@@ -48,7 +48,7 @@
             border-collapse: collapse; 
             width: 100%; 
             table-layout: fixed; 
-            min-width: 1300px; 
+            min-width: 1600px; 
         }
         
         th { 
@@ -67,20 +67,22 @@
         
         th, td { border: 1px solid #cbd5e1; padding: 6px 2px; text-align: center; vertical-align: middle; font-size: 11px; overflow: hidden; }
         
-        th:nth-child(1)  { width: 3%; }   
-        th:nth-child(2)  { width: 7%; }   
-        th:nth-child(3)  { width: 7%; }   
-        th:nth-child(4)  { width: 7%; }   
-        th:nth-child(5)  { width: 8%; }   
-        th:nth-child(6)  { width: 6%; }   
-        th:nth-child(7)  { width: 4%; }   
-        th:nth-child(8)  { width: 6%; }   
-        th:nth-child(9)  { width: 8%; }   
-        th:nth-child(10) { width: 12%; }  
-        th:nth-child(11) { width: 12%; }  
-        th:nth-child(12) { width: 9%; }   
-        th:nth-child(13) { width: 8%; }   
-        th:nth-child(14) { width: 3%; }   
+        /* Пропорції колонок під нову структуру (всього 15 колонок) */
+        th:nth-child(1)  { width: 3%; }   /* № */
+        th:nth-child(2)  { width: 14%; }  /* Район, громада, населений пункт */
+        th:nth-child(3)  { width: 7%; }   /* Координати */
+        th:nth-child(4)  { width: 5%; }   /* Дата */
+        th:nth-child(5)  { width: 4%; }   /* Час */
+        th:nth-child(6)  { width: 6%; }   /* ПЕД */
+        th:nth-child(7)  { width: 8%; }   /* Прилади рад. розвідки */
+        th:nth-child(8)  { width: 9%; }   /* Назва НХР, кількість тонн */
+        th:nth-child(9)  { width: 11%; }  /* Метеодані у разі НС */
+        th:nth-child(10) { width: 8%; }   /* Прилади хім. розвідки */
+        th:nth-child(11) { width: 7%; }   /* ЗІЗОД */
+        th:nth-child(12) { width: 7%; }   /* Одяг спеціальний */
+        th:nth-child(13) { width: 7%; }   /* Відповідальна особа */
+        th:nth-child(14) { width: 4%; }   /* Телефон */
+        th:nth-child(15) { width: 3%; }   /* Дія */
 
         .region-header-row { 
             background: #e2e8f0 !important; 
@@ -150,17 +152,18 @@
                 <thead>
                     <tr>
                         <th>№</th>
-                        <th>Район</th>
-                        <th>Громада</th>
-                        <th>Населений пункт</th>
+                        <th>Район, громада, населений пункт</th>
                         <th>Координати</th>
                         <th>Дата</th>
                         <th>Час</th>
                         <th>ПЕД (мкЗв/год)</th>
-                        <th>Тип приладів РХ розвідки</th>
-                        <th>Назва небезпечної хімічної речовини, її концентрація</th>
-                        <th>Напрямок, швидкість вітру, стійкість повітря та температура повітря С</th>
-                        <th>Прізвище, ініціали чергового диспетчета</th>
+                        <th>Прилади радіаційної розвідки, тип обладнання, що в наявності</th>
+                        <th>Назва НХР, кількість тонн (у разі викиду, розливу)</th>
+                        <th>Напрямок, швидкість повітря, стійкість та температура повітря у разі НС, пов'язаної з НХР</th>
+                        <th>Прилади хімічної розвідки, тип обладнання, що в наявності</th>
+                        <th>ЗІЗОД, тип та кількість</th>
+                        <th>Одяг спеціальний захисний, тип та кількість</th>
+                        <th>Відповідальна особа, прізвище та ініціали</th>
                         <th>Телефон</th>
                         <th>Дія</th>
                     </tr>
@@ -211,34 +214,36 @@ function createDataRow(regionName, initialData = null) {
     const rowId = initialData?.id || 'row_' + Math.random().toString(36).substr(2, 9);
     row.setAttribute('data-id', rowId);
     
-    const d = initialData || { district: '', hromada: '', settlement: '', coords: '', date: '', time: '', ped: '', deviceType: '', chem: '', weather: '', name: '', phone: '' };
+    const d = initialData || { location: '', coords: '', date: '', time: '', ped: '', radDevices: '', chemName: '', weather: '', chemDevices: '', lizod: '', clothing: '', responsible: '', phone: '' };
 
     row.innerHTML = `
         <td class="readonly index-cell"></td>
-        <td contenteditable="true">${d.district}</td>
-        <td contenteditable="true">${d.hromada}</td>
-        <td contenteditable="true" class="settlement-cell">${d.settlement}</td>
+        <td contenteditable="true" class="location-cell">${d.location}</td>
         <td contenteditable="true" class="coords-cell">${d.coords}</td>
         <td contenteditable="true" class="date-cell">${d.date}</td>
         <td contenteditable="true" class="time-cell">${d.time}</td>
         <td contenteditable="true" class="ped-cell">${d.ped}</td>
-        <td contenteditable="true" class="device-cell">${d.deviceType || ''}</td>
-        <td contenteditable="true" class="chem-cell">${d.chem}</td>
+        <td contenteditable="true">${d.radDevices}</td>
+        <td contenteditable="true" class="chem-cell">${d.chemName}</td>
         <td contenteditable="true">${d.weather}</td>
-        <td contenteditable="true">${d.name}</td>
+        <td contenteditable="true">${d.chemDevices}</td>
+        <td contenteditable="true">${d.lizod}</td>
+        <td contenteditable="true">${d.clothing}</td>
+        <td contenteditable="true">${d.responsible}</td>
         <td contenteditable="true">${d.phone}</td>
         <td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>
     `;
 
     row.addEventListener('input', (e) => {
         const cellIndex = e.target.cellIndex;
-        if (cellIndex === 7 || cellIndex === 9) {
-            const pedText = row.cells[7].innerText.trim();
-            const chemText = row.cells[9].innerText.trim();
+        // Клітинка 5 - ПЕД, клітинка 7 - Назва НХР
+        if (cellIndex === 5 || cellIndex === 7) {
+            const pedText = row.cells[5].innerText.trim();
+            const chemText = row.cells[7].innerText.trim();
             if (pedText !== "" || chemText !== "") {
-                const dt = getCurrentDateTime(); row.cells[5].innerText = dt.date; row.cells[6].innerText = dt.time;
+                const dt = getCurrentDateTime(); row.cells[3].innerText = dt.date; row.cells[4].innerText = dt.time;
             } else {
-                row.cells[5].innerText = ""; row.cells[6].innerText = "";
+                row.cells[3].innerText = ""; row.cells[4].innerText = "";
             }
         }
         updateMapFromTable();
@@ -273,7 +278,7 @@ function createTable() {
     const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
     regions.forEach((region) => {
         const headRow = document.createElement('tr'); headRow.classList.add('region-header-row');
-        headRow.innerHTML = `<td colspan="14">📍 ${region} <button class="btn-action add-row-btn" onclick="addUserRow('${region}', this)">➕ Додати ПРХС</button></td>`;
+        headRow.innerHTML = `<td colspan="15">📍 ${region} <button class="btn-action add-row-btn" onclick="addUserRow('${region}', this)">➕ Додати ПРХС</button></td>`;
         tbody.appendChild(headRow); tbody.appendChild(createDataRow(region));
     });
     reindexTable();
@@ -284,10 +289,9 @@ function updateMapFromTable() {
     const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
     rows.forEach(row => {
         const rowId = row.getAttribute('data-id'); const region = row.getAttribute('data-region');
-        const district = row.cells[1].innerText.trim(); const hromada = row.cells[2].innerText.trim();
-        const settlement = row.cells[3].innerText.trim(); const coordsStr = row.cells[4].innerText.trim();
-        const pedCell = row.cells[7]; const pedVal = pedCell.innerText.trim();
-        const chemCell = row.cells[9]; const chemVal = chemCell.innerText.trim();
+        const location = row.cells[1].innerText.trim(); const coordsStr = row.cells[2].innerText.trim();
+        const pedCell = row.cells[5]; const pedVal = pedCell.innerText.trim();
+        const chemCell = row.cells[7]; const chemVal = chemCell.innerText.trim();
         
         pedCell.className = "ped-cell"; chemCell.className = "chem-cell";
         let color = null; let num = parseFloat(pedVal.replace(',', '.'));
@@ -308,7 +312,7 @@ function updateMapFromTable() {
             }
         }
         
-        const hasAnyContent = district || hromada || settlement || coordsStr || pedVal || chemVal;
+        const hasAnyContent = location || coordsStr || pedVal || chemVal;
         if (!hasAnyContent) {
             if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
             return; 
@@ -325,9 +329,7 @@ function updateMapFromTable() {
         if (!color) { color = '#64748b'; } 
         
         let popupText = `<b>${region}</b>`;
-        if (district) popupText += `<br>Район: ${district}`;
-        if (hromada) popupText += `<br>Громада: ${hromada}`;
-        if (settlement) popupText += `<br>НП: ${settlement}`;
+        if (location) popupText += `<br>Адреса: ${location}`;
         popupText += `<br>ПЕД: ${pedVal || 'не вказано'} мкЗв/год`;
         if (chemVal !== "") { popupText += `<br><span style="color: #dc2626; font-weight: bold;">НХР: ${chemVal}</span>`; }
         
@@ -350,7 +352,7 @@ function updateChartFromHistory() {
         const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)); if (isNaN(dateObj.getTime())) return;
         const checkDate = new Date(dateObj); checkDate.setHours(0,0,0,0);
         const daysDiff = (now - checkDate) / (1000 * 60 * 60 * 24); if (daysDiff > 30 || daysDiff < -1) return;
-        const prhsName = item.settlement || item.district || item.region || "Невідомий ПРХС";
+        const prhsName = item.location || item.region || "Невідомий ПРХС";
         if (!dailyData[item.date]) { dailyData[item.date] = { sum: 0, count: 0, dateObj: checkDate, maxVal: pedVal, maxPrhs: prhsName }; } 
         else if (pedVal > dailyData[item.date].maxVal) { dailyData[item.date].maxVal = pedVal; dailyData[item.date].maxPrhs = prhsName; }
         dailyData[item.date].sum += pedVal; dailyData[item.date].count += 1;
@@ -381,10 +383,10 @@ async function saveTable(showVisualStatus = false) {
     rows.forEach(row => {
         const rowId = row.getAttribute('data-id') || ""; const region = row.getAttribute('data-region') || "";
         const cells = [...row.cells].map(cell => cell.innerText.trim());
-        const dateStr = cells[5]; const pedStr = cells[7];
+        const dateStr = cells[3]; const pedStr = cells[5];
         if (dateStr && pedStr) {
             const exactMatchIndex = globalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
-            const historyItem = { rowId, region, district: cells[1], hromada: cells[2], settlement: cells[3], date: dateStr, time: cells[6], ped: pedStr };
+            const historyItem = { rowId, region, location: cells[1], date: dateStr, time: cells[4], ped: pedStr };
             if (exactMatchIndex !== -1) globalHistory[exactMatchIndex] = historyItem; else globalHistory.push(historyItem);
         }
     });
@@ -454,10 +456,21 @@ async function loadTable() {
             if (rowData.isHeader) {
                 row = document.createElement('tr'); row.classList.add('region-header-row');
                 let regionName = rowData.cells[0].replace('📍 ', '').split('➕')[0].trim();
-                row.innerHTML = `<td colspan="14">📍 ${regionName} <button class="btn-action add-row-btn" onclick="addUserRow('${regionName}', this)">➕ Додати ПРХС</button></td>`;
+                row.innerHTML = `<td colspan="15">📍 ${regionName} <button class="btn-action add-row-btn" onclick="addUserRow('${regionName}', this)">➕ Додати ПРХС</button></td>`;
             } else {
-                const hasNewColumn = rowData.cells.length === 14;
-                const d = { id: rowData.id, district: rowData.cells[1] || '', hromada: rowData.cells[2] || '', settlement: rowData.cells[3] || '', coords: rowData.cells[4] || '', date: rowData.cells[5] || '', time: rowData.cells[6] || '', ped: rowData.cells[7] || '', deviceType: hasNewColumn ? rowData.cells[8] : '', chem: hasNewColumn ? rowData.cells[9] : (rowData.cells[8] || ''), weather: hasNewColumn ? rowData.cells[10] : (rowData.cells[9] || ''), name: hasNewColumn ? rowData.cells[11] : (rowData.cells[10] || ''), phone: hasNewColumn ? rowData.cells[12] : (rowData.cells[11] || '') };
+                // Перевірка структури збережених даних для сумісності з попередніми версіями
+                const isNewLayout = rowData.cells.length === 15;
+                let d;
+                if (isNewLayout) {
+                    d = { id: rowData.id, location: rowData.cells[1] || '', coords: rowData.cells[2] || '', date: rowData.cells[3] || '', time: rowData.cells[4] || '', ped: rowData.cells[5] || '', radDevices: rowData.cells[6] || '', chemName: rowData.cells[7] || '', weather: rowData.cells[8] || '', chemDevices: rowData.cells[9] || '', lizod: rowData.cells[10] || '', clothing: rowData.cells[11] || '', responsible: rowData.cells[12] || '', phone: rowData.cells[13] || '' };
+                } else {
+                    // Адаптація старої структури (14 колонок), якщо вона завантажується з бази
+                    const oldDistrict = rowData.cells[1] || '';
+                    const oldHromada = rowData.cells[2] || '';
+                    const oldSettlement = rowData.cells[3] || '';
+                    const mergedLocation = [oldDistrict, oldHromada, oldSettlement].filter(Boolean).join(', ');
+                    d = { id: rowData.id, location: mergedLocation, coords: rowData.cells[4] || '', date: rowData.cells[5] || '', time: rowData.cells[6] || '', ped: rowData.cells[7] || '', radDevices: rowData.cells[8] || '', chemName: rowData.cells[9] || '', weather: rowData.cells[10] || '', chemDevices: '', lizod: '', clothing: '', responsible: rowData.cells[11] || '', phone: rowData.cells[12] || '' };
+                }
                 row = createDataRow(rowData.region, d);
             }
             tbody.appendChild(row);
