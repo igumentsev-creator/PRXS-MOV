@@ -67,7 +67,6 @@
         
         th, td { border: 1px solid #cbd5e1; padding: 6px 2px; text-align: center; vertical-align: middle; font-size: 11px; overflow: hidden; }
         
-        /* Пропорції колонок під нову структуру (всього 15 колонок) */
         th:nth-child(1)  { width: 3%; }   /* № */
         th:nth-child(2)  { width: 14%; }  /* Район, громада, населений пункт */
         th:nth-child(3)  { width: 7%; }   /* Координати */
@@ -93,6 +92,14 @@
         }
         .region-header-row td { padding: 15px 20px; width: 100% !important; }
         
+        .total-row {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .total-row td { padding: 10px; border-top: 2px solid #cbd5e1; }
+
         .btn-action {
             border: none;
             padding: 4px;
@@ -126,7 +133,7 @@
     <div class="card">
         <div class="header-main">
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Lesser_Coat_of_Arms_of_Ukraine.svg" alt="Герб України">
-            <h1>Радіаційне та хімічне спостереження України</h1>
+            <h1 id="pageTitle">Радіаційне та хімічне спостереження України</h1>
         </div>
         
         <div class="toolbar">
@@ -169,6 +176,13 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align: left; padding-left: 15px;">Всього ПРХС:</td>
+                        <td id="totalPrhsCount" style="text-align: left; font-size: 14px; color: #1e40af;">0</td>
+                        <td colspan="12"></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -183,6 +197,13 @@ const SUPABASE_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z";
 
 const regions = ['Вінницька область','Волинська область','Дніпропетровська область','Донецька область','Житомирська область','Закарпатська область','Запорізька область','Івано-Франківська область','Київська область','Кіровоградська область','Луганська область','Львівська область','Миколаївська область','Одеська область','Полтавська область','Рівненська область','Сумська область','Тернопільська область','Харківська область','Херсонська область','Хмельницька область','Черкаська область','Чернівецька область','Чернігівська область','м. Київ'];
 const regionCoordinates = { 'Вінницька область': [49.2331, 28.4682], 'Волинська область': [50.7472, 25.3254], 'Дніпропетровська область': [48.4647, 35.0462], 'Донецька область': [48.0159, 37.8028], 'Житомирська область': [50.2547, 28.6587], 'Закарпатська область': [48.6208, 22.2879], 'Запорізька область': [47.8388, 35.1396], 'Івано-Франківська область': [48.9226, 24.7111], 'Київська область': [50.4501, 30.5234], 'Кіровоградська область': [48.5079, 32.2623], 'Луганська область': [48.5740, 39.3078], 'Львівська область': [49.8397, 24.0297], 'Миколаївська область': [46.9750, 31.9946], 'Одеська область': [46.4825, 30.7233], 'Полтавська область': [49.5883, 34.5514], 'Рівненська область': [50.6199, 26.2516], 'Сумська область': [50.9077, 34.7981], 'Тернопільська область': [49.5535, 25.5948], 'Харківська область': [49.9935, 36.2304], 'Херсонська область': [46.6354, 32.6169], 'Хмельницька область': [49.4230, 26.9871], 'Черкаська область': [49.4444, 32.0597], 'Чернівецька область': [48.2908, 25.9345], 'Чернігівська область': [51.4982, 31.2893], 'м. Київ': [50.4501, 30.5234] };
+
+// ОПРЕДЕЛЕНИЕ ТЕКУЩЕГО РЕГИОНА ИЗ URL
+function getRegionFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('region');
+}
+const CURRENT_USER_REGION = getRegionFromUrl();
 
 let map, activeMarkers = {};
 let pedChart = null; 
@@ -236,7 +257,6 @@ function createDataRow(regionName, initialData = null) {
 
     row.addEventListener('input', (e) => {
         const cellIndex = e.target.cellIndex;
-        // Клітинка 5 - ПЕД, клітинка 7 - Назва НХР
         if (cellIndex === 5 || cellIndex === 7) {
             const pedText = row.cells[5].innerText.trim();
             const chemText = row.cells[7].innerText.trim();
@@ -263,10 +283,20 @@ function removeRow(btn) {
 
 function reindexTable() {
     let currentNumber = 1;
+    let totalCount = 0;
     document.querySelectorAll('#tableBody tr').forEach((row) => {
         if (row.classList.contains('region-header-row')) { currentNumber = 1; } 
-        else { const indexCell = row.querySelector('.index-cell'); if (indexCell) indexCell.innerText = currentNumber++; }
+        else { 
+            const indexCell = row.querySelector('.index-cell'); 
+            if (indexCell) indexCell.innerText = currentNumber++; 
+            totalCount++;
+        }
     });
+    // Оновлюємо загальну кількість постів у tfoot
+    const totalElement = document.getElementById('totalPrhsCount');
+    if (totalElement) {
+        totalElement.innerText = totalCount;
+    }
 }
 
 function addUserRow(regionName, buttonElement) {
@@ -276,7 +306,9 @@ function addUserRow(regionName, buttonElement) {
 
 function createTable() {
     const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
-    regions.forEach((region) => {
+    const activeRegions = CURRENT_USER_REGION ? [CURRENT_USER_REGION] : regions;
+
+    activeRegions.forEach((region) => {
         const headRow = document.createElement('tr'); headRow.classList.add('region-header-row');
         headRow.innerHTML = `<td colspan="15">📍 ${region} <button class="btn-action add-row-btn" onclick="addUserRow('${region}', this)">➕ Додати ПРХС</button></td>`;
         tbody.appendChild(headRow); tbody.appendChild(createDataRow(region));
@@ -298,18 +330,9 @@ function updateMapFromTable() {
         if (chemVal !== "") { color = '#dc2626'; chemCell.classList.add('bg-danger'); }
         
         if (!isNaN(num) && pedVal !== "") {
-            if (num > 0.3) { 
-                color = '#dc2626'; 
-                pedCell.classList.add('bg-danger'); 
-            } 
-            else if (num === 0.3) { 
-                if (!color) color = '#f59e0b'; 
-                pedCell.classList.add('bg-warning'); 
-            } 
-            else { 
-                if (!color) color = '#16a34a'; 
-                pedCell.classList.add('bg-normal'); 
-            }
+            if (num > 0.3) { color = '#dc2626'; pedCell.classList.add('bg-danger'); } 
+            else if (num === 0.3) { if (!color) color = '#f59e0b'; pedCell.classList.add('bg-warning'); } 
+            else { if (!color) color = '#16a34a'; pedCell.classList.add('bg-normal'); }
         }
         
         const hasAnyContent = location || coordsStr || pedVal || chemVal;
@@ -379,7 +402,37 @@ function updateChartFromHistory() {
 }
 
 async function saveTable(showVisualStatus = false) {
-    const rows = [...document.querySelectorAll('#radiationTable tbody tr:not(.region-header-row)')];
+    const localRowsData = [];
+    document.querySelectorAll('#radiationTable tbody tr').forEach(row => {
+        localRowsData.push({ 
+            isHeader: row.classList.contains('region-header-row'), 
+            region: row.getAttribute('data-region') || "", 
+            id: row.getAttribute('data-id') || "", 
+            cells: [...row.cells].map(cell => cell.innerText) 
+        });
+    });
+
+    let finalTableData = localRowsData;
+
+    // Слияние с данными сервера, если открыт только один регион
+    if (CURRENT_USER_REGION) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.global_state`, {
+                method: 'GET',
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+            });
+            if (response.ok) {
+                const resData = await response.json();
+                if (resData && resData.length > 0) {
+                    const serverTableData = resData[0].data.table || [];
+                    finalTableData = serverTableData.filter(row => row.region !== CURRENT_USER_REGION);
+                    finalTableData.push(...localRowsData);
+                }
+            }
+        } catch (e) { console.error("Помилка синхронізації:", e); }
+    }
+
+    const rows = [...document.querySelectorAll('#tableBody tr:not(.region-header-row)')];
     rows.forEach(row => {
         const rowId = row.getAttribute('data-id') || ""; const region = row.getAttribute('data-region') || "";
         const cells = [...row.cells].map(cell => cell.innerText.trim());
@@ -390,12 +443,8 @@ async function saveTable(showVisualStatus = false) {
             if (exactMatchIndex !== -1) globalHistory[exactMatchIndex] = historyItem; else globalHistory.push(historyItem);
         }
     });
-    const allRowsData = [];
-    document.querySelectorAll('#radiationTable tbody tr').forEach(row => {
-        allRowsData.push({ isHeader: row.classList.contains('region-header-row'), region: row.getAttribute('data-region') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) });
-    });
 
-    const bodyData = { id: 'global_state', data: { table: allRowsData, history: globalHistory } };
+    const bodyData = { id: 'global_state', data: { table: finalTableData, history: globalHistory } };
 
     try {
         let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
@@ -409,12 +458,8 @@ async function saveTable(showVisualStatus = false) {
             body: JSON.stringify(bodyData)
         });
 
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`Код ${response.status}: ${errText}`);
-        }
-
-        if (showVisualStatus) document.getElementById('saveStatus').innerText = '✅ Дані успішно збережено в хмарі: ' + new Date().toLocaleTimeString();
+        if (!response.ok) { const errText = await response.text(); throw new Error(`Код ${response.status}: ${errText}`); }
+        if (showVisualStatus) document.getElementById('saveStatus').innerText = '✅ Дані успішно збережено: ' + new Date().toLocaleTimeString();
     } catch (err) {
         console.error(err); 
         document.getElementById('saveStatus').innerText = '❌ Помилка збереження: ' + err.message;
@@ -429,19 +474,14 @@ async function loadTable() {
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`Код ${response.status}: ${errText}`);
-        }
-
+        if (!response.ok) { const errText = await response.text(); throw new Error(`Код ${response.status}: ${errText}`); }
         const resData = await response.json();
         
         Object.values(activeMarkers).forEach(m => map.removeLayer(m)); activeMarkers = {};
         const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
 
         if(!resData || resData.length === 0) { 
-            createTable(); 
-            updateMapFromTable(); 
+            createTable(); updateMapFromTable(); 
             document.getElementById('saveStatus').innerText = 'Система готова (база порожня)';
             return; 
         }
@@ -449,25 +489,24 @@ async function loadTable() {
         const payload = resData[0].data;
         globalHistory = payload.history || []; const tableData = payload.table || [];
         
-        if (tableData.length === 0) { createTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Система готова (порожня таблиця)'; return; }
+        if (tableData.length === 0) { createTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Система готова'; return; }
         
         tableData.forEach(rowData => {
+            // ФИЛЬТРАЦИЯ НА ЧТЕНИЕ
+            if (CURRENT_USER_REGION && rowData.region !== CURRENT_USER_REGION) { return; }
+
             let row;
             if (rowData.isHeader) {
                 row = document.createElement('tr'); row.classList.add('region-header-row');
                 let regionName = rowData.cells[0].replace('📍 ', '').split('➕')[0].trim();
                 row.innerHTML = `<td colspan="15">📍 ${regionName} <button class="btn-action add-row-btn" onclick="addUserRow('${regionName}', this)">➕ Додати ПРХС</button></td>`;
             } else {
-                // Перевірка структури збережених даних для сумісності з попередніми версіями
                 const isNewLayout = rowData.cells.length === 15;
                 let d;
                 if (isNewLayout) {
                     d = { id: rowData.id, location: rowData.cells[1] || '', coords: rowData.cells[2] || '', date: rowData.cells[3] || '', time: rowData.cells[4] || '', ped: rowData.cells[5] || '', radDevices: rowData.cells[6] || '', chemName: rowData.cells[7] || '', weather: rowData.cells[8] || '', chemDevices: rowData.cells[9] || '', lizod: rowData.cells[10] || '', clothing: rowData.cells[11] || '', responsible: rowData.cells[12] || '', phone: rowData.cells[13] || '' };
                 } else {
-                    // Адаптація старої структури (14 колонок), якщо вона завантажується з бази
-                    const oldDistrict = rowData.cells[1] || '';
-                    const oldHromada = rowData.cells[2] || '';
-                    const oldSettlement = rowData.cells[3] || '';
+                    const oldDistrict = rowData.cells[1] || ''; const oldHromada = rowData.cells[2] || ''; const oldSettlement = rowData.cells[3] || '';
                     const mergedLocation = [oldDistrict, oldHromada, oldSettlement].filter(Boolean).join(', ');
                     d = { id: rowData.id, location: mergedLocation, coords: rowData.cells[4] || '', date: rowData.cells[5] || '', time: rowData.cells[6] || '', ped: rowData.cells[7] || '', radDevices: rowData.cells[8] || '', chemName: rowData.cells[9] || '', weather: rowData.cells[10] || '', chemDevices: '', lizod: '', clothing: '', responsible: rowData.cells[11] || '', phone: rowData.cells[12] || '' };
                 }
@@ -475,26 +514,42 @@ async function loadTable() {
             }
             tbody.appendChild(row);
         });
-        reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Синхронізовано з базою';
+
+        // Если база не пустая, но для региона записей ещё нет — создаём пустую строку
+        if (tbody.children.length === 0 && CURRENT_USER_REGION) { createTable(); }
+
+        reindexTable(); updateMapFromTable(); 
+        document.getElementById('saveStatus').innerText = 'Синхронізовано з базою';
+
+        // Центрирование карты на выбранный регион
+        if (CURRENT_USER_REGION && regionCoordinates[CURRENT_USER_REGION]) {
+            map.setView(regionCoordinates[CURRENT_USER_REGION], 8);
+        }
     } catch (err) {
-        console.error(err); 
-        createTable(); 
-        updateMapFromTable(); 
-        document.getElementById('saveStatus').innerText = 'Помилка завантаження: ' + err.message + ' (Режим офлайн)';
+        console.error(err); createTable(); updateMapFromTable(); 
+        document.getElementById('saveStatus').innerText = 'Режим офлайн: ' + err.message;
     }
 }
 
 async function clearChartHistory() {
     if (confirm('Очистити історію графіка? Поточна таблиця залишиться.')) { globalHistory = []; await saveTable(true); alert('Історію очищено!'); }
 }
-function initMap() { map = L.map('map').setView([48.4, 31.2], 6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map); }
+function initMap() { 
+    const defaultCenter = CURRENT_USER_REGION ? regionCoordinates[CURRENT_USER_REGION] : [48.4, 31.2];
+    const defaultZoom = CURRENT_USER_REGION ? 8 : 6;
+    map = L.map('map').setView(defaultCenter, defaultZoom); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map); 
+}
 function exportTable() { 
     const allRowsData = []; document.querySelectorAll('#radiationTable tbody tr').forEach(row => { allRowsData.push({ isHeader: row.classList.contains('region-header-row'), region: row.getAttribute('data-region') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) }); });
     const blob = new Blob([JSON.stringify({ table: allRowsData, history: globalHistory }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `monitoring_export_${new Date().toISOString().slice(0,10)}.json`; a.click();
 }
 
-window.onload = () => { 
+window.onload = () => {
+    if (CURRENT_USER_REGION) {
+        document.getElementById('pageTitle').innerText = `Моніторинг ПЕД: ${CURRENT_USER_REGION}`;
+    }
     initMap(); 
     loadTable(); 
 };
