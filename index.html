@@ -198,7 +198,6 @@ const SUPABASE_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z";
 const regions = ['Вінницька область','Волинська область','Дніпропетровська область','Донецька область','Житомирська область','Закарпатська область','Запорізька область','Івано-Франківська область','Київська область','Кіровоградська область','Луганська область','Львівська область','Миколаївська область','Одеська область','Полтавська область','Рівненська область','Сумська область','Тернопільська область','Харківська область','Херсонська область','Хмельницька область','Черкаська область','Чернівецька область','Чернігівська область','м. Київ'];
 const regionCoordinates = { 'Вінницька область': [49.2331, 28.4682], 'Волинська область': [50.7472, 25.3254], 'Дніпропетровська область': [48.4647, 35.0462], 'Донецька область': [48.0159, 37.8028], 'Житомирська область': [50.2547, 28.6587], 'Закарпатська область': [48.6208, 22.2879], 'Запорізька область': [47.8388, 35.1396], 'Івано-Франківська область': [48.9226, 24.7111], 'Київська область': [50.4501, 30.5234], 'Кіровоградська область': [48.5079, 32.2623], 'Луганська область': [48.5740, 39.3078], 'Львівська область': [49.8397, 24.0297], 'Миколаївська область': [46.9750, 31.9946], 'Одеська область': [46.4825, 30.7233], 'Полтавська область': [49.5883, 34.5514], 'Рівненська область': [50.6199, 26.2516], 'Сумська область': [50.9077, 34.7981], 'Тернопільська область': [49.5535, 25.5948], 'Харківська область': [49.9935, 36.2304], 'Херсонська область': [46.6354, 32.6169], 'Хмельницька область': [49.4230, 26.9871], 'Черкаська область': [49.4444, 32.0597], 'Чернівецька область': [48.2908, 25.9345], 'Чернігівська область': [51.4982, 31.2893], 'м. Київ': [50.4501, 30.5234] };
 
-// ОПРЕДЕЛЕНИЕ ТЕКУЩЕГО РЕГИОНА ИЗ URL
 function getRegionFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('region');
@@ -292,7 +291,6 @@ function reindexTable() {
             totalCount++;
         }
     });
-    // Оновлюємо загальну кількість постів у tfoot
     const totalElement = document.getElementById('totalPrhsCount');
     if (totalElement) {
         totalElement.innerText = totalCount;
@@ -310,6 +308,7 @@ function createTable() {
 
     activeRegions.forEach((region) => {
         const headRow = document.createElement('tr'); headRow.classList.add('region-header-row');
+        headRow.setAttribute('data-region', region);
         headRow.innerHTML = `<td colspan="15">📍 ${region} <button class="btn-action add-row-btn" onclick="addUserRow('${region}', this)">➕ Додати ПРХС</button></td>`;
         tbody.appendChild(headRow); tbody.appendChild(createDataRow(region));
     });
@@ -402,6 +401,8 @@ function updateChartFromHistory() {
 }
 
 async function saveTable(showVisualStatus = false) {
+    if (showVisualStatus) document.getElementById('saveStatus').innerText = 'Збереження даних...';
+
     const localRowsData = [];
     document.querySelectorAll('#radiationTable tbody tr').forEach(row => {
         localRowsData.push({ 
@@ -413,24 +414,7 @@ async function saveTable(showVisualStatus = false) {
     });
 
     let finalTableData = localRowsData;
-
-    // Слияние с данными сервера, если открыт только один регион
-    if (CURRENT_USER_REGION) {
-        try {
-            const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.global_state`, {
-                method: 'GET',
-                headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-            });
-            if (response.ok) {
-                const resData = await response.json();
-                if (resData && resData.length > 0) {
-                    const serverTableData = resData[0].data.table || [];
-                    finalTableData = serverTableData.filter(row => row.region !== CURRENT_USER_REGION);
-                    finalTableData.push(...localRowsData);
-                }
-            }
-        } catch (e) { console.error("Помилка синхронізації:", e); }
-    }
+    let finalHistory = [...globalHistory];
 
     const rows = [...document.querySelectorAll('#tableBody tr:not(.region-header-row)')];
     rows.forEach(row => {
@@ -438,12 +422,48 @@ async function saveTable(showVisualStatus = false) {
         const cells = [...row.cells].map(cell => cell.innerText.trim());
         const dateStr = cells[3]; const pedStr = cells[5];
         if (dateStr && pedStr) {
-            const exactMatchIndex = globalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
+            const exactMatchIndex = finalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
             const historyItem = { rowId, region, location: cells[1], date: dateStr, time: cells[4], ped: pedStr };
-            if (exactMatchIndex !== -1) globalHistory[exactMatchIndex] = historyItem; else globalHistory.push(historyItem);
+            if (exactMatchIndex !== -1) finalHistory[exactMatchIndex] = historyItem; else finalHistory.push(historyItem);
         }
     });
 
+    try {
+        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.global_state`, {
+            method: 'GET',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (response.ok) {
+            const resData = await response.json();
+            if (resData && resData.length > 0) {
+                const serverPayload = resData[0].data;
+                const serverTableData = serverPayload.table || [];
+                const serverHistory = serverPayload.history || [];
+
+                if (CURRENT_USER_REGION) {
+                    const otherRegionsTable = serverTableData.filter(row => {
+                        let rName = row.region;
+                        if (row.isHeader && row.cells && row.cells[0]) {
+                            rName = row.cells[0].replace('📍 ', '').split('➕')[0].split('Додати')[0].trim();
+                        }
+                        return rName !== CURRENT_USER_REGION;
+                    });
+                    
+                    finalTableData = [...otherRegionsTable, ...localRowsData];
+
+                    const otherHistory = serverHistory.filter(h => h.region !== CURRENT_USER_REGION);
+                    const myHistory = finalHistory.filter(h => h.region === CURRENT_USER_REGION);
+                    finalHistory = [...otherHistory, ...myHistory];
+                } else {
+                    finalTableData = localRowsData;
+                }
+            }
+        }
+    } catch (e) { 
+        console.error("Помилка синхронізації перед збереженням:", e); 
+    }
+
+    globalHistory = finalHistory;
     const bodyData = { id: 'global_state', data: { table: finalTableData, history: globalHistory } };
 
     try {
@@ -464,7 +484,7 @@ async function saveTable(showVisualStatus = false) {
         console.error(err); 
         document.getElementById('saveStatus').innerText = '❌ Помилка збереження: ' + err.message;
     }
-    updateChartFromHistory();
+    updateMapFromTable();
 }
 
 async function loadTable() {
@@ -487,19 +507,30 @@ async function loadTable() {
         }
         
         const payload = resData[0].data;
-        globalHistory = payload.history || []; const tableData = payload.table || [];
+        globalHistory = payload.history || []; 
+        const tableData = payload.table || [];
         
         if (tableData.length === 0) { createTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Система готова'; return; }
         
+        let hasDataForCurrentRegion = false;
+
         tableData.forEach(rowData => {
-            // ФИЛЬТРАЦИЯ НА ЧТЕНИЕ
-            if (CURRENT_USER_REGION && rowData.region !== CURRENT_USER_REGION) { return; }
+            let rowRegion = rowData.region;
+            if (rowData.isHeader && rowData.cells && rowData.cells[0]) {
+                rowRegion = rowData.cells[0].replace('📍 ', '').split('➕')[0].split('Додати')[0].trim();
+            }
+
+            if (CURRENT_USER_REGION && rowRegion !== CURRENT_USER_REGION) { return; }
+
+            if (rowRegion === CURRENT_USER_REGION) {
+                hasDataForCurrentRegion = true;
+            }
 
             let row;
             if (rowData.isHeader) {
                 row = document.createElement('tr'); row.classList.add('region-header-row');
-                let regionName = rowData.cells[0].replace('📍 ', '').split('➕')[0].trim();
-                row.innerHTML = `<td colspan="15">📍 ${regionName} <button class="btn-action add-row-btn" onclick="addUserRow('${regionName}', this)">➕ Додати ПРХС</button></td>`;
+                row.setAttribute('data-region', rowRegion);
+                row.innerHTML = `<td colspan="15">📍 ${rowRegion} <button class="btn-action add-row-btn" onclick="addUserRow('${rowRegion}', this)">➕ Додати ПРХС</button></td>`;
             } else {
                 const isNewLayout = rowData.cells.length === 15;
                 let d;
@@ -510,20 +541,20 @@ async function loadTable() {
                     const mergedLocation = [oldDistrict, oldHromada, oldSettlement].filter(Boolean).join(', ');
                     d = { id: rowData.id, location: mergedLocation, coords: rowData.cells[4] || '', date: rowData.cells[5] || '', time: rowData.cells[6] || '', ped: rowData.cells[7] || '', radDevices: rowData.cells[8] || '', chemName: rowData.cells[9] || '', weather: rowData.cells[10] || '', chemDevices: '', lizod: '', clothing: '', responsible: rowData.cells[11] || '', phone: rowData.cells[12] || '' };
                 }
-                row = createDataRow(rowData.region, d);
+                row = createDataRow(rowRegion, d);
             }
             tbody.appendChild(row);
         });
 
-        // Если база не пустая, но для региона записей ещё нет — создаём пустую строку
-        if (tbody.children.length === 0 && CURRENT_USER_REGION) { createTable(); }
+        if (CURRENT_USER_REGION && !hasDataForCurrentRegion) { 
+            createTable(); 
+        }
 
         reindexTable(); updateMapFromTable(); 
         document.getElementById('saveStatus').innerText = 'Синхронізовано з базою';
 
-        // Центрирование карты на выбранный регион
         if (CURRENT_USER_REGION && regionCoordinates[CURRENT_USER_REGION]) {
-            map.setView(regionCoordinates[CURRENT_USER_REGION], 8);
+            map.setView(regionCoordinates[CURRENT_USER_REGION], 9);
         }
     } catch (err) {
         console.error(err); createTable(); updateMapFromTable(); 
