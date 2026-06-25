@@ -75,7 +75,7 @@
         th:nth-child(6)  { width: 6%; }   /* ПЕД */
         th:nth-child(7)  { width: 8%; }   /* Прилади рад. розвідки */
         th:nth-child(8)  { width: 9%; }   /* Назва НХР, кількість тонн */
-        th:nth-child(9)  { width: 11%; }  /* Метеодані у разі НС */
+        th:nth-child(9)  { width: 11%; }  /* Напрямок, швидкість вітру... */
         th:nth-child(10) { width: 8%; }   /* Прилади хім. розвідки */
         th:nth-child(11) { width: 7%; }   /* ЗІЗОД */
         th:nth-child(12) { width: 7%; }   /* Одяг спеціальний */
@@ -171,7 +171,7 @@
                         <th>ПЕД (мкЗв/год)</th>
                         <th>Прилади радіаційної розвідки, тип обладнання, що в наявності</th>
                         <th>Назва небезпечної хімічної речовини, її концентрація у повітрі (мг/куб.м)</th>
-                        <th>Напрямок, швидкість повітря, стійкість та температура повітря у разі НС, пов'язаної з НХР</th>
+                        <th>Напрямок, швидкість вітру, ступінь вертикальної стійкості повітря та температура</th>
                         <th>Прилади хімічної розвідки, тип обладнання, що в наявності</th>
                         <th>ЗІЗОД, тип та кількість</th>
                         <th>Одяг спеціальний захисний, тип та кількість</th>
@@ -272,7 +272,6 @@ async function fetchWeatherData(lat, lng) {
     return null;
 }
 
-// Принудительное обновление погоды по нажатию кнопки в строке
 async function triggerWeatherUpdate(btn) {
     const row = btn.closest('tr');
     const coordsCell = row.querySelector('.coords-input');
@@ -524,7 +523,7 @@ async function saveTable(showVisualStatus = false) {
             const cellValues = [];
             for(let i=0; i<row.cells.length; i++) {
                 if(i === 2) {
-                    cellValues.push(coordsVal); // Передаем чистые координаты без кнопки
+                    cellValues.push(coordsVal);
                 } else {
                     cellValues.push(row.cells[i].innerText);
                 }
