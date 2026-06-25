@@ -69,7 +69,7 @@
         
         th:nth-child(1)  { width: 3%; }   /* № */
         th:nth-child(2)  { width: 14%; }  /* Район, громада, населений пункт */
-        th:nth-child(3)  { width: 7%; }   /* Координати */
+        th:nth-child(3)  { width: 9%; }   /* Координати + кнопка */
         th:nth-child(4)  { width: 5%; }   /* Дата */
         th:nth-child(5)  { width: 4%; }   /* Час */
         th:nth-child(6)  { width: 6%; }   /* ПЕД */
@@ -113,6 +113,11 @@
         .add-row-btn { background: #16a34a; color: white; float: right; width: auto; padding: 5px 12px; font-size: 12px; }
         .del-row-btn { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
         
+        .coords-container { display: flex; align-items: center; gap: 4px; padding: 2px; }
+        .coords-input { flex-grow: 1; min-height: 20px; text-align: center; background: white; outline: none; }
+        .btn-weather-trigger { background: #3b82f6; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+        .btn-weather-trigger:hover { background: #2563eb; }
+
         td[contenteditable="true"] { background: #ffffff; white-space: normal; word-break: break-all; }
         td[contenteditable="true"]:focus { outline: 2px solid #2563eb; background: #eff6ff; }
         .readonly { background: #f8fafc; color: #64748b; font-weight: bold; }
@@ -215,17 +220,83 @@ function getCurrentDateTime() {
 
 function parseCoordinates(str) {
     if (!str) return null;
-    const cleanStr = str.replace(/[()]/g, '').replace(/,/g, ' ');
-    const arr = cleanStr.trim().split(/\s+/);
+    let cleanStr = str.replace(/[()]/g, '').replace(/,/g, ' ').trim();
+    const arr = cleanStr.split(/\s+/);
     if (arr.length >= 2) {
-        const val1 = parseFloat(arr[0]); const val2 = parseFloat(arr[1]);
+        const val1 = parseFloat(arr[0]); 
+        const val2 = parseFloat(arr[1]);
         if (isNaN(val1) || isNaN(val2)) return null;
+        
         let lat = null, lng = null;
         if (val1 >= 44 && val1 <= 53 && val2 >= 22 && val2 <= 41) { lat = val1; lng = val2; } 
         else if (val2 >= 44 && val2 <= 53 && val1 >= 22 && val1 <= 41) { lat = val2; lng = val1; }
+        
         if (lat !== null && lng !== null) return [lat, lng];
     }
     return null;
+}
+
+function getWindDirection(deg) {
+    if (deg >= 337.5 || deg < 22.5) return 'Пн';
+    if (deg >= 22.5 && deg < 67.5) return 'Пн-Сх';
+    if (deg >= 67.5 && deg < 112.5) return 'Сх';
+    if (deg >= 112.5 && deg < 157.5) return 'Пд-Сх';
+    if (deg >= 157.5 && deg < 202.5) return 'Пд';
+    if (deg >= 202.5 && deg < 247.5) return 'Пд-Зх';
+    if (deg >= 247.5 && deg < 292.5) return 'Зх';
+    if (deg >= 292.5 && deg < 337.5) return 'Пн-Зх';
+    return 'Невідомо';
+}
+
+async function fetchWeatherData(lat, lng) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto`;
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const json = await res.json();
+        if (json && json.current) {
+            const temp = json.current.temperature_2m;
+            const windSpeed = json.current.wind_speed_10m;
+            const windDeg = json.current.wind_direction_10m;
+            const windDir = getWindDirection(windDeg);
+            
+            let stability = 'Ізотермія';
+            if (windSpeed < 2) stability = 'Інверсія';
+            else if (windSpeed > 4) stability = 'Конвекція';
+
+            return `Вітер: ${windDir}, ${windSpeed} м/с; стійкість: ${stability}; t: ${temp}°C`;
+        }
+    } catch (e) {
+        console.error(e);
+    }
+    return null;
+}
+
+// Принудительное обновление погоды по нажатию кнопки в строке
+async function triggerWeatherUpdate(btn) {
+    const row = btn.closest('tr');
+    const coordsCell = row.querySelector('.coords-input');
+    const weatherCell = row.cells[8];
+    const coordsStr = coordsCell.innerText.trim();
+    
+    if (!coordsStr) {
+        weatherCell.innerText = "❌ Відсутні координати";
+        return;
+    }
+    
+    const parsed = parseCoordinates(coordsStr);
+    if (parsed) {
+        weatherCell.innerText = "🔄 Завантаження...";
+        const text = await fetchWeatherData(parsed[0], parsed[1]);
+        if (text) {
+            weatherCell.innerText = text;
+            saveTable(false);
+        } else {
+            weatherCell.innerText = "❌ Помилка API погоди";
+        }
+    } else {
+        weatherCell.innerText = "⚠️ Невірний формат координат";
+    }
 }
 
 function createDataRow(regionName, initialData = null) {
@@ -239,13 +310,18 @@ function createDataRow(regionName, initialData = null) {
     row.innerHTML = `
         <td class="readonly index-cell"></td>
         <td contenteditable="true" class="location-cell">${d.location}</td>
-        <td contenteditable="true" class="coords-cell">${d.coords}</td>
+        <td>
+            <div class="coords-container">
+                <div contenteditable="true" class="coords-input">${d.coords}</div>
+                <button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)" title="Оновити погоду за координатами">⛅</button>
+            </div>
+        </td>
         <td contenteditable="true" class="date-cell">${d.date}</td>
         <td contenteditable="true" class="time-cell">${d.time}</td>
         <td contenteditable="true" class="ped-cell">${d.ped}</td>
         <td contenteditable="true">${d.radDevices}</td>
         <td contenteditable="true" class="chem-cell">${d.chemName}</td>
-        <td contenteditable="true">${d.weather}</td>
+        <td contenteditable="true" class="weather-cell">${d.weather}</td>
         <td contenteditable="true">${d.chemDevices}</td>
         <td contenteditable="true">${d.lizod}</td>
         <td contenteditable="true">${d.clothing}</td>
@@ -320,14 +396,16 @@ function updateMapFromTable() {
     const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
     rows.forEach(row => {
         const rowId = row.getAttribute('data-id'); const region = row.getAttribute('data-region');
-        const location = row.cells[1].innerText.trim(); const coordsStr = row.cells[2].innerText.trim();
+        const location = row.cells[1].innerText.trim(); 
+        const coordsInput = row.querySelector('.coords-input');
+        const coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
+        
         const pedCell = row.cells[5]; const pedVal = pedCell.innerText.trim();
         const chemCell = row.cells[7]; const chemVal = chemCell.innerText.trim();
         
         pedCell.className = "ped-cell"; chemCell.className = "chem-cell";
         let color = null; let num = parseFloat(pedVal.replace(',', '.'));
         
-        // Визначаємо стан хімічної небезпеки ("Не виявлено" вважається нормою)
         const isChemClear = chemVal.toLowerCase() === "не виявлено";
 
         if (chemVal !== "") { 
@@ -432,12 +510,33 @@ async function saveTable(showVisualStatus = false) {
 
     const localRowsData = [];
     document.querySelectorAll('#radiationTable tbody tr').forEach(row => {
-        localRowsData.push({ 
-            isHeader: row.classList.contains('region-header-row'), 
-            region: row.getAttribute('data-region') || "", 
-            id: row.getAttribute('data-id') || "", 
-            cells: [...row.cells].map(cell => cell.innerText) 
-        });
+        if(row.classList.contains('region-header-row')) {
+            localRowsData.push({ 
+                isHeader: true, 
+                region: row.getAttribute('data-region') || "", 
+                id: row.getAttribute('data-id') || "", 
+                cells: [...row.cells].map(cell => cell.innerText) 
+            });
+        } else {
+            const coordsInput = row.querySelector('.coords-input');
+            const coordsVal = coordsInput ? coordsInput.innerText.trim() : "";
+            
+            const cellValues = [];
+            for(let i=0; i<row.cells.length; i++) {
+                if(i === 2) {
+                    cellValues.push(coordsVal); // Передаем чистые координаты без кнопки
+                } else {
+                    cellValues.push(row.cells[i].innerText);
+                }
+            }
+
+            localRowsData.push({ 
+                isHeader: false, 
+                region: row.getAttribute('data-region') || "", 
+                id: row.getAttribute('data-id') || "", 
+                cells: cellValues
+            });
+        }
     });
 
     let finalTableData = localRowsData;
@@ -446,7 +545,14 @@ async function saveTable(showVisualStatus = false) {
     const rows = [...document.querySelectorAll('#tableBody tr:not(.region-header-row)')];
     rows.forEach(row => {
         const rowId = row.getAttribute('data-id') || ""; const region = row.getAttribute('data-region') || "";
-        const cells = [...row.cells].map(cell => cell.innerText.trim());
+        const coordsInput = row.querySelector('.coords-input');
+        const coordsVal = coordsInput ? coordsInput.innerText.trim() : "";
+
+        const cells = [];
+        for(let i=0; i<row.cells.length; i++) {
+            cells.push(i === 2 ? coordsVal : row.cells[i].innerText.trim());
+        }
+
         const dateStr = cells[3]; const pedStr = cells[5];
         if (dateStr && pedStr) {
             const exactMatchIndex = finalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
@@ -487,7 +593,7 @@ async function saveTable(showVisualStatus = false) {
             }
         }
     } catch (e) { 
-        console.error("Помилка синхронізації перед збереженням:", e); 
+        console.error(e); 
     }
 
     globalHistory = finalHistory;
