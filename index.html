@@ -326,12 +326,33 @@ function updateMapFromTable() {
         
         pedCell.className = "ped-cell"; chemCell.className = "chem-cell";
         let color = null; let num = parseFloat(pedVal.replace(',', '.'));
-        if (chemVal !== "") { color = '#dc2626'; chemCell.classList.add('bg-danger'); }
+        
+        // Визначаємо стан хімічної небезпеки ("Не виявлено" вважається нормою)
+        const isChemClear = chemVal.toLowerCase() === "не виявлено";
+
+        if (chemVal !== "") { 
+            if (isChemClear) {
+                color = '#16a34a'; 
+                chemCell.classList.add('bg-normal');
+            } else {
+                color = '#dc2626'; 
+                chemCell.classList.add('bg-danger'); 
+            }
+        }
         
         if (!isNaN(num) && pedVal !== "") {
-            if (num > 0.3) { color = '#dc2626'; pedCell.classList.add('bg-danger'); } 
-            else if (num === 0.3) { if (!color) color = '#f59e0b'; pedCell.classList.add('bg-warning'); } 
-            else { if (!color) color = '#16a34a'; pedCell.classList.add('bg-normal'); }
+            if (num > 0.3) { 
+                color = '#dc2626'; 
+                pedCell.classList.add('bg-danger'); 
+            } 
+            else if (num === 0.3) { 
+                if (!color || color === '#16a34a') color = '#f59e0b'; 
+                pedCell.classList.add('bg-warning'); 
+            } 
+            else { 
+                if (!color || color === '#64748b') color = '#16a34a'; 
+                pedCell.classList.add('bg-normal'); 
+            }
         }
         
         const hasAnyContent = location || coordsStr || pedVal || chemVal;
@@ -353,7 +374,13 @@ function updateMapFromTable() {
         let popupText = `<b>${region}</b>`;
         if (location) popupText += `<br>Адреса: ${location}`;
         popupText += `<br>ПЕД: ${pedVal || 'не вказано'} мкЗв/год`;
-        if (chemVal !== "") { popupText += `<br><span style="color: #dc2626; font-weight: bold;">НХР: ${chemVal}</span>`; }
+        if (chemVal !== "") { 
+            if (isChemClear) {
+                popupText += `<br><span style="color: #16a34a; font-weight: bold;">НХР: ${chemVal}</span>`;
+            } else {
+                popupText += `<br><span style="color: #dc2626; font-weight: bold;">НХР: ${chemVal}</span>`; 
+            }
+        }
         
         if (activeMarkers[rowId]) {
             activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].setStyle({ fillColor: color }); activeMarkers[rowId].getPopup().setContent(popupText);
