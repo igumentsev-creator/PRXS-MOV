@@ -176,7 +176,7 @@ const LOCALES = {
         denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte löschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten speichern", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?"
     },
     hi: {
-        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 मास्टर एडमिन पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि: ", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल एडमिन):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाइयां", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?"
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 मास्टर एडमिन पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि: ", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल एडमिन):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 सहेजें", btnExport: "📥 जेसन", btnClearHis: "🧹 इतिहास", btnAddCol: "➕ कॉलम", btnAddBranch: "➕ कार्यक्षेत्र", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाइयां", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें?"
     }
 };
 
@@ -184,7 +184,7 @@ let currentLang = localStorage.getItem('lang') || 'en';
 
 // === КОНФИГУРАТОР ДАННЫХ ===
 let TABLE_CONFIG = {
-    stateId: 'global_state_v9_ultimate_saas', 
+    stateId: 'global_state_v10_live', 
     masterToken: 'MASTER_SECRET_99', 
     branches: {
         'token_london_88': { name: 'London Office', coords: [51.5074, -0.1278] },
@@ -660,7 +660,7 @@ async function loadTable() {
         const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { method: 'GET', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
         if (!response.ok) throw new Error(`Code ${response.status}`);
         const resData = await response.json();
-        tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+        let tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
 
         if(!resData || resData.length === 0) { 
             if (!IS_ADMIN && !CURRENT_BRANCH_NAME) { document.getElementById('saveStatus').innerText = t.denied; return; }
@@ -683,7 +683,7 @@ async function loadTable() {
         globalHistory = payload.history || []; const tableData = payload.table || [];
         buildTableStructure(); renderColumnPills(); applyLocalization(); renderTokenDashboard();
 
-        if (tableData.length === 0) { initializeTableRows(); updateMapFromTable(); return; }
+        if (tableData.length === 0) { updateMapFromTable(); return; }
         let hasDataForCurrentBranch = false;
 
         tableData.forEach(rowData => {
@@ -703,7 +703,6 @@ async function loadTable() {
             tbody.appendChild(row);
         });
 
-        if (!IS_ADMIN && !hasDataForCurrentBranch) initializeTableRows();
         reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
     } catch (err) {
