@@ -55,7 +55,6 @@
         .pill { background: #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; font-weight: bold; color: #334155; }
         .pill span { cursor: pointer; color: #ef4444; }
 
-        /* Стили для админ-таблицы токенов */
         .token-dashboard { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: auto !important; table-layout: auto !important; }
         .token-dashboard th { background: #475569; position: static; font-size: 12px; padding: 10px; }
         .token-dashboard td { background: #fff; font-size: 12px; padding: 8px; border: 1px solid #e2e8f0; }
@@ -241,7 +240,6 @@ function applyLocalization() {
     document.getElementById('newBranchCoords').placeholder = t.coordsPlaceholder;
     document.getElementById('langDropdown').value = currentLang;
 
-    // Перевод панели токенов
     document.getElementById('lblTokenDashboardTitle').innerText = t.dashTitle;
     document.getElementById('thDashBranch').innerText = t.thBranch;
     document.getElementById('thDashCoords').innerText = t.thCoords;
@@ -347,7 +345,6 @@ function removeColumn(id) {
     }
 }
 
-// === ОТРЕНДЕРИТЬ АДМИН-ПАНЕЛЬ УПРАВЛЕНИЯ ТОКЕНАМИ ===
 function renderTokenDashboard() {
     if (!IS_ADMIN) {
         document.getElementById('tokenDashboardCard').style.display = 'none';
@@ -382,7 +379,6 @@ function addNewBranch() {
     const coords = parseCoordinates(coordsStr);
     if (!coords) { alert(LOCALES[currentLang].invalidFormat); return; }
     
-    // Генерация UUID-подобного защищенного токена
     const newToken = 'usr_' + Math.random().toString(36).substr(2, 9) + '_' + Math.random().toString(36).substr(2, 4);
     TABLE_CONFIG.branches[newToken] = { name, coords };
     
@@ -400,13 +396,9 @@ function deleteBranch(token) {
     const t = LOCALES[currentLang];
     const branchName = TABLE_CONFIG.branches[token]?.name;
     if (confirm(t.confirmDelBranch)) {
-        // Удаляем филиал из списка разрешенных
         delete TABLE_CONFIG.branches[token];
-        
-        // Очищаем строки этой таблицы из интерфейса
         let currentRows = backupTableData();
         currentRows = currentRows.filter(r => r.branch !== branchName);
-        
         rebuildTableWithData(currentRows);
         renderTokenDashboard();
         saveTable(true);
@@ -642,7 +634,7 @@ async function saveTable(showVisualStatus = false) {
                 const serverPayload = resData[0].data; const serverTableData = serverPayload.table || []; const serverHistory = serverPayload.history || [];
                 if (!IS_ADMIN && CURRENT_BRANCH_NAME) {
                     const otherBranchesTable = serverTableData.filter(row => {
-                        let bName = row.branch; if (row.isHeader && row.cells && row.cells[0]) bName = row.cells[0].replace('🏢 ', '').split('➕')[0].split('Add')[0].split('➕')[0].trim();
+                        let bName = row.branch; if (row.isHeader && row.cells && row.cells[0]) bName = row.cells[0].replace('🏢 ', '').split('🔗')[0].split('➕')[0].split('Add')[0].split('Додати')[0].trim();
                         return bName !== CURRENT_BRANCH_NAME;
                     });
                     finalTableData = [...otherBranchesTable, ...localRowsData]; finalHistory = [...serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME), ...finalHistory.filter(h => h.branch === CURRENT_BRANCH_NAME)];
@@ -691,13 +683,12 @@ async function loadTable() {
         globalHistory = payload.history || []; const tableData = payload.table || [];
         buildTableStructure(); renderColumnPills(); applyLocalization(); renderTokenDashboard();
 
-        if (tableData.length === 0) { updateMapFromTable(); return; }
+        if (tableData.length === 0) { initializeTableRows(); updateMapFromTable(); return; }
         let hasDataForCurrentBranch = false;
 
         tableData.forEach(rowData => {
-            let rowBranch = rowData.branch; if (rowData.isHeader && rowData.cells && rowData.cells[0]) rowBranch = rowData.cells[0].replace('🏢 ', '').split('➕')[0].split('Add')[0].split('➕')[0].trim();
+            let rowBranch = rowData.branch; if (rowData.isHeader && rowData.cells && rowData.cells[0]) rowBranch = rowData.cells[0].replace('🏢 ', '').split('🔗')[0].split('➕')[0].split('Add')[0].split('Додати')[0].trim();
             
-            // Если токен этого филиала был удален админом из базы - не загружаем его данные обычным пользователям
             if (!IS_ADMIN && !Object.values(TABLE_CONFIG.branches).find(b => b.name === rowBranch)) return;
             if (!IS_ADMIN && rowBranch !== CURRENT_BRANCH_NAME) return;
             if (rowBranch === CURRENT_BRANCH_NAME) hasDataForCurrentBranch = true;
@@ -712,6 +703,7 @@ async function loadTable() {
             tbody.appendChild(row);
         });
 
+        if (!IS_ADMIN && !hasDataForCurrentBranch) initializeTableRows();
         reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
     } catch (err) {
