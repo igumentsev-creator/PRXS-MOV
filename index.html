@@ -405,8 +405,9 @@ function deleteBranch(token) {
     }
 }
 
+// Универсальное и безопасное копирование ссылки
 function copyBranchLink(token) {
-    const currentUrl = window.location.href.split('?')[0];
+    let currentUrl = window.location.origin + window.location.pathname;
     const fullLink = `${currentUrl}?token=${token}`;
     navigator.clipboard.writeText(fullLink).then(() => { 
         alert("Success! Link copied to clipboard:\n" + fullLink); 
@@ -634,7 +635,10 @@ async function saveTable(showVisualStatus = false) {
                 const serverPayload = resData[0].data; const serverTableData = serverPayload.table || []; const serverHistory = serverPayload.history || [];
                 if (!IS_ADMIN && CURRENT_BRANCH_NAME) {
                     const otherBranchesTable = serverTableData.filter(row => {
-                        let bName = row.branch; if (row.isHeader && row.cells && row.cells[0]) bName = row.cells[0].replace('🏢 ', '').split('🔗')[0].split('➕')[0].split('Add')[0].split('Додати')[0].trim();
+                        let bName = row.branch; 
+                        if (row.isHeader && row.cells && row.cells[0]) {
+                            bName = row.cells[0].replace('🏢', '').trim().split('🔗')[0].split('➕')[0].split('Add')[0].split('Додати')[0].trim();
+                        }
                         return bName !== CURRENT_BRANCH_NAME;
                     });
                     finalTableData = [...otherBranchesTable, ...localRowsData]; finalHistory = [...serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME), ...finalHistory.filter(h => h.branch === CURRENT_BRANCH_NAME)];
@@ -683,11 +687,14 @@ async function loadTable() {
         globalHistory = payload.history || []; const tableData = payload.table || [];
         buildTableStructure(); renderColumnPills(); applyLocalization(); renderTokenDashboard();
 
-        if (tableData.length === 0) { updateMapFromTable(); return; }
+        if (tableData.length === 0) { initializeTableRows(); updateMapFromTable(); return; }
         let hasDataForCurrentBranch = false;
 
         tableData.forEach(rowData => {
-            let rowBranch = rowData.branch; if (rowData.isHeader && rowData.cells && rowData.cells[0]) rowBranch = rowData.cells[0].replace('🏢 ', '').split('🔗')[0].split('➕')[0].split('Add')[0].split('Додати')[0].trim();
+            let rowBranch = rowData.branch; 
+            if (rowData.isHeader && rowData.cells && rowData.cells[0]) {
+                rowBranch = rowData.cells[0].replace('🏢', '').trim().split('🔗')[0].split('➕')[0].split('Add')[0].split('Додати')[0].trim();
+            }
             
             if (!IS_ADMIN && !Object.values(TABLE_CONFIG.branches).find(b => b.name === rowBranch)) return;
             if (!IS_ADMIN && rowBranch !== CURRENT_BRANCH_NAME) return;
@@ -703,6 +710,7 @@ async function loadTable() {
             tbody.appendChild(row);
         });
 
+        if (!IS_ADMIN && !hasDataForCurrentBranch) initializeTableRows();
         reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
     } catch (err) {
