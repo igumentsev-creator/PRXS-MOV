@@ -176,7 +176,7 @@ const LOCALES = {
         denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte löschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten speichern", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?"
     },
     hi: {
-        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकн।", adminSession: "👑 मास्टर एड敏 पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि: ", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयाর", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकн (UUID)", thActions: "कार्रवाइयां", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?"
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकн।", adminSession: "👑 मास्टर एड敏 पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटи:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिнк किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेсон निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कําลัมน์ का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकн (UUID)", thActions: "कार्रवाइयां", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें иइसका लिंक रद्द कर दें?"
     }
 };
 
@@ -454,6 +454,9 @@ function rebuildTableWithData(backedData) {
         const branchItems = backedData.filter(d => d.branch === branchObj.name);
         if (branchItems.length === 0) { 
             const defaultCells = TABLE_CONFIG.columns.map(col => {
+                if (col.id === 'item_name') {
+                    return branchObj.name;
+                }
                 if (col.type === 'coordinates' && branchObj.coords) {
                     return branchObj.coords.join(', ');
                 }
@@ -538,6 +541,9 @@ function addBranchRow(branchName, buttonElement) {
     const headerRow = buttonElement.closest('tr');
     const foundBranch = Object.values(TABLE_CONFIG.branches).find(b => b.name === branchName);
     const defaultCells = TABLE_CONFIG.columns.map(col => {
+        if (col.id === 'item_name') {
+            return branchName;
+        }
         if (col.type === 'coordinates' && foundBranch && foundBranch.coords) {
             return foundBranch.coords.join(', ');
         }
