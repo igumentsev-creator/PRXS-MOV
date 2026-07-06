@@ -155,7 +155,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// === ГЛОБАЛЬНЫЙ МУЛЬТИЯЗЫЧНЫЙ ДВИЖОК ===
+// === GLOBAL MULTILINGUAL ENGINE ===
 const LOCALES = {
     en: {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted."
@@ -173,7 +173,7 @@ const LOCALES = {
         denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Formato inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordenadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?"
     },
     de: {
-        denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte löschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten保存", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?"
+        denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte löschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten保存", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link копировать", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?"
     },
     hi: {
         denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 मास्टर एडमिन पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?"
@@ -182,7 +182,7 @@ const LOCALES = {
 
 let currentLang = localStorage.getItem('lang') || 'en';
 
-// === КОНФИГУРАТОР ДАННЫХ ===
+// === DATA CONFIGURATOR ===
 let TABLE_CONFIG = {
     stateId: 'global_state_v9_ultimate_saas', 
     masterToken: 'MASTER_SECRET_99', 
@@ -455,8 +455,10 @@ function rebuildTableWithData(backedData) {
 
         const branchItems = backedData.filter(d => d.branch === branchObj.name);
         if (branchItems.length === 0) { 
-            // Это абсолютно новый филиал — генерируем самую первую строку и передаем флаг isFirstInit=true
-            tbody.appendChild(createDataRow(branchObj.name, null, branchObj.coords ? branchObj.coords.join(', ') : '', true)); 
+            // Это абсолютно новый филиал — генерируем самую первую строку.
+            // Передаем true в флаг isFirstInit, чтобы применить автозаполнение названия и координат
+            const baseCoordsStr = branchObj.coords ? branchObj.coords.join(', ') : '';
+            tbody.appendChild(createDataRow(branchObj.name, null, baseCoordsStr, true)); 
         } else {
             branchItems.forEach(item => {
                 tbody.appendChild(createDataRow(branchObj.name, item, '', false));
@@ -490,15 +492,18 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
             val = rawItem.cells[colIdx] || '';
         }
 
-        // ПРАВИЛО: Название филиала ставится только если строка создается первый раз при добавлении НОВОГО филиала
+        // ПРАВИЛО: Название филиала ставится по умолчанию ТОЛЬКО для первой авто-создаваемой строки
         if (col.id === 'item_name') {
             if (isFirstInit && (!val || val.trim() === '')) {
                 val = branchName;
             }
         }
         
-        if (col.type === 'coordinates' && (!val || val.trim() === '') && defaultCoords) {
-            val = defaultCoords;
+        // ПРАВИЛО: Координаты по умолчанию ставятся ТОЛЬКО для первой авто-создаваемой строки
+        if (col.type === 'coordinates') {
+            if (isFirstInit && (!val || val.trim() === '') && defaultCoords) {
+                val = defaultCoords;
+            }
         }
 
         if (col.type === 'index') {
@@ -558,9 +563,9 @@ function reindexTable() {
 
 function addBranchRow(branchName, buttonElement) {
     const headerRow = buttonElement.closest('tr');
-    const foundBranch = Object.values(TABLE_CONFIG.branches).find(b => b.name === branchName);
-    // Кнопка вручную добавляет пустую строку (флаг isFirstInit равен false) — название филиала НЕ дублируется
-    const newRow = createDataRow(branchName, null, foundBranch && foundBranch.coords ? foundBranch.coords.join(', ') : '', false);
+    // При ручном добавлении строки через кнопку мы передаем флаг isFirstInit = false.
+    // Координаты и имя НЕ будут дублироваться автоматически, строка будет чистой.
+    const newRow = createDataRow(branchName, null, '', false);
     headerRow.after(newRow); 
     reindexTable(); 
     saveTable(true); 
