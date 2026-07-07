@@ -182,7 +182,7 @@ const LOCALES = {
         chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion"
     },
     hi: {
-        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |मास्टर एडमिन पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन и क्षेत्रीय पहुंच链接 जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका ссылка रद्द कर दें?",
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |мастер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 |डेटा सहेजें", btnExport: "📥 जेсон निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन и क्षेत्रीय पहुंच链接 जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका ссылка रद्द कर दें?",
         chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "матра / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई"
     }
 };
@@ -512,8 +512,6 @@ function rebuildTableWithData(backedData) {
         headRow.classList.add('region-header-row'); 
         headRow.setAttribute('data-branch', branchObj.name);
         
-        let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>` : '';
-        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${branchObj.name} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
         tbody.appendChild(headRow);
 
         const branchItems = backedData.filter(d => d.branch === branchObj.name);
@@ -812,9 +810,7 @@ async function loadTable() {
             let row;
             if (rowData.isHeader) {
                 row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', rowBranch);
-                const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
-                let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>` : '';
-                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${rowBranch} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
+                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${rowBranch}  <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
             } else { 
                 row = createDataRow(rowBranch, rowData, '', false); 
             }
