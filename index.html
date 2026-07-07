@@ -351,7 +351,13 @@ function renderColumnPills() {
 async function translateText(text, sourceLang, targetLang) {
     try {
         const src = sourceLang === 'ua' ? 'uk' : sourceLang;
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${targetLang}`;
+        const tgt = targetLang === 'ua' ? 'uk' : targetLang;
+
+        if (src.toLowerCase() === tgt.toLowerCase()) {
+            return text;
+        }
+
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
         const res = await fetch(url);
         if (!res.ok) return text;
         const data = await res.json();
@@ -375,9 +381,7 @@ async function addNewColumn() {
     
     const titleObject = {};
     const langPromises = Object.keys(LOCALES).map(async (langKey) => {
-        let apiLangCode = langKey;
-        if (langKey === 'ua') apiLangCode = 'uk';
-        const translated = await translateText(titleValue, currentLang, apiLangCode);
+        const translated = await translateText(titleValue, currentLang, langKey);
         titleObject[langKey] = translated;
     });
 
