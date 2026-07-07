@@ -21,7 +21,7 @@
         .table-wrapper { overflow-x: auto; max-height: 750px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 10px; }
         table { border-collapse: collapse; width: 100%; table-layout: fixed; min-width: 1400px; }
         
-        th { position: sticky; top: 0; background: #1e40af; color: white; z-index: 10; font-size: 11px; white-space: normal; line-2: 1.2; padding: 10px 4px; vertical-align: middle; word-wrap: break-word; }
+        th { position: sticky; top: 0; background: #1e40af; color: white; z-index: 10; font-size: 11px; white-space: normal; line-height: 1.2; padding: 10px 4px; vertical-align: middle; word-wrap: break-word; }
         th, td { border: 1px solid #cbd5e1; padding: 8px 4px; text-align: center; vertical-align: middle; font-size: 12px; overflow: hidden; }
 
         .region-header-row { background: #e2e8f0 !important; color: #1e3a8a; font-weight: bold; text-align: left; font-size: 18px; }
@@ -170,7 +170,7 @@ const LOCALES = {
         chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action"
     },
     zh: {
-        denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清жую分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 添加工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
+        denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清理分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 添加工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
         chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作"
     },
     es: {
@@ -182,8 +182,8 @@ const LOCALES = {
         chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion"
     },
     hi: {
-        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकн।", adminSession: "👑 |мастер एड敏 पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलм का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन и क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकн (UUID)", thActions: "कार्रवाइयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका ссылка रद्द कर दें?",
-        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशанк (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई"
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |मास्टर एडमिन पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन и क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाइयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका लिंक रद्द कर दें?",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई"
     }
 };
 
@@ -348,9 +348,10 @@ function renderColumnPills() {
     });
 }
 
-async function translateText(text, targetLang) {
+async function translateText(text, sourceLang, targetLang) {
     try {
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|${targetLang}`;
+        const src = sourceLang === 'ua' ? 'uk' : sourceLang;
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${targetLang}`;
         const res = await fetch(url);
         if (!res.ok) return text;
         const data = await res.json();
@@ -376,7 +377,7 @@ async function addNewColumn() {
     const langPromises = Object.keys(LOCALES).map(async (langKey) => {
         let apiLangCode = langKey;
         if (langKey === 'ua') apiLangCode = 'uk';
-        const translated = await translateText(titleValue, apiLangCode);
+        const translated = await translateText(titleValue, currentLang, apiLangCode);
         titleObject[langKey] = translated;
     });
 
