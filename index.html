@@ -348,15 +348,15 @@ function renderColumnPills() {
     });
 }
 
-async function translateText(text, targetLang) {
+async function translateText(text, langPair) {
     try {
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|${targetLang}`;
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langPair}`;
         const res = await fetch(url);
         if (!res.ok) return text;
         const data = await res.json();
         return data.responseData?.translatedText || text;
     } catch (e) {
-        console.error("Translation failed for language: " + targetLang, e);
+        console.error("Translation failed for pair: " + langPair, e);
         return text;
     }
 }
@@ -372,11 +372,12 @@ async function addNewColumn() {
     const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
     const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
     
+    const fromLang = currentLang === 'ua' ? 'uk' : currentLang;
     const titleObject = {};
     const langPromises = Object.keys(LOCALES).map(async (langKey) => {
         let apiLangCode = langKey;
         if (langKey === 'ua') apiLangCode = 'uk';
-        const translated = await translateText(titleValue, apiLangCode);
+        const translated = await translateText(titleValue, `${fromLang}|${apiLangCode}`);
         titleObject[langKey] = translated;
     });
 
