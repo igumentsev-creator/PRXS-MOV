@@ -159,38 +159,31 @@
 const LOCALES = {
     en: {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
-        chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
-        branch_london: "London Office", branch_paris: "Paris Branch", branch_berlin: "Berlin Dept"
+        chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action"
     },
     ua: {
         denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора (Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
-        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
-        branch_london: "Лондонський офіс", branch_paris: "Паризька філія", branch_berlin: "Берлінський департамент"
+        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія"
     },
     fr: {
         denied: "❌ ACCÈS REFUSÉ: Jeton invalide ou manquant dans l'URL.", adminSession: "👑 Panneau d'administration principal (Tous les espaces)", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur d'enregistrement: ", totalCount: "Nombre total de lignes:", confirmDelCol: "Supprimer cette colonne? Les données seront perdues.", confirmDelRow: "Supprimer cette ligne?", confirmClearHis: "Effacer l'historique d'analyse?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Gestionnaire de colonnes (Admin uniquement):", lblBranchManager: "🏢 Gestionnaire d'espaces / filiales:", btnSave: "💾 Enregistrer les données", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique d'analyse", btnAddCol: "➕ Ajouter une colonne", btnAddBranch: "➕ Ajouter un espace", colPlaceholder: "Nom de colonne", branchPlaceholder: "Nom de la filiale", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ajouter une ligne", copyLinkBtn: "🔗 Copier le lien", dashTitle: "🔑 Générateur de jetons de sécurité et de liens d'accès régionaux", thBranch: "Région / Filiale", thCoords: "Coordonnées centrales", thToken: "Jeton de sécurité (UUID)", thActions: "Actions", confirmDelBranch: "Supprimer complètement cette région et revocar son lien?",
-        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
-        branch_london: "Bureau de Londres", branch_paris: "Succursale de Paris", branch_berlin: "Département de Berlin"
+        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action"
     },
     zh: {
         denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清жую分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 添加工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
-        chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
-        branch_london: "伦敦办公室", branch_paris: "巴黎分部", branch_berlin: "柏林部门"
+        chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作"
     },
     es: {
-        denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: Rosar historial?, missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Formato inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordenadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
-        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del elemento / objetivo", col_coords: "Coordenadas (Lat, Lng)", col_date: "Fecha", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Condiciones metereológicas", col_action: "Acción",
-        branch_london: "Oficina de Londres", branch_paris: "Sucursal de París", branch_berlin: "Depto de Berlín"
+        denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Formato inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordenadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
+        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del elemento / objetivo", col_coords: "Coordenadas (Lat, Lng)", col_date: "Fecha", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Condiciones metereológicas", col_action: "Acción"
     },
     de: {
         denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte löschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten保存", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link копировать", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?",
-        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
-        branch_london: "Londoner Büro", branch_paris: "Pariser Filiale", branch_berlin: "Berliner Abteilung"
+        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion"
     },
     hi: {
         denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 मास्टर एडमिन पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटि", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकन और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका ссылка रद्द कर दें?",
-        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
-        branch_london: "लंदन कार्यालय", branch_paris: "पेरिस शाखा", branch_berlin: "बर्लिन विभाग"
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई"
     }
 };
 
@@ -201,9 +194,9 @@ let TABLE_CONFIG = {
     stateId: 'global_state_v9_ultimate_saas', 
     masterToken: 'MASTER_SECRET_99', 
     branches: {
-        'token_london_88': { name: 'London Office', key: 'branch_london', coords: [51.5074, -0.1278] },
-        'token_paris_44':  { name: 'Paris Branch', key: 'branch_paris', coords: [48.8566, 2.3522] },
-        'token_berlin_11': { name: 'Berlin Dept', key: 'branch_berlin', coords: [52.5200, 13.4050] }
+        'token_london_88': { name: 'London Office', coords: [51.5074, -0.1278] },
+        'token_paris_44':  { name: 'Paris Branch', coords: [48.8566, 2.3522] },
+        'token_berlin_11': { name: 'Berlin Dept', coords: [52.5200, 13.4050] }
     },
     columns: [
         { id: "id", title: "№", width: "4%", type: "index" },
@@ -228,16 +221,6 @@ let CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
 let map, activeMarkers = {};
 let analyticsChart = null; 
 let globalHistory = [];
-
-function getLocalizedBranchName(branchObj) {
-    const t = LOCALES[currentLang];
-    if (branchObj.key && t[branchObj.key]) return t[branchObj.key];
-    return branchObj.name;
-}
-
-function findBranchObjByName(name) {
-    return Object.values(TABLE_CONFIG.branches).find(b => b.name === name || LOCALES['en'][b.key] === name || LOCALES['ua'][b.key] === name || LOCALES['fr'][b.key] === name || LOCALES['zh'][b.key] === name || LOCALES['es'][b.key] === name || LOCALES['de'][b.key] === name || LOCALES['hi'][b.key] === name);
-}
 
 function changeLanguage(langCode) {
     currentLang = langCode;
@@ -273,8 +256,7 @@ function applyLocalization() {
     if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
         document.getElementById('pageTitle').innerText = t.denied;
     } else {
-        const locBranch = CURRENT_BRANCH_OBJ ? getLocalizedBranchName(CURRENT_BRANCH_OBJ) : '';
-        document.getElementById('pageTitle').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${locBranch}`;
+        document.getElementById('pageTitle').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
     }
     
     const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
@@ -397,7 +379,7 @@ function renderTokenDashboard() {
     Object.entries(TABLE_CONFIG.branches).forEach(([token, branchObj]) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${getLocalizedBranchName(branchObj)}</td>
+            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${branchObj.name}</td>
             <td>${branchObj.coords.join(', ')}</td>
             <td><span class="token-code">${token}</span></td>
             <td>
@@ -419,14 +401,8 @@ function addNewBranch() {
     if (!coords) { alert(LOCALES[currentLang].invalidFormat); return; }
     
     const newToken = 'usr_' + Math.random().toString(36).substr(2, 9) + '_' + Math.random().toString(36).substr(2, 4);
-    const uniqueKey = 'branch_' + Math.random().toString(36).substr(2, 5);
-    TABLE_CONFIG.branches[newToken] = { name: name, key: uniqueKey, coords: coords };
+    TABLE_CONFIG.branches[newToken] = { name, coords };
     
-    // Добавим новый ключ во все локали, чтобы избежать ошибок отсутствия перевода
-    Object.keys(LOCALES).forEach(lang => {
-        LOCALES[lang][uniqueKey] = name;
-    });
-
     document.getElementById('newBranchName').value = '';
     document.getElementById('newBranchCoords').value = '';
     
@@ -439,13 +415,12 @@ function addNewBranch() {
 function deleteBranch(token) {
     if (!IS_ADMIN) return;
     const t = LOCALES[currentLang];
-    const branchObj = TABLE_CONFIG.branches[token];
+    const branchName = TABLE_CONFIG.branches[token]?.name;
     if (confirm(t.confirmDelBranch)) {
         delete TABLE_CONFIG.branches[token];
         let currentRows = backupTableData();
-        if(branchObj) {
-            currentRows = currentRows.filter(r => r.branch !== branchObj.name);
-        }
+        currentRows = currentRows.filter(r => r.branch !== branchName);
+        
         rebuildTableWithData(currentRows);
         renderTokenDashboard();
         saveTable(true);
@@ -463,29 +438,16 @@ function copyBranchLink(token) {
 function backupTableData() {
     const backup = [];
     document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-        const branchSystemName = row.getAttribute('data-branch'); const rowId = row.getAttribute('data-id');
+        const branch = row.getAttribute('data-branch'); const rowId = row.getAttribute('data-id');
         const cellsData = {};
         
         TABLE_CONFIG.columns.forEach((col, idx) => {
             if (col.type === 'index' || col.type === 'action') return;
             const cell = row.querySelector(`.cell-${col.id}`) || (col.type === 'coordinates' ? row.querySelector('.coords-container') : null);
             if (!cell) return;
-            
-            let val = col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : cell.innerText.trim();
-            
-            // Если это дефолтное название филиала (не модифицированное пользователем), сбросим его, чтобы оно перевелось динамически
-            if(col.id === 'item_name') {
-                const bObj = findBranchObjByName(branchSystemName);
-                if(bObj) {
-                    const possibleNames = Object.keys(LOCALES).map(lang => LOCALES[lang][bObj.key]);
-                    if(possibleNames.includes(val)) {
-                        val = '__SYSTEM_BRANCH_NAME__';
-                    }
-                }
-            }
-            cellsData[col.id] = val;
+            cellsData[col.id] = col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : cell.innerText.trim();
         });
-        backup.push({ id: rowId, branch: branchSystemName, data: cellsData });
+        backup.push({ id: rowId, branch, data: cellsData });
     });
     return backup;
 }
@@ -501,7 +463,7 @@ function rebuildTableWithData(backedData) {
         headRow.setAttribute('data-branch', branchObj.name);
         
         let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>` : '';
-        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${getLocalizedBranchName(branchObj)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
+        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${branchObj.name} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
         tbody.appendChild(headRow);
 
         const branchItems = backedData.filter(d => d.branch === branchObj.name);
@@ -531,20 +493,15 @@ function buildTableStructure() {
     tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${t.totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${TABLE_CONFIG.columns.length - 3}"></td>`;
 }
 
-function createDataRow(branchSysName, rawItem = null, defaultCoords = '', isFirstInit = false) {
-    const row = document.createElement('tr'); row.setAttribute('data-branch', branchSysName);
+function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstInit = false) {
+    const row = document.createElement('tr'); row.setAttribute('data-branch', branchName);
     const rowId = rawItem?.id || 'row_' + Math.random().toString(36).substr(2, 9); row.setAttribute('data-id', rowId);
-    const branchObj = findBranchObjByName(branchSysName);
-    const localizedBranchName = branchObj ? getLocalizedBranchName(branchObj) : branchSysName;
     
     let rowHtml = '';
     TABLE_CONFIG.columns.forEach((col) => {
         let val = '';
         if (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) {
             val = rawItem.data[col.id];
-            if(col.id === 'item_name' && val === '__SYSTEM_BRANCH_NAME__') {
-                val = localizedBranchName;
-            }
         } else if (rawItem && Array.isArray(rawItem.cells)) {
             const colIdx = TABLE_CONFIG.columns.findIndex(c => c.id === col.id);
             val = rawItem.cells[colIdx] || '';
@@ -552,7 +509,7 @@ function createDataRow(branchSysName, rawItem = null, defaultCoords = '', isFirs
 
         if (col.id === 'item_name') {
             if (isFirstInit && (!val || val.trim() === '')) {
-                val = localizedBranchName;
+                val = branchName;
             }
         }
         
@@ -617,9 +574,9 @@ function reindexTable() {
     const totalEl = document.getElementById('totalRowsCount'); if (totalEl) totalEl.innerText = totalCount;
 }
 
-function addBranchRow(branchSysName, buttonElement) {
+function addBranchRow(branchName, buttonElement) {
     const headerRow = buttonElement.closest('tr');
-    const newRow = createDataRow(branchSysName, null, '', false);
+    const newRow = createDataRow(branchName, null, '', false);
     headerRow.after(newRow); 
     reindexTable(); 
     saveTable(true); 
@@ -632,7 +589,7 @@ function updateMapFromTable() {
     const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
     
     rows.forEach(row => {
-        const rowId = row.getAttribute('data-id'); const branchSysName = row.getAttribute('data-branch');
+        const rowId = row.getAttribute('data-id'); const branch = row.getAttribute('data-branch');
         const itemCell = row.querySelector('.cell-item_name');
         const coordsInput = row.querySelector('.coords-input');
         
@@ -649,17 +606,14 @@ function updateMapFromTable() {
         let finalCoords = parseCoordinates(coordsStr);
         if (!finalCoords) {
             if (!row.dataset.lat || !row.dataset.lng) {
-                const found = findBranchObjByName(branchSysName);
+                const found = Object.values(TABLE_CONFIG.branches).find(b => b.name === branch);
                 const baseCoords = found ? found.coords : [48.4, 31.2];
                 row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6); row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
             }
             finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
         }
 
-        const bObj = findBranchObjByName(branchSysName);
-        const displayBranchName = bObj ? getLocalizedBranchName(bObj) : branchSysName;
-
-        let popupText = `<b>🏢 ${displayBranchName}</b><br>`;
+        let popupText = `<b>🏢 ${branch}</b><br>`;
         if(itemName) popupText += `Item: ${itemName}<br>`;
         if(amountVal) popupText += `Value: <b>${amountVal}</b>`;
 
@@ -726,15 +680,6 @@ async function saveTable(showVisualStatus = false) {
                     cellsData[col.id] = row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "";
                 }
             });
-            
-            // Если в сохраняемой строке значение совпадает с текущим переводом филиала, заменяем его на маркер
-            const bObj = findBranchObjByName(branchName);
-            if(bObj && cellsData['item_name']) {
-                const localizedName = getLocalizedBranchName(bObj);
-                if(cellsData['item_name'] === localizedName) {
-                    cellsData['item_name'] = '__SYSTEM_BRANCH_NAME__';
-                }
-            }
             localRowsData.push({ isHeader: false, branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
         }
     });
@@ -824,18 +769,14 @@ async function loadTable() {
                 row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', rowBranch);
                 const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
                 let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>` : '';
-                const currentBranchObj = findBranchObjByName(rowBranch);
-                const localizedHeaderName = currentBranchObj ? getLocalizedBranchName(currentBranchObj) : rowBranch;
-                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${localizedHeaderName} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
+                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${rowBranch} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
             } else { 
                 row = createDataRow(rowBranch, rowData, '', false); 
             }
             tbody.appendChild(row);
         });
 
-        reindexTable(); updateMapFromTable(); 
-        const locBranchText = CURRENT_BRANCH_OBJ ? getLocalizedBranchName(CURRENT_BRANCH_OBJ) : '';
-        document.getElementById('saveStatus').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${locBranchText}`;
+        reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerText = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
     } catch (err) {
         console.error(err); buildTableStructure(); renderColumnPills(); updateMapFromTable(); document.getElementById('saveStatus').innerText = 'Error: ' + err.message;
