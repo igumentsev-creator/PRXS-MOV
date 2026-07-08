@@ -70,7 +70,6 @@
 <body>
 
 <div class="container">
-    <!-- ЭКРАН 1: Первичное создание пароля -->
     <div class="card setup-screen" id="setupPanel">
         <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Создание пароля администратора</h2>
         <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (Master Token), чтобы зафиксировать права владельца над этим рабочим пространством.</p>
@@ -80,7 +79,6 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 2: Форма входа, если пароль уже создан, но токена нет в URL -->
     <div class="card login-screen" id="loginPanel">
         <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Вход в рабочее пространство</h2>
         <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа администратора или сотрудника филиала.</p>
@@ -91,7 +89,6 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ЖУРНАЛ И ПАНЕЛЬ -->
     <div class="card" id="mainDashboardCard">
         <div class="header-main">
             <h1 id="pageTitle">Workspace Data Collection</h1>
@@ -192,11 +189,60 @@ const LOCALES = {
         loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
     },
     ua: {
-        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора<br>(Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна количество рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
+        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора<br>(Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
         chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
         wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
-        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), щоб зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
-        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу адміністратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
+        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), чтобы зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
+        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу администратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
+    },
+    fr: {
+        denied: "❌ ACCÈS REFUSÉ: Jeton invalide ou manquant dans l'URL.", adminSession: "👑 Panneau d'administration principal (Tous les espaces)", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur d'enregistrement: ", totalCount: "Nombre total de lignes:", confirmDelCol: "Supprimer cette colonne? Les données seront perdues.", confirmDelRow: "Supprimer cette ligne?", confirmClearHis: "Effacer l'historique d'analyse?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Gestionnaire de colonnes (Admin uniquement):", lblBranchManager: "🏢 Gestionnaire d'espaces / filiales:", btnSave: "💾 Enregistrer les données", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique d'analyse", btnAddCol: "➕ Ajouter une colonne", btnAddBranch: "➕ Ajouter un espace", colPlaceholder: "Nom de colonne", branchPlaceholder: "Nom de la filiale", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ajouter une ligne", copyLinkBtn: "🔗 Copier le lien", dashTitle: "🔑 Générateur de jetons de sécurité et de liens d'accès régionaux", thBranch: "Région / Filiale", thCoords: "Coordonnées centrales", thToken: "Jeton de sécurité (UUID)", thActions: "Actions", confirmDelBranch: "Supprimer complètement cette région et revocar son lien?",
+        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
+        wWind: "Vent", wSpeed: "m/s", wStability: "Stabilité", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
+    },
+    zh: {
+        denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清理分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
+        chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
+        wWind: "风向", wSpeed: "米/秒", wStability: "稳定性", wInversion: "逆温", wIsothermy: "等温", wConvection: "对外流",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
+    },
+    es: {
+        denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Format o inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad и enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordonadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
+        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del elemento / objetivo", col_coords: "Coordenadas (Lat, Lng)", col_date: "Date", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Conditions metereológicas", col_action: "Acción",
+        wWind: "Viento", wSpeed: "m/s", wStability: "Estabilidad", wInversion: "Inversión", wIsothermy: "Isotermia", wConvection: "Convección",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
+    },
+    de: {
+        denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte лоschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten保存", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link копировать", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?",
+        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
+        wWind: "Wind", wSpeed: "m/s", wStability: "Stabilität", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
+    },
+    hi: {
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |мастер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयाр", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн и क्षेत्रीय पहुंच链接 जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका ссылка रद्द कर दें?",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "матра / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
+        wWind: "हवा", wSpeed: "मी/से", wStability: "स्थिरता", wInversion: "इनवर्जन", wIsothermy: "आइसоथर्मी", wConvection: "संवहन",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
+    },
+    it: {
+        denied: "❌ ACCESSO NEGATO: Token non valido o mancante nell'URL.", adminSession: "👑 Pannello di Amministrazione Master (Tutti i Workspace)", secureSession: "🔒 Sessione Sicura", saved: "✅ Salvato: ", saveError: "❌ Errore di Salvataggio: ", totalCount: "Conteggio Righe Totale:", confirmDelCol: "Eliminare questa colonna? I dati andranno persi.", confirmDelRow: "Eliminare questa riga?", confirmClearHis: "Cancellare la cronologia dell'analisi?", missingCoords: "❌ Coordinate mancanti", apiError: "❌ Errore", invalidFormat: "⚠️ Formato non valido", loading: "🔄 Caricamento...", sync: "Sincronizzato con l'Archivio", readyEmpty: "Pronto", lblColManager: "📋 Gestore Colonne (Solo Admin):", lblBranchManager: "🏢 Gestore Workspace / Filiali:", btnSave: "💾 Salva Dati e Struttura", btnExport: "📥 Esporta JSON", btnClearHis: "🧹 Cancella Cronologia Grafico", btnAddCol: "➕ Aungi Colonna", btnAddBranch: "➕ Aungi Workspace", colPlaceholder: "Nome Colonna", branchPlaceholder: "Nome Filiale", coordsPlaceholder: "Coordinate (Lat, Lng)", addBtnRow: "➕ Aungi Riga", copyLinkBtn: "🔗 Copia Link", dashTitle: "🔑 Generatore di Token di Sicurezza e Link di Accesso Regionali", thBranch: "Regione / Workspace", thCoords: "Coordinate Centro", thToken: "Token di Sicurezza (UUID)", thActions: "Azioni", confirmDelBranch: "Eliminare completamente questa regione e revocare il suo link? Il token di sicurezza verrà inserito nella lista nera.",
+        chartTitle: "Dinamica delle Prestazioni", col_id: "№", col_item_name: "Nome Elemento / Obiettivo", col_coords: "Coordinate (Lat, Lng)", col_date: "Data", col_time: "Ora", col_amount: "Quantità / Valore", col_weather: "Condizioni Meteo", col_action: "Azione",
+        wWind: "Vento", wSpeed: "m/s", wStability: "Stabilità", wInversion: "Inversion", wIsothermy: "Isotermia", wConvection: "Confezione",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
+    },
+    ja: {
+        denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 データと構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
+        chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 対象名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
+        wWind: "風向", wSpeed: "m/s", wStability: "安定度", wInversion: "逆転", wIsothermy: "等温", wConvection: "対流",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
     }
 };
 
@@ -210,7 +256,7 @@ const COMPANY_ID = urlParams.get('id') || 'default_workspace';
 const USER_TOKEN = urlParams.get('token') || '';
 
 let MASTER_TOKEN = "";
-let DB_PAYLOAD = null; // Будем кэшировать данные из базы здесь
+let DB_PAYLOAD = null; 
 
 let TABLE_CONFIG = {
     stateId: COMPANY_ID, 
@@ -250,9 +296,8 @@ async function checkDatabaseConfig() {
         if (resData && resData.length > 0 && resData[0].data.masterToken) {
             MASTER_TOKEN = resData[0].data.masterToken;
             TABLE_CONFIG.masterToken = MASTER_TOKEN;
-            DB_PAYLOAD = resData[0].data; // кэшируем данные
+            DB_PAYLOAD = resData[0].data; 
             
-            // Если токен передан и он верный (админ или филиал)
             const isBranchToken = DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(USER_TOKEN);
             if (USER_TOKEN === MASTER_TOKEN || isBranchToken) {
                 IS_ADMIN = (USER_TOKEN === MASTER_TOKEN);
@@ -261,14 +306,12 @@ async function checkDatabaseConfig() {
                 showAllDashboardCards();
                 return true;
             } else {
-                // ПАРОЛЯ В ССЫЛКЕ НЕТ ИЛИ ОН НЕВЕРНЫЙ -> ПОКАЗЫВАЕМ ФОРМУ ВХОДА
                 document.getElementById('loginPanel').style.display = 'block';
                 document.getElementById('setupPanel').style.display = 'none';
                 hideAllDashboardCards();
                 return false;
             }
         } else {
-            // КОМПАНИИ ЕЩЕ НЕТ -> ПОКАЗЫВАЕМ СОЗДАНИЕ ПАРОЛЯ
             document.getElementById('setupPanel').style.display = 'block';
             document.getElementById('loginPanel').style.display = 'none';
             hideAllDashboardCards();
@@ -304,7 +347,6 @@ function checkEnteredPassword() {
     const isBranchToken = DB_PAYLOAD && DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(enteredPass);
     
     if (enteredPass === MASTER_TOKEN || isBranchToken) {
-        // Если пароль верный, перезагружаем страницу с токеном в URL
         window.location.search = `?id=${COMPANY_ID}&token=${enteredPass}`;
     } else {
         const errorEl = document.getElementById('loginError');
@@ -370,7 +412,6 @@ function applyLocalization() {
     document.getElementById('thDashToken').innerText = t.thToken;
     document.getElementById('thDashActions').innerText = t.thActions;
     
-    // Локализация панелей входа/регистрации
     document.getElementById('lblSetupTitle').innerText = t.setupTitle;
     document.getElementById('lblSetupDesc').innerText = t.setupDesc;
     document.getElementById('setupMasterToken').placeholder = t.setupPlaceholder;
@@ -846,9 +887,8 @@ async function loadTable() {
     const t = LOCALES[currentLang] || LOCALES['en'];
     try {
         const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
-        
-        // Используем закэшированные в checkDatabaseConfig данные
         const payload = DB_PAYLOAD;
+        
         if (payload.columns && Array.isArray(payload.columns)) TABLE_CONFIG.columns = payload.columns;
         if (payload.branches && typeof payload.branches === 'object') {
             TABLE_CONFIG.branches = payload.branches; CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null; CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
@@ -911,7 +951,6 @@ window.onload = async () => {
     applyLocalization();
     await loadTable(); 
     
-    // Дополнительное скрытие элементов управления для не-админов после загрузки
     if (MASTER_TOKEN && !IS_ADMIN) {
         document.getElementById('columnManagerPanel').style.display = 'none';
         document.getElementById('branchManagerPanel').style.display = 'none';
