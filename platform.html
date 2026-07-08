@@ -62,23 +62,36 @@
 
         .status { text-align: center; color: #166534; font-size: 14px; font-weight: bold; margin-top: 10px; }
 
-        .setup-screen { display: none; background: #ffffff; border: 2px solid #3b82f6; border-radius: 18px; padding: 25px; margin-bottom: 20px; }
-        .setup-screen input { width: 100%; max-width: 400px; padding: 10px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+        .setup-screen, .login-screen { display: none; background: #ffffff; border: 2px solid #3b82f6; border-radius: 18px; padding: 25px; margin-bottom: 20px; text-align: center; }
+        .setup-screen input, .login-screen input { width: 100%; max-width: 400px; padding: 10px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; text-align: center; }
+        .error-msg { color: #dc2626; font-weight: bold; margin-bottom: 10px; display: none; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- ЭКРАН 1: Первичное создание пароля -->
     <div class="card setup-screen" id="setupPanel">
-        <h2 style="color: #1e3a8a; margin-bottom: 10px;">🔑 Создание пароля администратора</h2>
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (Master Token), чтобы зафиксировать права владельца над этим рабочим пространством.</p>
+        <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Создание пароля администратора</h2>
+        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (Master Token), чтобы зафиксировать права владельца над этим рабочим пространством.</p>
         <div>
-            <label><strong>Ваш пароль администратора:</strong></label><br>
-            <input type="text" id="setupMasterToken" placeholder="Например: My_Secret_Password_2026"><br><br>
-            <button class="main-btn" onclick="saveInitialPassword()">🚀 Сохранить пароль и войти</button>
+            <input type="password" id="setupMasterToken" placeholder="Введите новый пароль"><br>
+            <button class="main-btn" id="btnSaveSetup" onclick="saveInitialPassword()">🚀 Сохранить пароль и войти</button>
         </div>
     </div>
 
+    <!-- ЭКРАН 2: Форма входа, если пароль уже создан, но токена нет в URL -->
+    <div class="card login-screen" id="loginPanel">
+        <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Вход в рабочее пространство</h2>
+        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа администратора или сотрудника филиала.</p>
+        <div id="loginError" class="error-msg"></div>
+        <div>
+            <input type="password" id="loginTokenInput" placeholder="Введите пароль / токен"><br>
+            <button class="main-btn" id="btnSubmitLogin" onclick="checkEnteredPassword()">🔓 Войти</button>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ЖУРНАЛ И ПАНЕЛЬ -->
     <div class="card" id="mainDashboardCard">
         <div class="header-main">
             <h1 id="pageTitle">Workspace Data Collection</h1>
@@ -144,16 +157,16 @@
         </div>
     </div>
 
-    <div class="card"><div id="map"></div></div>
+    <div class="card" id="mapCard"><div id="map"></div></div>
 
-    <div class="card">
+    <div class="card" id="chartCard">
         <h2 id="chartTitle" style="text-align: center; color: #1e3a8a; margin-bottom: 15px; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Performance Dynamics</h2>
         <div style="position: relative; height: 320px; width: 100%;">
             <canvas id="analyticsChart"></canvas>
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="tableCard">
         <div class="table-wrapper">
             <table id="dynamicTable">
                 <colgroup id="tableColgroup"></colgroup>
@@ -174,30 +187,33 @@ const LOCALES = {
     en: {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
         chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
-        wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection"
+        wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection",
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
     },
     ua: {
         denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора<br>(Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна количество рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
         chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
-        wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція"
+        wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
+        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), щоб зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
+        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу адміністратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
     }
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
 
-// === ТВОИ КЛЮЧИ SUPABASE ОБЩИЕ ДЛЯ ВСЕХ ===
 const SUPABASE_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1"; 
 const SUPABASE_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z"; 
 
-// Уникальный ID компании и токен извлекаются из ссылки динамически!
 const urlParams = new URLSearchParams(window.location.search);
 const COMPANY_ID = urlParams.get('id') || 'default_workspace'; 
 const USER_TOKEN = urlParams.get('token') || '';
 
 let MASTER_TOKEN = "";
+let DB_PAYLOAD = null; // Будем кэшировать данные из базы здесь
 
 let TABLE_CONFIG = {
-    stateId: COMPANY_ID, // Теперь ID состояния равен ID компании из ссылки!
+    stateId: COMPANY_ID, 
     masterToken: '', 
     branches: {},
     columns: [
@@ -223,6 +239,7 @@ let globalHistory = [];
 async function checkDatabaseConfig() {
     if (!urlParams.has('id')) {
         document.getElementById('saveStatus').innerHTML = "⚠️ Ошибка: Ссылка не содержит ID компании (?id=название).";
+        hideAllDashboardCards();
         return false;
     }
     try {
@@ -233,16 +250,66 @@ async function checkDatabaseConfig() {
         if (resData && resData.length > 0 && resData[0].data.masterToken) {
             MASTER_TOKEN = resData[0].data.masterToken;
             TABLE_CONFIG.masterToken = MASTER_TOKEN;
-            IS_ADMIN = (USER_TOKEN === MASTER_TOKEN);
-            return true;
+            DB_PAYLOAD = resData[0].data; // кэшируем данные
+            
+            // Если токен передан и он верный (админ или филиал)
+            const isBranchToken = DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(USER_TOKEN);
+            if (USER_TOKEN === MASTER_TOKEN || isBranchToken) {
+                IS_ADMIN = (USER_TOKEN === MASTER_TOKEN);
+                document.getElementById('loginPanel').style.display = 'none';
+                document.getElementById('setupPanel').style.display = 'none';
+                showAllDashboardCards();
+                return true;
+            } else {
+                // ПАРОЛЯ В ССЫЛКЕ НЕТ ИЛИ ОН НЕВЕРНЫЙ -> ПОКАЗЫВАЕМ ФОРМУ ВХОДА
+                document.getElementById('loginPanel').style.display = 'block';
+                document.getElementById('setupPanel').style.display = 'none';
+                hideAllDashboardCards();
+                return false;
+            }
         } else {
+            // КОМПАНИИ ЕЩЕ НЕТ -> ПОКАЗЫВАЕМ СОЗДАНИЕ ПАРОЛЯ
             document.getElementById('setupPanel').style.display = 'block';
-            document.getElementById('mainDashboardCard').style.display = 'none';
+            document.getElementById('loginPanel').style.display = 'none';
+            hideAllDashboardCards();
             return false;
         }
     } catch (e) {
         document.getElementById('saveStatus').innerHTML = "❌ Ошибка подключения. Проверьте базу данных.";
+        hideAllDashboardCards();
         return false;
+    }
+}
+
+function hideAllDashboardCards() {
+    document.getElementById('mainDashboardCard').style.display = 'none';
+    document.getElementById('tokenDashboardCard').style.display = 'none';
+    document.getElementById('mapCard').style.display = 'none';
+    document.getElementById('chartCard').style.display = 'none';
+    document.getElementById('tableCard').style.display = 'none';
+}
+
+function showAllDashboardCards() {
+    document.getElementById('mainDashboardCard').style.display = 'block';
+    document.getElementById('mapCard').style.display = 'block';
+    document.getElementById('chartCard').style.display = 'block';
+    document.getElementById('tableCard').style.display = 'block';
+}
+
+function checkEnteredPassword() {
+    const enteredPass = document.getElementById('loginTokenInput').value.trim();
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    if (!enteredPass) return;
+    
+    const isBranchToken = DB_PAYLOAD && DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(enteredPass);
+    
+    if (enteredPass === MASTER_TOKEN || isBranchToken) {
+        // Если пароль верный, перезагружаем страницу с токеном в URL
+        window.location.search = `?id=${COMPANY_ID}&token=${enteredPass}`;
+    } else {
+        const errorEl = document.getElementById('loginError');
+        errorEl.innerText = t.loginIncorrect;
+        errorEl.style.display = 'block';
     }
 }
 
@@ -303,6 +370,17 @@ function applyLocalization() {
     document.getElementById('thDashToken').innerText = t.thToken;
     document.getElementById('thDashActions').innerText = t.thActions;
     
+    // Локализация панелей входа/регистрации
+    document.getElementById('lblSetupTitle').innerText = t.setupTitle;
+    document.getElementById('lblSetupDesc').innerText = t.setupDesc;
+    document.getElementById('setupMasterToken').placeholder = t.setupPlaceholder;
+    document.getElementById('btnSaveSetup').innerText = t.setupBtn;
+
+    document.getElementById('lblLoginTitle').innerText = t.loginTitle;
+    document.getElementById('lblLoginDesc').innerText = t.loginDesc;
+    document.getElementById('loginTokenInput').placeholder = t.loginPlaceholder;
+    document.getElementById('btnSubmitLogin').innerText = t.loginBtn;
+
     if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
         document.getElementById('pageTitle').innerHTML = t.denied;
     } else {
@@ -505,7 +583,7 @@ function deleteBranch(token) {
 
 function copyBranchLink(token) {
     const currentUrl = window.location.href.split('?')[0];
-    const fullLink = `${currentUrl}?id=${COMPANY_ID}&token=${token}`; // Добавлена передача ID компании суб-аккаунтам!
+    const fullLink = `${currentUrl}?id=${COMPANY_ID}&token=${token}`; 
     navigator.clipboard.writeText(fullLink).then(() => { alert("Success! Link copied to clipboard:\n" + fullLink); });
 }
 
@@ -767,17 +845,10 @@ async function loadTable() {
 
     const t = LOCALES[currentLang] || LOCALES['en'];
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { method: 'GET', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
-        if (!response.ok) throw new Error(`Code ${response.status}`);
-        const resData = await response.json();
         const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
-
-        if(!resData || resData.length === 0) { 
-            if (!IS_ADMIN && !CURRENT_BRANCH_NAME) { document.getElementById('saveStatus').innerHTML = t.denied; return; }
-            buildTableStructure(); renderColumnPills(); renderTokenDashboard(); updateMapFromTable(); return; 
-        }
         
-        const payload = resData[0].data;
+        // Используем закэшированные в checkDatabaseConfig данные
+        const payload = DB_PAYLOAD;
         if (payload.columns && Array.isArray(payload.columns)) TABLE_CONFIG.columns = payload.columns;
         if (payload.branches && typeof payload.branches === 'object') {
             TABLE_CONFIG.branches = payload.branches; CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null; CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
@@ -839,6 +910,8 @@ window.onload = async () => {
     initMap(); 
     applyLocalization();
     await loadTable(); 
+    
+    // Дополнительное скрытие элементов управления для не-админов после загрузки
     if (MASTER_TOKEN && !IS_ADMIN) {
         document.getElementById('columnManagerPanel').style.display = 'none';
         document.getElementById('branchManagerPanel').style.display = 'none';
