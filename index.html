@@ -182,8 +182,8 @@ const LOCALES = {
         chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion"
     },
     hi: {
-        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |мастер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिнк किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн и क्षेत्रीय पहुंच链接 जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका ссылка रद्द कर दें?",
-        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "матра / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई"
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |мастер админ पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयार", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн и क्षेत्रीय पहुंच链接 जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें и इसका ссылка रद्द कर दें?",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशаंक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "матра / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई"
     }
 };
 
@@ -300,6 +300,7 @@ function parseCoordinates(str) {
     return null;
 }
 
+// === WIND DIRECTIONS ===
 function getWindDirection(deg) {
     if (deg >= 337.5 || deg < 22.5) return 'N'; if (deg >= 22.5 && deg < 67.5) return 'NE'; if (deg >= 67.5 && deg < 112.5) return 'E'; if (deg >= 112.5 && deg < 157.5) return 'SE'; if (deg >= 157.5 && deg < 202.5) return 'S'; if (deg >= 202.5 && deg < 247.5) return 'SW'; if (deg >= 247.5 && deg < 292.5) return 'W'; if (deg >= 292.5 && deg < 337.5) return 'NW';
     return 'Unknown';
@@ -582,13 +583,11 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
     row.innerHTML = rowHtml;
 
     row.addEventListener('input', (e) => {
-        // УМНОЕ ОПРЕДЕЛЕНИЕ ИЗМЕНЯЕМОЙ КОЛОНКИ: Ищем ячейку и её индекс, чтобы узнать тип измененного поля
         const targetCell = e.target.closest('td') || e.target.closest('.coords-container')?.parentNode;
         if (targetCell) {
             const cellIdx = targetCell.cellIndex;
             const targetColConfig = TABLE_CONFIG.columns[cellIdx];
             
-            // Если мы редактируем НЕ дату и НЕ время, тогда обновляем штамп даты/времени
             if (targetColConfig && targetColConfig.type !== 'date' && targetColConfig.type !== 'time') {
                 const dt = getCurrentDateTime();
                 const dCell = row.querySelector('.cell-date');
@@ -699,8 +698,8 @@ function updateAnalytics() {
         const ctx = document.getElementById('analyticsChart').getContext('2d');
         analyticsChart = new Chart(ctx, {
             data: { labels: labels, datasets: [
-                { type: 'line', label: 'Average Value', data: avgData, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
-                { type: 'bar', label: 'Total Sum', data: sumData, backgroundColor: 'rgba(239, 68, 68, 0.4)', borderColor: '#ef4444', borderWidth: 1 }
+                { type: 'line', label: 'Average Value', data: avgData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
+                { type: 'bar', label: 'Total Sum', data: sumData, backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 1 }
             ]},
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
@@ -829,7 +828,22 @@ async function loadTable() {
 }
 
 async function clearChartHistory() { if (confirm(LOCALES[currentLang].confirmClearHis)) { globalHistory = []; await saveTable(true); } }
-function initMap() { const defaultCenter = [30, 0]; const defaultZoom = 2; map = L.map('map').setView(defaultCenter, defaultZoom); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
+
+function initMap() { 
+    const defaultCenter = [30, 0]; const defaultZoom = 2; 
+    map = L.map('map').setView(defaultCenter, defaultZoom); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); 
+
+    map.on('click', function(e) {
+        const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        navigator.clipboard.writeText(coordsStr).then(() => {
+            alert(`Координаты скопированы в буфер обмена:\n${coordsStr}\n\nВы можете вставить их в поле ввода филиала или ячейку таблицы.`);
+        }).catch(err => {
+            console.error('Ошибка копирования: ', err);
+        });
+    });
+}
+
 function exportTable() { const allRowsData = []; document.querySelectorAll('#dynamicTable tbody tr').forEach(row => { allRowsData.push({ isHeader: row.classList.contains('region-header-row'), branch: row.getAttribute('data-branch') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) }); }); const blob = new Blob([JSON.stringify({ branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: allRowsData, history: globalHistory }, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `export_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
 
 window.onload = () => { 
