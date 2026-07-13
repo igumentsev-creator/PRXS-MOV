@@ -508,11 +508,11 @@ function renderColumnPills() {
 }
 
 // -------------------------------------------------------------
-// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА НА БАЗЕ GOOGLE TRANSLATE API
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА (ПОСЛЕДОВАТЕЛЬНАЯ + FALLBACK)
 // -------------------------------------------------------------
 async function translateText(text, sourceLang, targetLang) {
     try {
-        // Конвертируем сокращения в стандарты Google API
+        // Конвертируем сокращения для Google Translate API
         const src = sourceLang === 'ua' ? 'uk' : (sourceLang === 'zh' ? 'zh-CN' : sourceLang);
         const tgt = targetLang === 'ua' ? 'uk' : (targetLang === 'zh' ? 'zh-CN' : targetLang);
         
@@ -521,12 +521,27 @@ async function translateText(text, sourceLang, targetLang) {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=${tgt}&dt=t&q=${encodeURIComponent(text)}`;
         const res = await fetch(url);
         
-        if (!res.ok) return text;
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data[0] && data[0][0] && data[0][0][0]) {
+                return data[0][0][0];
+            }
+        }
         
-        const data = await res.json();
-        return data[0][0][0] || text;
+        // Если Google заблокировал (ошибка 429), используем запасное API MyMemory
+        const fbSrc = sourceLang === 'ua' ? 'uk' : sourceLang;
+        const fbTgt = targetLang === 'ua' ? 'uk' : targetLang;
+        const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fbSrc}|${fbTgt}`;
+        
+        const fbRes = await fetch(fbUrl);
+        if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            return fbData.responseData?.translatedText || text;
+        }
+        
+        return text;
     } catch (e) {
-        console.error("Translation error:", e);
+        console.error("Translation error for lang:", targetLang, e);
         return text;
     }
 }
@@ -537,21 +552,23 @@ async function addNewColumn() {
     if (!titleValue) return;
     
     const statusEl = document.getElementById('saveStatus');
-    statusEl.innerText = "🔄 Translating column structure...";
+    statusEl.innerText = "🔄 Translating column structure... (Please wait)";
     const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
     const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
     
     const titleObject = {};
-    const langPromises = Object.keys(LOCALES).map(async (langKey) => {
+    const langs = Object.keys(LOCALES);
+    
+    // ИСПОЛЬЗУЕМ ЦИКЛ FOR...OF ДЛЯ ПОСЛЕДОВАТЕЛЬНЫХ ЗАПРОСОВ (во избежание Rate Limits)
+    for (const langKey of langs) {
         if (currentLang.toLowerCase() === langKey.toLowerCase()) {
             titleObject[langKey] = titleValue;
         } else {
-            const translated = await translateText(titleValue, currentLang, langKey);
-            titleObject[langKey] = translated;
+            titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
+            // Задержка 300мс чтобы Google не заблокировал запросы
+            await new Promise(r => setTimeout(r, 300));
         }
-    });
-    
-    await Promise.all(langPromises);
+    }
     
     const weatherIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
     const insertAt = weatherIdx !== -1 ? weatherIdx : TABLE_CONFIG.columns.length - 1;
