@@ -297,6 +297,7 @@ let CURRENT_BRANCH_NAME = null;
 let map, activeMarkers = {};
 let analyticsChart = null; 
 let globalHistory = [];
+let deletedRowIds = []; // Память удаленных строк для защиты при синхронизации
 
 async function checkDatabaseConfig() {
     if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
@@ -586,7 +587,7 @@ async function addNewColumn() {
             titleObject[langKey] = titleValue;
         } else {
             titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
-            // Увеличенная задержка 600мс для обхода блокировок Rate Limit[cite: 1]
+            // Увеличенная задержка 600мс для обхода блокировок Rate Limit
             await new Promise(r => setTimeout(r, 600));
         }
     }
@@ -773,9 +774,14 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
 function removeRow(btn) {
     const t = LOCALES[currentLang] || LOCALES['en'];
     if (confirm(t.confirmDelRow)) {
-        const row = btn.closest('tr'); const rowId = row.getAttribute('data-id');
+        const row = btn.closest('tr'); 
+        const rowId = row.getAttribute('data-id');
+        deletedRowIds.push(rowId); // Запоминаем, что эту строку мы удалили осознанно
         if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
-        row.remove(); reindexTable(); saveTable(true); updateMapFromTable();
+        row.remove(); 
+        reindexTable(); 
+        saveTable(true); 
+        updateMapFromTable();
     }
 }
 
@@ -870,8 +876,10 @@ function updateAnalytics() {
 
 async function saveTable(showVisualStatus = false) {
     if (!SUPABASE_URL) return;
-    const t = LOCALES[currentLang] || LOCALES['en']; if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
+    const t = LOCALES[currentLang] || LOCALES['en']; 
+    if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
 
+    // 1. Собираем локальные данные с экрана
     const localRowsData = [];
     document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
         const branchName = row.getAttribute('data-branch') || "";
@@ -881,52 +889,110 @@ async function saveTable(showVisualStatus = false) {
             const cellsData = {};
             TABLE_CONFIG.columns.forEach(col => {
                 if (col.type === 'index' || col.type === 'action') return;
-                cellsData[col.id] = col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "";
+                cellsData[col.id] = col.type === 'coordinates' ? 
+                    (row.querySelector('.coords-input')?.innerText.trim() || "") : 
+                    (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
             });
             localRowsData.push({ isHeader: false, branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
         }
     });
 
-    let finalTableData = localRowsData; let finalHistory = [...globalHistory];
+    let localHistory = [...globalHistory];
     const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
     const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
 
     if (numCol && dateCol) {
         document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-            const rowId = row.getAttribute('data-id') || ""; const branch = row.getAttribute('data-branch') || "";
+            const rowId = row.getAttribute('data-id') || ""; 
+            const branch = row.getAttribute('data-branch') || "";
             const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
             const valStr = row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "";
             if (dateStr && valStr) {
-                const exactMatchIndex = finalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
+                const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
                 const historyItem = { rowId, branch, date: dateStr, value: valStr };
-                if (exactMatchIndex !== -1) finalHistory[exactMatchIndex] = historyItem; else finalHistory.push(historyItem);
+                if (exactMatchIndex !== -1) localHistory[exactMatchIndex] = historyItem; 
+                else localHistory.push(historyItem);
             }
         });
     }
 
+    let finalTableData = localRowsData; 
+    let finalHistory = localHistory;
+    let finalBranches = TABLE_CONFIG.branches;
+    let finalColumns = TABLE_CONFIG.columns;
+
+    // 2. СКАЧИВАЕМ СВЕЖУЮ ВЕРСИЮ ИЗ БАЗЫ (Защита от Race Condition)
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { method: 'GET', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
+        });
+        
         if (response.ok) {
             const resData = await response.json();
             if (resData && resData.length > 0) {
-                const serverPayload = resData[0].data; const serverTableData = serverPayload.table || []; const serverHistory = serverPayload.history || [];
+                const serverPayload = resData[0].data; 
+                const serverTableData = serverPayload.table || []; 
+                const serverHistory = serverPayload.history || [];
+
                 if (!IS_ADMIN && CURRENT_BRANCH_NAME) {
+                    // ФИЛИАЛ: Сохраняем чужие данные нетронутыми, обновляем только свои
                     const otherBranchesTable = serverTableData.filter(row => row.branch !== CURRENT_BRANCH_NAME);
                     finalTableData = [...otherBranchesTable, ...localRowsData]; 
-                    finalHistory = [...serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME), ...finalHistory.filter(h => h.branch === CURRENT_BRANCH_NAME)];
+                    
+                    const otherBranchesHistory = serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME);
+                    const ownHistory = localHistory.filter(h => h.branch === CURRENT_BRANCH_NAME);
+                    finalHistory = [...otherBranchesHistory, ...ownHistory];
+                    
+                    // Филиал не имеет права перезаписывать настройки колонок и список филиалов
+                    finalBranches = serverPayload.branches || TABLE_CONFIG.branches;
+                    finalColumns = serverPayload.columns || TABLE_CONFIG.columns;
+                } else if (IS_ADMIN) {
+                    // АДМИН: Берем локальные данные, но добавляем новые строки, которые филиалы создали секунду назад
+                    const localRowIds = new Set(localRowsData.map(r => r.id));
+                    
+                    // Находим строки в базе, которых нет на экране админа, И которые админ не удалял только что
+                    const newServerRows = serverTableData.filter(r => !localRowIds.has(r.id) && !r.isHeader && typeof deletedRowIds !== 'undefined' && !deletedRowIds.includes(r.id));
+                    finalTableData = [...localRowsData, ...newServerRows];
+
+                    const localHistIds = new Set(localHistory.map(h => h.rowId + '_' + h.date));
+                    const newServerHist = serverHistory.filter(h => !localHistIds.has(h.rowId + '_' + h.date));
+                    finalHistory = [...localHistory, ...newServerHist];
                 }
             }
         }
-    } catch (e) {}
+    } catch (e) {
+        console.warn("Синхронизация не удалась, сохраняем локальную версию", e);
+    }
 
+    // 3. ОТПРАВЛЯЕМ ОБЪЕДИНЕННЫЕ ДАННЫЕ
     globalHistory = finalHistory;
-    const bodyData = { id: TABLE_CONFIG.stateId, data: { masterToken: MASTER_TOKEN, branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: finalTableData, history: globalHistory } };
+    const bodyData = { 
+        id: TABLE_CONFIG.stateId, 
+        data: { 
+            masterToken: MASTER_TOKEN, 
+            branches: finalBranches, 
+            columns: finalColumns, 
+            table: finalTableData, 
+            history: globalHistory 
+        } 
+    };
 
     try {
-        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, body: JSON.stringify(bodyData) });
+        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
+        });
         if (!response.ok) throw new Error(`Code ${response.status}`);
         if (showVisualStatus) document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
-    } catch (err) { document.getElementById('saveStatus').innerText = t.saveError + err.message; }
+        
+        // Очищаем кэш удаленных строк после успешного сохранения
+        deletedRowIds = []; 
+    } catch (err) { 
+        document.getElementById('saveStatus').innerText = t.saveError + err.message; 
+    }
+    
     updateMapFromTable();
 }
 
