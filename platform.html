@@ -180,6 +180,23 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// =====================================================================
+// 🛠️ СЕКЦИЯ НАСТРОЕК (ДЛЯ ВЛАДЕЛЬЦА ПЛАТФОРМЫ И ПОКУПАТЕЛЕЙ) 🛠️
+// Пожалуйста, заполните эти данные перед публикацией скрипта на хостинге.
+// =====================================================================
+const APP_CONFIG = {
+    // 1. Учетные данные Supabase (возьмите из настроек вашего проекта: Project Settings -> API)
+    SUPABASE_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1", 
+    SUPABASE_KEY: "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z",
+
+    // 2. ID рабочего пространства по умолчанию (если в ссылке нет параметра ?id=...)
+    DEFAULT_WORKSPACE_ID: "default_workspace",
+
+    // 3. Язык интерфейса по умолчанию при первом входе (en, ua, fr, zh, es, de, hi, it, ja)
+    DEFAULT_LANG: "en"
+};
+// =====================================================================
+
 const LOCALES = {
     en: {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
@@ -246,13 +263,12 @@ const LOCALES = {
     }
 };
 
-let currentLang = localStorage.getItem('lang') || 'en';
-
-const SUPABASE_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1"; 
-const SUPABASE_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z"; 
+let currentLang = localStorage.getItem('lang') || APP_CONFIG.DEFAULT_LANG;
+const SUPABASE_URL = APP_CONFIG.SUPABASE_URL; 
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY; 
 
 const urlParams = new URLSearchParams(window.location.search);
-const COMPANY_ID = urlParams.get('id') || 'default_workspace'; 
+const COMPANY_ID = urlParams.get('id') || APP_CONFIG.DEFAULT_WORKSPACE_ID; 
 const USER_TOKEN = urlParams.get('token') || '';
 
 let MASTER_TOKEN = "";
@@ -283,7 +299,7 @@ let analyticsChart = null;
 let globalHistory = [];
 
 async function checkDatabaseConfig() {
-    if (!urlParams.has('id')) {
+    if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
         document.getElementById('saveStatus').innerHTML = "⚠️ Ошибка: Ссылка не содержит ID компании (?id=название).";
         hideAllDashboardCards();
         return false;
@@ -507,7 +523,9 @@ function renderColumnPills() {
     });
 }
 
-// Обновленная функция с правильной обработкой кодов языков и Fallback
+// -------------------------------------------------------------
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА (Google + MyMemory Fallback)
+// -------------------------------------------------------------
 async function translateText(text, sourceLang, targetLang) {
     try {
         const getValidCode = (lang) => {
@@ -532,7 +550,7 @@ async function translateText(text, sourceLang, targetLang) {
             }
         }
         
-        // 2. MyMemory Fallback (с правильными кодами)
+        // 2. MyMemory Fallback
         const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
         
         const fbRes = await fetch(fbUrl);
@@ -568,7 +586,7 @@ async function addNewColumn() {
             titleObject[langKey] = titleValue;
         } else {
             titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
-            // Увеличенная задержка 600мс для обхода блокировок Rate Limit
+            // Увеличенная задержка 600мс для обхода блокировок Rate Limit[cite: 1]
             await new Promise(r => setTimeout(r, 600));
         }
     }
