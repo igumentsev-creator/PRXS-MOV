@@ -184,9 +184,14 @@
 // 🛠️ СЕКЦИЯ НАСТРОЕК (ДЛЯ ВЛАДЕЛЬЦА ПЛАТФОРМЫ И ПОКУПАТЕЛЕЙ) 🛠️
 // =====================================================================
 const APP_CONFIG = {
+    // 1. Учетные данные Supabase (возьмите из настроек вашего проекта: Project Settings -> API)
     SUPABASE_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1", 
     SUPABASE_KEY: "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z",
+
+    // 2. ID рабочего пространства по умолчанию (если в ссылке нет параметра ?id=...)
     DEFAULT_WORKSPACE_ID: "default_workspace",
+
+    // 3. Язык интерфейса по умолчанию при первом входе (en, ua, fr, zh, es, de, hi, it, ja)
     DEFAULT_LANG: "en"
 };
 // =====================================================================
@@ -206,14 +211,55 @@ const LOCALES = {
         setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), чтобы зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
         loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу администратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
     },
-    // ... [Other locales abbreviated for length, retain your original ones] ...
-    fr: { denied: "❌ ACCÈS REFUSÉ...", saved: "✅ Enregistré: " },
-    zh: { denied: "❌ 访问被拒绝...", saved: "✅ 已保存: " },
-    es: { denied: "❌ ACCESO DENEGADO...", saved: "✅ Guardado: " },
-    de: { denied: "❌ ZUGRIFF VERWEIGERT...", saved: "✅ Gespeichert: " },
-    hi: { denied: "❌ पहुंच अस्वीकृत...", saved: "✅ सहेजा गया: " },
-    it: { denied: "❌ ACCESSO NEGATO...", saved: "✅ Salvato: " },
-    ja: { denied: "❌ アクセス拒否...", saved: "✅ 保存完了: " }
+    fr: {
+        denied: "❌ ACCÈS REFUSÉ: Jeton invalide ou manquant dans l'URL.", adminSession: "👑 Panneau d'administration principal (Tous les espaces)", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur d'enregistrement: ", totalCount: "Nombre total de lignes:", confirmDelCol: "Supprimer cette colonne? Les données seront perdues.", confirmDelRow: "Supprimer cette ligne?", confirmClearHis: "Effacer l'historique d'analyse?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Gestionnaire de colonnes (Admin uniquement):", lblBranchManager: "🏢 Gestionnaire d'espaces / filiales:", btnSave: "💾 Enregistrer les données", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique d'analyse", btnAddCol: "➕ Ajouter une colonne", btnAddBranch: "➕ Ajouter un espace", colPlaceholder: "Nom de colonne", branchPlaceholder: "Nom de la filiale", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ajouter une ligne", copyLinkBtn: "🔗 Copier le lien", dashTitle: "🔑 Générateur de jetons de sécurité et de liens d'accès régionaux", thBranch: "Région / Filiale", thCoords: "Coordonnées centrales", thToken: "Jeton de sécurité (UUID)", thActions: "Actions", confirmDelBranch: "Supprimer complètement cette région et revocar son lien?",
+        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
+        wWind: "Vent", wSpeed: "m/s", wStability: "Stabilité", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        setupTitle: "🔑 Création du mot de passe administrateur", setupDesc: "Bienvenue ! Veuillez inventer votre mot de passe secret personnel (Master Token) pour sécuriser vos droits sur cet espace.", setupPlaceholder: "Entrez le nouveau mot de passe", setupBtn: "🚀 Enregistrer et se connecter",
+        loginTitle: "🔒 Connexion à l'espace de travail", loginDesc: "Cet espace est protégé. Veuillez entrer le mot de passe administrateur ou le jeton de la filiale.", loginPlaceholder: "Entrez le mot de passe / jeton", loginBtn: "🔓 Se connecter", loginIncorrect: "❌ Mot de passe ou jeton incorrect !"
+    },
+    zh: {
+        denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清理分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
+        chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
+        wWind: "风向", wSpeed: "米/秒", wStability: "稳定性", wInversion: "逆温", wIsothermy: "等温", wConvection: "对外流",
+        setupTitle: "🔑 创建管理员密码", setupDesc: "欢迎！请想出一个您的个人秘密密码 (Master Token) 来确保对此工作区的所有者权限。", setupPlaceholder: "输入新密码", setupBtn: "🚀 保存密码并登录",
+        loginTitle: "🔒 工作区登录", loginDesc: "此工作区受保护。请输入管理员密码或区域分支机构安全令牌。", loginPlaceholder: "输入密码 / 令牌", loginBtn: "🔓 登录", loginIncorrect: "❌ 密码或安全令牌不正确！"
+    },
+    es: {
+        denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Format o inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordonadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
+        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del elemento / objetivo", col_coords: "Coordenadas (Lat, Lng)", col_date: "Date", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Conditions metereológicas", col_action: "Acción",
+        wWind: "Viento", wSpeed: "m/s", wStability: "Estabilidad", wInversion: "Inversión", wIsothermy: "Isotermia", wConvection: "Convección",
+        setupTitle: "🔑 Creación de contraseña de administrador", setupDesc: "¡Bienvenido! Piense en su contraseña secreta personal (Master Token) para asegurar los derechos de propietario.", setupPlaceholder: "Introduzca nueva contraseña", setupBtn: "🚀 Guardar contraseña e iniciar sesión",
+        loginTitle: "🔒 Inicio de sesión del espacio", loginDesc: "Este espacio está protegido. Introduzca la contraseña de administrador o el token de la sucursal.", loginPlaceholder: "Introduzca contraseña / token", loginBtn: "🔓 Iniciar sesión", loginIncorrect: "❌ ¡Contraseña o token incorrecto!"
+    },
+    de: {
+        denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte лоschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten speichern", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?",
+        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
+        wWind: "Wind", wSpeed: "m/s", wStability: "Stabilität", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        setupTitle: "🔑 Erstellung des Administrator-Passworts", setupDesc: "Willkommen! Bitte denken Sie sich Ihr persönliches Passwort (Master Token) aus, um die Eigentümerrechte zu sichern.", setupPlaceholder: "Neues Passwort eingeben", setupBtn: "🚀 Passwort speichern & anmelden",
+        loginTitle: "🔒 Workspace-Login", loginDesc: "Dieser Bereich ist geschützt. Bitte geben Sie das Administrator-Passwort oder das Filial-Token ein.", loginPlaceholder: "Passwort / Token eingeben", loginBtn: "🔓 Anmelden", loginIncorrect: "❌ Falsches Passwort oder Token!"
+    },
+    hi: {
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |माстер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयाр", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
+        wWind: "हवा", wSpeed: "मी/से", wStability: "स्थिरता", wInversion: "इनवर्जन", wIsothermy: "आइसоथर्मी", wConvection: "संवहन",
+        setupTitle: "🔑 व्यवस्थापक पासवर्ड बनाना", setupDesc: "स्वागत है! कृपया इस कार्यक्षेत्र पर स्वामी के अधिकारों को सुरक्षित करने के लिए अपना व्यक्तिगत गुप्त पासवर्ड (मास्टर टोकन) बनाएं।", setupPlaceholder: "नया पासवर्ड दर्ज करें", setupBtn: "🚀 पासवर्ड सहेजें और लॉगिन करें",
+        loginTitle: "🔒 कार्यक्षेत्र लॉगिन", loginDesc: "यह कार्यक्षेत्र सुरक्षित है। कृपया व्यवस्थापक पासवर्ड या क्षेत्रीय शाखा सुरक्षा टोकन दर्ज करें।", loginPlaceholder: "पासवर्ड / टोकन दर्ज करें", loginBtn: "🔓 लॉगिन", loginIncorrect: "❌ गलत पासवर्ड या सुरक्षा टोकन!"
+    },
+    it: {
+        denied: "❌ ACCESSO NEGATO: Token non valido o mancante nell'URL.", adminSession: "👑 Pannello di Amministrazione Master (Tutti i Workspace)", secureSession: "🔒 Sessione Sicura", saved: "✅ Salvato: ", saveError: "❌ Errore di Salvataggio: ", totalCount: "Conteggio Righe Totale:", confirmDelCol: "Eliminare questa colonna? I dati andranno persi.", confirmDelRow: "Eliminare questa riga?", confirmClearHis: "Cancellare la cronologia dell'analisi?", missingCoords: "❌ Coordinate mancanti", apiError: "❌ Errore", invalidFormat: "⚠️ Formato non valido", loading: "🔄 Caricamento...", sync: "Sincronizzato con l'Archivio", readyEmpty: "Pronto", lblColManager: "📋 Gestore Colonne (Solo Admin):", lblBranchManager: "🏢 Gestore Workspace / Filiali:", btnSave: "💾 Salva Dati e Struttura", btnExport: "📥 Esporta JSON", btnClearHis: "🧹 Cancella Cronologia Grafico", btnAddCol: "➕ Aungi Colonna", btnAddBranch: "➕ Aungi Workspace", colPlaceholder: "Nome Colonna", branchPlaceholder: "Nome Filiale", coordsPlaceholder: "Coordinate (Lat, Lng)", addBtnRow: "➕ Aungi Riga", copyLinkBtn: "🔗 Copia Link", dashTitle: "🔑 Generatore di Token di Sicurezza e Link di Accesso Regionali", thBranch: "Regione / Workspace", thCoords: "Coordinate Centro", thToken: "Token di Sicurezza (UUID)", thActions: "Azioni", confirmDelBranch: "Eliminare completamente questa regione e revocare il suo link? Il token di sicurezza verrà inserito nella lista nera.",
+        chartTitle: "Dinamica delle Prestazioni", col_id: "№", col_item_name: "Nome Elemento / Obiettivo", col_coords: "Coordinate (Lat, Lng)", col_date: "Data", col_time: "Ora", col_amount: "Quantità / Valore", col_weather: "Condizioni Meteo", col_action: "Azione",
+        wWind: "Vento", wSpeed: "m/s", wStability: "Stabilità", wInversion: "Inversion", wIsothermy: "Isotermia", wConvection: "Confezione",
+        setupTitle: "🔑 Creazione password amministratore", setupDesc: "Benvenuto! Inventa la tua password segreta personale (Master Token) per proteggere i tuoi diritti su questo spazio.", setupPlaceholder: "Inserisci nuova password", setupBtn: "🚀 Salva password e accedi",
+        loginTitle: "🔒 Accesso allo spazio di lavoro", loginDesc: "Questo spazio è protetto. Inserisci la password dell'amministratore o il token di sicurezza della filiale.", loginPlaceholder: "Inserisci password / token", loginBtn: "🔓 Accedi", loginIncorrect: "❌ Password o token di sicurezza errati!"
+    },
+    ja: {
+        denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 データと構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
+        chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 対象名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
+        wWind: "風向", wSpeed: "m/s", wStability: "安定度", wInversion: "逆転", wIsothermy: "等温", wConvection: "対流",
+        setupTitle: "🔑 管理者パスワードの作成", setupDesc: "ようこそ！このワークスペースの所有権を確保するために、個人の秘密のパスワード（マスタートークン）を作成してください。", setupPlaceholder: "新しいパスワードを入力", setupBtn: "🚀 パスワードを保存してログイン",
+        loginTitle: "🔒 ワークスペースへのログイン", loginDesc: "このワークスペースは保護されています。管理者パスワードまたは地域支店のセキュリティトークンを入力してください。", loginPlaceholder: "パスワード/トークンを入力", loginBtn: "🔓 ログイン", loginIncorrect: "❌ パスワードまたはセキュリティトークンが間違っています！"
+    }
 };
 
 let currentLang = localStorage.getItem('lang') || APP_CONFIG.DEFAULT_LANG;
@@ -250,38 +296,9 @@ let CURRENT_BRANCH_NAME = null;
 let map, activeMarkers = {};
 let analyticsChart = null; 
 let globalHistory = [];
-let deletedRowIds = []; 
+let deletedRowIds = []; // Память удаленных строк для защиты при синхронизации
 
-// 🆕 MEMORY_TABLE: Основной источник правды. Избавляет от парсинга DOM.
-let MEMORY_TABLE = []; 
-// Переменные для ленивой загрузки (Infinite Scroll / Pagination)
-let LAZY_INDEX = 0;
-const LAZY_CHUNK = 50; 
-let CURRENT_RENDERED_DATA = [];
-let lazyObserver = null;
-
-// ==========================================
-// 🛠 OFFLINE SYNC LISTENER
-// ==========================================
-window.addEventListener('online', async () => {
-    const pending = localStorage.getItem('offlineSyncPending_' + TABLE_CONFIG.stateId);
-    if (pending) {
-        document.getElementById('saveStatus').innerText = "🔄 З'єднання відновлено. Дані синхронізуються (Syncing)...";
-        try {
-            let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
-                body: pending 
-            });
-            if (response.ok) {
-                localStorage.removeItem('offlineSyncPending_' + TABLE_CONFIG.stateId);
-                document.getElementById('saveStatus').innerText = "✅ Дані успішно синхронізовані (Offline Sync Success)!";
-            }
-        } catch (e) { console.error("Offline Sync Error", e); }
-    }
-});
-// ==========================================
-
+// Функция для криптографического хэширования паролей (SHA-256)
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -292,225 +309,451 @@ async function sha256(message) {
 async function checkDatabaseConfig() {
     if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
         document.getElementById('saveStatus').innerHTML = "⚠️ Ошибка: Ссылка не содержит ID компании (?id=название).";
-        hideAllDashboardCards(); return false;
+        hideAllDashboardCards();
+        return false;
     }
-    
-    // Проверка Offline-кэша при отсутствии интернета на старте
-    if (!navigator.onLine) {
-        const cached = localStorage.getItem('offlineSyncPending_' + TABLE_CONFIG.stateId);
-        if (cached) {
-            DB_PAYLOAD = JSON.parse(cached).data;
-            return finalizeLoginConfig(DB_PAYLOAD.masterToken);
-        }
-    }
-
     try {
         const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
-            method: 'GET', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
         });
         if (!response.ok) throw new Error();
         const resData = await response.json();
         
         if (resData && resData.length > 0 && resData[0].data.masterToken) {
+            const dbMasterToken = resData[0].data.masterToken;
             DB_PAYLOAD = resData[0].data; 
-            return finalizeLoginConfig(DB_PAYLOAD.masterToken);
+            
+            // Хэшируем токен из ссылки для проверки
+            const hashedUrlToken = USER_TOKEN ? await sha256(USER_TOKEN) : '';
+            const isBranchToken = DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(USER_TOKEN);
+            
+            // Сравниваем хэши (или проверяем филиал)
+            if (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken || isBranchToken) {
+                IS_ADMIN = (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken);
+                MASTER_TOKEN = dbMasterToken; // Запоминаем именно хэш для будущих сохранений
+                TABLE_CONFIG.masterToken = dbMasterToken;
+                
+                document.getElementById('loginPanel').style.display = 'none';
+                document.getElementById('setupPanel').style.display = 'none';
+                showAllDashboardCards();
+                return true;
+            } else {
+                document.getElementById('loginPanel').style.display = 'block';
+                document.getElementById('setupPanel').style.display = 'none';
+                hideAllDashboardCards();
+                return false;
+            }
         } else {
             document.getElementById('setupPanel').style.display = 'block';
             document.getElementById('loginPanel').style.display = 'none';
-            hideAllDashboardCards(); return false;
+            hideAllDashboardCards();
+            return false;
         }
     } catch (e) {
         document.getElementById('saveStatus').innerHTML = "❌ Ошибка подключения. Проверьте базу данных.";
-        hideAllDashboardCards(); return false;
+        hideAllDashboardCards();
+        return false;
     }
 }
 
-async function finalizeLoginConfig(dbMasterToken) {
-    const hashedUrlToken = USER_TOKEN ? await sha256(USER_TOKEN) : '';
-    const isBranchToken = DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(USER_TOKEN);
-    
-    if (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken || isBranchToken) {
-        IS_ADMIN = (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken);
-        MASTER_TOKEN = dbMasterToken; 
-        TABLE_CONFIG.masterToken = dbMasterToken;
-        document.getElementById('loginPanel').style.display = 'none';
-        document.getElementById('setupPanel').style.display = 'none';
-        showAllDashboardCards(); return true;
-    } else {
-        document.getElementById('loginPanel').style.display = 'block';
-        document.getElementById('setupPanel').style.display = 'none';
-        hideAllDashboardCards(); return false;
-    }
+function hideAllDashboardCards() {
+    document.getElementById('mainDashboardCard').style.display = 'none';
+    document.getElementById('tokenDashboardCard').style.display = 'none';
+    document.getElementById('mapCard').style.display = 'none';
+    document.getElementById('chartCard').style.display = 'none';
+    document.getElementById('tableCard').style.display = 'none';
 }
 
-function hideAllDashboardCards() { document.getElementById('mainDashboardCard').style.display = 'none'; document.getElementById('tokenDashboardCard').style.display = 'none'; document.getElementById('mapCard').style.display = 'none'; document.getElementById('chartCard').style.display = 'none'; document.getElementById('tableCard').style.display = 'none'; }
-function showAllDashboardCards() { document.getElementById('mainDashboardCard').style.display = 'block'; document.getElementById('mapCard').style.display = 'block'; document.getElementById('chartCard').style.display = 'block'; document.getElementById('tableCard').style.display = 'block'; }
+function showAllDashboardCards() {
+    document.getElementById('mainDashboardCard').style.display = 'block';
+    document.getElementById('mapCard').style.display = 'block';
+    document.getElementById('chartCard').style.display = 'block';
+    document.getElementById('tableCard').style.display = 'block';
+}
 
 async function checkEnteredPassword() {
     const enteredPass = document.getElementById('loginTokenInput').value.trim();
+    const t = LOCALES[currentLang] || LOCALES['en'];
     if (!enteredPass) return;
+    
     const hashedPass = await sha256(enteredPass);
     const isBranchToken = DB_PAYLOAD && DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(enteredPass);
-    if (hashedPass === DB_PAYLOAD.masterToken || enteredPass === DB_PAYLOAD.masterToken || isBranchToken) { window.location.search = `?id=${COMPANY_ID}&token=${enteredPass}`; } 
-    else { const errorEl = document.getElementById('loginError'); errorEl.innerText = "❌ Incorrect password or security token!"; errorEl.style.display = 'block'; }
+    
+    if (hashedPass === DB_PAYLOAD.masterToken || enteredPass === DB_PAYLOAD.masterToken || isBranchToken) {
+        window.location.search = `?id=${COMPANY_ID}&token=${enteredPass}`;
+    } else {
+        const errorEl = document.getElementById('loginError');
+        errorEl.innerText = t.loginIncorrect;
+        errorEl.style.display = 'block';
+    }
 }
 
 async function saveInitialPassword() {
     const token = document.getElementById('setupMasterToken').value.trim();
     if (!token) { alert("Пожалуйста, введите пароль."); return; }
+    
+    // Превращаем пароль в хэш перед отправкой
     const hashedToken = await sha256(token);
-    MASTER_TOKEN = hashedToken; TABLE_CONFIG.masterToken = hashedToken;
+    MASTER_TOKEN = hashedToken;
+    TABLE_CONFIG.masterToken = hashedToken;
+    
     const bodyData = { id: TABLE_CONFIG.stateId, data: { masterToken: hashedToken, branches: {}, columns: TABLE_CONFIG.columns, table: [], history: [] } };
     try {
-        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, body: JSON.stringify(bodyData) });
-        if (response.ok) { window.location.search = `?id=${COMPANY_ID}&token=${token}`; } else { alert("Ошибка сохранения."); }
+        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
+        });
+        if (response.ok) {
+            window.location.search = `?id=${COMPANY_ID}&token=${token}`;
+        } else { alert("Ошибка сохранения."); }
     } catch (err) { alert("Ошибка: " + err.message); }
 }
 
 function getColumnTitle(col, lang) {
     if (!col) return '';
-    if (typeof col.title === 'object' && col.title !== null) return col.title[lang] || col.title['en'] || Object.values(col.title)[0] || col.id;
-    const t = LOCALES[lang]; if (t && t['col_' + col.id]) return t['col_' + col.id];
+    if (typeof col.title === 'object' && col.title !== null) {
+        return col.title[lang] || col.title['en'] || Object.values(col.title)[0] || col.id;
+    }
+    const t = LOCALES[lang];
+    if (t && t['col_' + col.id]) return t['col_' + col.id];
     return col.title;
 }
 
 function changeLanguage(langCode) {
-    currentLang = langCode; localStorage.setItem('lang', currentLang);
-    applyLocalization(); buildTableStructure(); renderColumnPills(); rebuildTableWithData(MEMORY_TABLE); renderTokenDashboard();
+    currentLang = langCode;
+    localStorage.setItem('lang', currentLang);
+    const currentRows = backupTableData();
+    applyLocalization();
+    buildTableStructure();
+    renderColumnPills();
+    rebuildTableWithData(currentRows);
+    renderTokenDashboard();
 }
 
 function applyLocalization() {
     const t = LOCALES[currentLang] || LOCALES['en'];
-    const safeLocalize = (id, key) => { if(document.getElementById(id) && t[key]) document.getElementById(id).innerText = t[key]; };
-    safeLocalize('btnSave', 'btnSave'); safeLocalize('btnExport', 'btnExport'); safeLocalize('clearHistoryBtn', 'btnClearHis'); safeLocalize('lblColManager', 'lblColManager'); safeLocalize('lblBranchManager', 'lblBranchManager'); safeLocalize('btnAddCol', 'btnAddCol'); safeLocalize('btnAddBranch', 'btnAddBranch');
+    document.getElementById('btnSave').innerText = t.btnSave;
+    document.getElementById('btnExport').innerText = t.btnExport;
+    document.getElementById('clearHistoryBtn').innerText = t.btnClearHis;
+    document.getElementById('lblColManager').innerText = t.lblColManager;
+    document.getElementById('lblBranchManager').innerText = t.lblBranchManager;
+    document.getElementById('btnAddCol').innerText = t.btnAddCol;
+    document.getElementById('btnAddBranch').innerText = t.btnAddBranch;
+    document.getElementById('newColTitle').placeholder = t.colPlaceholder;
+    document.getElementById('newBranchName').placeholder = t.branchPlaceholder;
+    document.getElementById('newBranchCoords').placeholder = t.coordsPlaceholder;
     document.getElementById('langDropdown').value = currentLang;
-    if (!IS_ADMIN && !CURRENT_BRANCH_NAME) { document.getElementById('pageTitle').innerHTML = t.denied; } 
-    else { document.getElementById('pageTitle').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`; }
+
+    document.getElementById('lblTokenDashboardTitle').innerText = t.dashTitle;
+    document.getElementById('thDashBranch').innerText = t.thBranch;
+    document.getElementById('thDashCoords').innerText = t.thCoords;
+    document.getElementById('thDashToken').innerText = t.thToken;
+    document.getElementById('thDashActions').innerText = t.thActions;
+    
+    document.getElementById('lblSetupTitle').innerText = t.setupTitle;
+    document.getElementById('lblSetupDesc').innerText = t.setupDesc;
+    document.getElementById('setupMasterToken').placeholder = t.setupPlaceholder;
+    document.getElementById('btnSaveSetup').innerText = t.setupBtn;
+
+    document.getElementById('lblLoginTitle').innerText = t.loginTitle;
+    document.getElementById('lblLoginDesc').innerText = t.loginDesc;
+    document.getElementById('loginTokenInput').placeholder = t.loginPlaceholder;
+    document.getElementById('btnSubmitLogin').innerText = t.loginBtn;
+
+    if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
+        document.getElementById('pageTitle').innerHTML = t.denied;
+    } else {
+        document.getElementById('pageTitle').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
+    }
+    
+    const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
+    if (numCol) {
+        const localizedNumTitle = getColumnTitle(numCol, currentLang);
+        document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
+    }
 }
 
 function getCurrentDateTime() {
-    const now = new Date(); const day = String(now.getDate()).padStart(2, '0'); const month = String(now.getMonth() + 1).padStart(2, '0'); const year = now.getFullYear(); const time = now.toTimeString().split(' ')[0].substring(0, 5); return { date: `${day}.${month}.${year}`, time: time };
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const time = now.toTimeString().split(' ')[0].substring(0, 5); 
+    return { date: `${day}.${month}.${year}`, time: time };
 }
 
 function parseCoordinates(str) {
-    if (!str) return null; let cleanStr = str.toString().replace(/[()]/g, '').replace(/,/g, ' ').trim();
+    if (!str) return null;
+    let cleanStr = str.toString().replace(/[()]/g, '').replace(/,/g, ' ').trim();
     const arr = cleanStr.split(/\s+/);
-    if (arr.length >= 2) { const val1 = parseFloat(arr[0]); const val2 = parseFloat(arr[1]); if (!isNaN(val1) && !isNaN(val2)) { if (val1 >= -90 && val1 <= 90 && val2 >= -180 && val2 <= 180) return [val1, val2]; } } return null;
+    if (arr.length >= 2) {
+        const val1 = parseFloat(arr[0]); const val2 = parseFloat(arr[1]);
+        if (!isNaN(val1) && !isNaN(val2)) {
+            if (val1 >= -90 && val1 <= 90 && val2 >= -180 && val2 <= 180) return [val1, val2];
+        }
+    }
+    return null;
+}
+
+function getWindDirection(deg) {
+    if (deg >= 337.5 || deg < 22.5) return 'N'; if (deg >= 22.5 && deg < 67.5) return 'NE'; if (deg >= 67.5 && deg < 112.5) return 'E'; if (deg >= 112.5 && deg < 157.5) return 'SE'; if (deg >= 157.5 && deg < 202.5) return 'S'; if (deg >= 202.5 && deg < 247.5) return 'SW'; if (deg >= 247.5 && deg < 292.5) return 'W'; if (deg >= 292.5 && deg < 337.5) return 'NW';
+    return 'Unknown';
+}
+
+async function fetchWeatherData(lat, lng) {
+    try {
+        const systemLang = currentLang === 'ua' ? 'uk' : currentLang;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto&language=${systemLang}`;
+        const res = await fetch(url); if (!res.ok) return null;
+        const json = await res.json();
+        if (json && json.current) {
+            const temp = json.current.temperature_2m; const windSpeed = json.current.wind_speed_10m; const windDeg = json.current.wind_direction_10m; const windDir = getWindDirection(windDeg);
+            const t = LOCALES[currentLang] || LOCALES['en'];
+            let stability = t.wIsothermy; if (windSpeed < 2) stability = t.wInversion; else if (windSpeed > 4) stability = t.wConvection;
+            return `${t.wWind}: ${windDir}, ${windSpeed} ${t.wSpeed}; ${t.wStability}: ${stability}; t: ${temp}°C`;
+        }
+    } catch (e) { console.error(e); }
+    return null;
+}
+
+async function triggerWeatherUpdate(btn) {
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    const row = btn.closest('tr'); const coordsCell = row.querySelector('.coords-input');
+    const weatherColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
+    if (weatherColIdx === -1 || !coordsCell) return;
+    
+    const weatherCell = row.cells[weatherColIdx]; const coordsStr = coordsCell.innerText.trim();
+    if (!coordsStr) { weatherCell.innerText = t.missingCoords; return; }
+    
+    const parsed = parseCoordinates(coordsStr);
+    if (parsed) {
+        weatherCell.innerText = t.loading;
+        const text = await fetchWeatherData(parsed[0], parsed[1]);
+        if (text) { weatherCell.innerText = text; saveTable(false); } else { weatherCell.innerText = t.apiError; }
+    } else { weatherCell.innerText = t.invalidFormat; }
+}
+
+function renderColumnPills() {
+    if (!IS_ADMIN) return;
+    const container = document.getElementById('activeColumnsPills'); container.innerHTML = '';
+    TABLE_CONFIG.columns.forEach(col => {
+        if (col.type === 'index' || col.type === 'action' || col.id === 'item_name' || col.id === 'weather') return;
+        const pill = document.createElement('div'); pill.className = 'pill';
+        const displayTitle = getColumnTitle(col, currentLang);
+        pill.innerHTML = `${displayTitle} (${col.type}) <span onclick="removeColumn('${col.id}')">✕</span>`;
+        container.appendChild(pill);
+    });
+}
+
+// -------------------------------------------------------------
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА (Google + MyMemory Fallback)
+// -------------------------------------------------------------
+async function translateText(text, sourceLang, targetLang) {
+    try {
+        const getValidCode = (lang) => {
+            if (lang === 'ua') return 'uk';
+            if (lang === 'zh') return 'zh-CN';
+            return lang;
+        };
+
+        const src = getValidCode(sourceLang);
+        const tgt = getValidCode(targetLang);
+        
+        if (src.toLowerCase() === tgt.toLowerCase()) return text;
+        
+        // 1. Google Translate API
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=${tgt}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data[0] && data[0][0] && data[0][0][0]) {
+                return data[0][0][0];
+            }
+        }
+        
+        // 2. MyMemory Fallback
+        const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
+        
+        const fbRes = await fetch(fbUrl);
+        if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            if (fbData.responseData && fbData.responseData.translatedText) {
+                return fbData.responseData.translatedText;
+            }
+        }
+        
+        return text;
+    } catch (e) {
+        console.error("Translation error for lang:", targetLang, e);
+        return text;
+    }
 }
 
 async function addNewColumn() {
     if (!IS_ADMIN) return;
-    const titleValue = document.getElementById('newColTitle').value.trim(); const type = document.getElementById('newColType').value; if (!titleValue) return;
+    const titleValue = document.getElementById('newColTitle').value.trim(); const type = document.getElementById('newColType').value;
+    if (!titleValue) return;
+    
+    const statusEl = document.getElementById('saveStatus');
+    statusEl.innerText = "🔄 Translating column structure... (Please wait)";
     const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
     const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
     
-    const titleObject = {}; titleObject[currentLang] = titleValue;
+    const titleObject = {};
+    const langs = Object.keys(LOCALES);
+    
+    for (const langKey of langs) {
+        if (currentLang.toLowerCase() === langKey.toLowerCase()) {
+            titleObject[langKey] = titleValue;
+        } else {
+            titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
+            // Увеличенная задержка 600мс для обхода блокировок Rate Limit
+            await new Promise(r => setTimeout(r, 600));
+        }
+    }
+    
     const weatherIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
     const insertAt = weatherIdx !== -1 ? weatherIdx : TABLE_CONFIG.columns.length - 1;
     TABLE_CONFIG.columns.splice(insertAt, 0, { id, title: titleObject, width: "12%", type });
-    
-    // Add default empty value for new column in Memory
-    MEMORY_TABLE.forEach(row => { if(!row.isHeader) { row.data[id] = ""; } });
-    
     document.getElementById('newColTitle').value = '';
-    buildTableStructure(); renderColumnPills(); rebuildTableWithData(MEMORY_TABLE); await saveTable(true);
+    
+    const currentRows = backupTableData(); 
+    buildTableStructure(); 
+    renderColumnPills();
+    rebuildTableWithData(currentRows);
+    await saveTable(true);
 }
 
 function removeColumn(id) {
     if (!IS_ADMIN) return;
-    if (confirm("Delete this column?")) {
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    if (confirm(t.confirmDelCol)) {
         TABLE_CONFIG.columns = TABLE_CONFIG.columns.filter(c => c.id !== id);
-        MEMORY_TABLE.forEach(row => { if(!row.isHeader) { delete row.data[id]; } });
-        buildTableStructure(); renderColumnPills(); rebuildTableWithData(MEMORY_TABLE); saveTable(true);
+        const currentRows = backupTableData(); 
+        buildTableStructure(); 
+        renderColumnPills();
+        rebuildTableWithData(currentRows);
+        saveTable(true);
     }
 }
 
-function renderTokenDashboard() { /* Omitted unchanged token dashboard render code */ }
+function renderTokenDashboard() {
+    if (!IS_ADMIN) { document.getElementById('tokenDashboardCard').style.display = 'none'; return; }
+    document.getElementById('tokenDashboardCard').style.display = 'block';
+    const tbody = document.getElementById('tokenDashboardBody'); tbody.innerHTML = '';
+    const t = LOCALES[currentLang] || LOCALES['en'];
+
+    Object.entries(TABLE_CONFIG.branches).forEach(([token, branchObj]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${branchObj.name}</td>
+            <td>${branchObj.coords ? branchObj.coords.join(', ') : ''}</td>
+            <td><span class="token-code">${token}</span></td>
+            <td>
+                <button class="btn-action copy-link-btn" style="width: auto; padding: 4px 10px; float: none; display: inline-block; margin-right: 5px;" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>
+                <button class="btn-action del-row-btn" style="width: auto; padding: 4px 10px; display: inline-block;" onclick="deleteBranch('${token}')">❌</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
 function addNewBranch() {
     if (!IS_ADMIN) return;
-    const name = document.getElementById('newBranchName').value.trim(); const coordsStr = document.getElementById('newBranchCoords').value.trim();
-    if (!name || !coordsStr) return; const coords = parseCoordinates(coordsStr); if (!coords) return;
+    const name = document.getElementById('newBranchName').value.trim();
+    const coordsStr = document.getElementById('newBranchCoords').value.trim();
+    if (!name || !coordsStr) return;
+    
+    const coords = parseCoordinates(coordsStr);
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    if (!coords) { alert(t.invalidFormat); return; }
+    
     const newToken = 'usr_' + Math.random().toString(36).substr(2, 9);
     TABLE_CONFIG.branches[newToken] = { name, coords };
-    document.getElementById('newBranchName').value = ''; document.getElementById('newBranchCoords').value = '';
-    rebuildTableWithData(MEMORY_TABLE); saveTable(true);
-}
-
-// ==========================================
-// 🛠 MEMORY AND LAZY LOADING LOGIC
-// ==========================================
-function rebuildTableWithData(backedData) {
-    MEMORY_TABLE = backedData;
-    const tbody = document.getElementById('tableBody'); 
-    tbody.innerHTML = '';
-    LAZY_INDEX = 0;
+    document.getElementById('newBranchName').value = '';
+    document.getElementById('newBranchCoords').value = '';
     
-    CURRENT_RENDERED_DATA = [];
-    const targetBranches = IS_ADMIN ? Object.entries(TABLE_CONFIG.branches) : Object.entries(TABLE_CONFIG.branches).filter(([tok, b]) => b.name === CURRENT_BRANCH_NAME);
-
-    // Group items sequentially for lazy loading array
-    targetBranches.forEach(([token, branchObj]) => {
-        CURRENT_RENDERED_DATA.push({ isHeader: true, branch: branchObj.name, token });
-        const branchItems = MEMORY_TABLE.filter(d => !d.isHeader && d.branch === branchObj.name);
-        if (branchItems.length === 0) { 
-            CURRENT_RENDERED_DATA.push({ isEmptyPlaceholder: true, branch: branchObj.name, coords: branchObj.coords });
-        } else {
-            CURRENT_RENDERED_DATA.push(...branchItems);
-        }
-    });
-
-    loadMoreRows();
+    const currentRows = backupTableData(); 
+    rebuildTableWithData(currentRows);
+    renderTokenDashboard();
+    saveTable(true);
 }
 
-function loadMoreRows() {
-    const tbody = document.getElementById('tableBody');
-    const fragment = document.createDocumentFragment();
-    const endIndex = Math.min(LAZY_INDEX + LAZY_CHUNK, CURRENT_RENDERED_DATA.length);
+function deleteBranch(token) {
+    if (!IS_ADMIN) return;
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    const branchName = TABLE_CONFIG.branches[token]?.name;
+    if (confirm(t.confirmDelBranch)) {
+        delete TABLE_CONFIG.branches[token];
+        let currentRows = backupTableData();
+        currentRows = currentRows.filter(r => r.branch !== branchName);
+        rebuildTableWithData(currentRows);
+        renderTokenDashboard();
+        saveTable(true);
+    }
+}
+
+function copyBranchLink(token) {
+    const currentUrl = window.location.href.split('?')[0];
+    const fullLink = `${currentUrl}?id=${COMPANY_ID}&token=${token}`; 
+    navigator.clipboard.writeText(fullLink).then(() => { alert("Success! Link copied to clipboard:\n" + fullLink); });
+}
+
+function backupTableData() {
+    const backup = [];
+    document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
+        const branch = row.getAttribute('data-branch'); const rowId = row.getAttribute('data-id');
+        const cellsData = {};
+        TABLE_CONFIG.columns.forEach((col) => {
+            if (col.type === 'index' || col.type === 'action') return;
+            const cell = row.querySelector(`.cell-${col.id}`) || (col.type === 'coordinates' ? row.querySelector('.coords-container') : null);
+            if (!cell) return;
+            cellsData[col.id] = col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : cell.innerText.trim();
+        });
+        backup.push({ id: rowId, branch, data: cellsData });
+    });
+    return backup;
+}
+
+function rebuildTableWithData(backedData) {
+    const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+    const targetBranches = IS_ADMIN ? Object.entries(TABLE_CONFIG.branches) : Object.entries(TABLE_CONFIG.branches).filter(([tok, b]) => b.name === CURRENT_BRANCH_NAME);
     const t = LOCALES[currentLang] || LOCALES['en'];
 
-    for (let i = LAZY_INDEX; i < endIndex; i++) {
-        const item = CURRENT_RENDERED_DATA[i];
-        let row;
-        if (item.isHeader) {
-            row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', item.branch);
-            let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${item.token}')">${t.copyLinkBtn || "🔗 Link"}</button>` : '';
-            row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${item.branch} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${item.branch}', this)">➕ Add Row</button></td>`;
-        } else if (item.isEmptyPlaceholder) {
-            const defaultCoords = item.coords ? item.coords.join(', ') : '';
-            row = createDataRow(item.branch, null, defaultCoords, true);
+    targetBranches.forEach(([token, branchObj]) => {
+        const headRow = document.createElement('tr'); 
+        headRow.classList.add('region-header-row'); 
+        headRow.setAttribute('data-branch', branchObj.name);
+        let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>` : '';
+        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${branchObj.name} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
+        tbody.appendChild(headRow);
+
+        const branchItems = backedData.filter(d => d.branch === branchObj.name);
+        if (branchItems.length === 0) { 
+            const baseCoordsStr = branchObj.coords ? branchObj.coords.join(', ') : '';
+            tbody.appendChild(createDataRow(branchObj.name, null, baseCoordsStr, true)); 
         } else {
-            row = createDataRow(item.branch, item, '', false);
+            branchItems.forEach(item => { tbody.appendChild(createDataRow(branchObj.name, item, '', false)); });
         }
-        fragment.appendChild(row);
-    }
-
-    tbody.appendChild(fragment);
-    LAZY_INDEX = endIndex;
-
-    reindexTable(); 
-    updateMapFromTable();
-
-    // 🔄 Setup Intersection Observer for the last element
-    if (lazyObserver) lazyObserver.disconnect();
-    if (LAZY_INDEX < CURRENT_RENDERED_DATA.length) {
-        lazyObserver = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) { loadMoreRows(); }
-        });
-        const lastRow = tbody.lastElementChild;
-        if (lastRow) lazyObserver.observe(lastRow);
-    }
+    });
+    reindexTable(); updateMapFromTable();
 }
 
 function buildTableStructure() {
     const colgroup = document.getElementById('tableColgroup'); const thead = document.getElementById('tableHead'); const tfoot = document.getElementById('tableFoot');
     colgroup.innerHTML = ''; let headHtml = '<tr>';
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    
     TABLE_CONFIG.columns.forEach(col => {
         colgroup.innerHTML += `<col style="width: ${col.width}">`; 
-        headHtml += `<th>${getColumnTitle(col, currentLang)}</th>`;
+        const displayTitle = getColumnTitle(col, currentLang);
+        headHtml += `<th>${displayTitle}</th>`;
     });
     headHtml += '</tr>'; thead.innerHTML = headHtml;
-    tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">Total:</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${TABLE_CONFIG.columns.length - 3}"></td>`;
+    tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${t.totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${TABLE_CONFIG.columns.length - 3}"></td>`;
 }
 
 function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstInit = false) {
@@ -519,18 +762,23 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
     
     let rowHtml = '';
     TABLE_CONFIG.columns.forEach((col) => {
-        let val = (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) ? rawItem.data[col.id] : '';
+        let val = '';
+        if (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) { val = rawItem.data[col.id]; }
         if (col.id === 'item_name' && isFirstInit && (!val || val.trim() === '')) val = branchName;
         if (col.type === 'coordinates' && isFirstInit && (!val || val.trim() === '') && defaultCoords) val = defaultCoords;
 
-        if (col.type === 'index') { rowHtml += `<td class="readonly index-cell"></td>`; } 
-        else if (col.type === 'action') { rowHtml += `<td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>`; } 
-        else if (col.type === 'coordinates') { rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${val}</div></div></td>`; } 
-        else { rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`; }
+        if (col.type === 'index') {
+            rowHtml += `<td class="readonly index-cell"></td>`;
+        } else if (col.type === 'action') {
+            rowHtml += `<td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>`;
+        } else if (col.type === 'coordinates') {
+            rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${val}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)" title="Fetch weather">⛅</button></div></td>`;
+        } else {
+            rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`;
+        }
     });
     row.innerHTML = rowHtml;
 
-    // ⚡ INSTANT MEMORY UPDATE ON TYPING
     row.addEventListener('input', (e) => {
         const targetCell = e.target.closest('td') || e.target.closest('.coords-container')?.parentNode;
         if (targetCell) {
@@ -540,18 +788,6 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
                 const dCell = row.querySelector('.cell-date'); const tCell = row.querySelector('.cell-time');
                 if (dCell) dCell.innerText = dt.date; if (tCell) tCell.innerText = dt.time;
             }
-            
-            // Sync with Memory
-            const memRow = MEMORY_TABLE.find(r => r.id === rowId);
-            if (memRow) {
-                TABLE_CONFIG.columns.forEach(col => {
-                    if (col.type !== 'index' && col.type !== 'action') {
-                        memRow.data[col.id] = col.type === 'coordinates' ? 
-                            (row.querySelector('.coords-input')?.innerText.trim() || "") : 
-                            (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
-                    }
-                });
-            }
         }
         updateMapFromTable(); saveTable(false); 
     });
@@ -559,118 +795,162 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
 }
 
 function removeRow(btn) {
-    if (confirm("Delete this row?")) {
-        const row = btn.closest('tr'); const rowId = row.getAttribute('data-id');
-        deletedRowIds.push(rowId); 
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    if (confirm(t.confirmDelRow)) {
+        const row = btn.closest('tr'); 
+        const rowId = row.getAttribute('data-id');
+        deletedRowIds.push(rowId); // Запоминаем, что эту строку мы удалили осознанно
         if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
-        
-        MEMORY_TABLE = MEMORY_TABLE.filter(r => r.id !== rowId); // Update memory
-        row.remove(); reindexTable(); saveTable(true); updateMapFromTable();
+        row.remove(); 
+        reindexTable(); 
+        saveTable(true); 
+        updateMapFromTable();
     }
 }
 
-function addBranchRow(branchName, buttonElement) {
-    const newId = 'row_' + Math.random().toString(36).substr(2, 9);
-    const newData = { isHeader: false, branch: branchName, id: newId, data: {} };
-    TABLE_CONFIG.columns.forEach(col => { if (col.type !== 'index' && col.type !== 'action') newData.data[col.id] = ""; });
-    
-    let insertIdx = MEMORY_TABLE.length;
-    for (let i = MEMORY_TABLE.length - 1; i >= 0; i--) { if (MEMORY_TABLE[i].branch === branchName) { insertIdx = i + 1; break; } }
-    MEMORY_TABLE.splice(insertIdx, 0, newData); // Safely push to memory
+function reindexTable() {
+    let currentNumber = 1; let totalCount = 0;
+    document.querySelectorAll('#tableBody tr').forEach((row) => {
+        if (row.classList.contains('region-header-row')) { currentNumber = 1; } 
+        else { const indexCell = row.querySelector('.index-cell'); if (indexCell) indexCell.innerText = currentNumber++; totalCount++; }
+    });
+    const totalEl = document.getElementById('totalRowsCount'); if (totalEl) totalEl.innerText = totalCount;
+}
 
+function addBranchRow(branchName, buttonElement) {
     const headerRow = buttonElement.closest('tr');
-    const newRow = createDataRow(branchName, newData, '', false);
-    headerRow.after(newRow); // Immediate insert into active DOM
-    reindexTable(); saveTable(true); 
+    const newRow = createDataRow(branchName, null, '', false);
+    headerRow.after(newRow); reindexTable(); saveTable(true); 
     const firstEditable = newRow.querySelector('[contenteditable="true"]');
     if (firstEditable) firstEditable.focus();
 }
 
-function reindexTable() {
-    let currentNumber = 1; 
-    document.querySelectorAll('#tableBody tr').forEach((row) => {
-        if (row.classList.contains('region-header-row')) { currentNumber = 1; } 
-        else { const indexCell = row.querySelector('.index-cell'); if (indexCell) indexCell.innerText = currentNumber++; }
-    });
-    // Total count reflects full memory regardless of paginated DOM
-    const totalCount = MEMORY_TABLE.filter(r => !r.isHeader && (IS_ADMIN || r.branch === CURRENT_BRANCH_NAME)).length;
-    const totalEl = document.getElementById('totalRowsCount'); if (totalEl) totalEl.innerText = totalCount;
-}
-
 function updateMapFromTable() {
     if (!map) return;
-    MEMORY_TABLE.forEach(row => {
-        if(row.isHeader) return;
-        if(!IS_ADMIN && row.branch !== CURRENT_BRANCH_NAME) return;
+    const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
+    
+    rows.forEach(row => {
+        const rowId = row.getAttribute('data-id'); const branch = row.getAttribute('data-branch');
+        const itemCell = row.querySelector('.cell-item_name'); const coordsInput = row.querySelector('.coords-input');
+        let itemName = itemCell ? itemCell.innerText.trim() : ""; let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
 
-        const rowId = row.id; const branch = row.branch;
-        let itemName = row.data['item_name'] || ""; 
-        const coordsCol = TABLE_CONFIG.columns.find(c => c.type === 'coordinates');
-        let coordsStr = coordsCol ? row.data[coordsCol.id] : "";
+        const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
+        let amountVal = numCol ? (row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "") : "";
 
-        if (!itemName && !coordsStr) { if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; } return; }
+        if (!itemName && !coordsStr) {
+            if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; } return; 
+        }
 
         let finalCoords = parseCoordinates(coordsStr);
         if (!finalCoords) {
-            if (!row._tempCoords) {
+            if (!row.dataset.lat || !row.dataset.lng) {
                 const found = Object.values(TABLE_CONFIG.branches).find(b => b.name === branch);
                 const baseCoords = found ? found.coords : [48.4, 31.2];
-                row._tempCoords = [(baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6), (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6)];
+                row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6); row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
             }
-            finalCoords = [parseFloat(row._tempCoords[0]), parseFloat(row._tempCoords[1])];
+            finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
         }
 
-        let popupText = `<b>🏢 ${branch}</b><br>`; if(itemName) popupText += `Item: ${itemName}<br>`;
+        let popupText = `<b>🏢 ${branch}</b><br>`;
+        if(itemName) popupText += `Item: ${itemName}<br>`;
+        if(amountVal) popupText += `Value: <b>${amountVal}</b>`;
+
         if (activeMarkers[rowId]) { activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].getPopup().setContent(popupText); } 
         else { const m = L.circleMarker(finalCoords, { radius: 10, fillColor: '#2563eb', color: '#fff', weight: 2, fillOpacity: 0.8 }).addTo(map); m.bindPopup(popupText); activeMarkers[rowId] = m; }
     });
     updateAnalytics();
 }
 
-function updateAnalytics() { /* Omitted unchanged analytics logic */ }
+function updateAnalytics() {
+    const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
+    const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
+    if (!numCol || !dateCol) return;
 
-// ==========================================
-// 🛠 MEMORY/OFFLINE DRIVEN SAVE
-// ==========================================
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    const localizedNumTitle = getColumnTitle(numCol, currentLang);
+    document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
+    
+    const dailyData = {}; 
+    globalHistory.forEach(item => {
+        if (!item.date || !item.value) return;
+        const val = parseFloat(item.value.toString().replace(',', '.')); if (isNaN(val)) return;
+        const parts = item.date.split(/[./-]/); if (parts.length !== 3) return;
+        const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)); if (isNaN(dateObj.getTime())) return;
+        const checkDate = new Date(dateObj); checkDate.setHours(0,0,0,0);
+        if (!dailyData[item.date]) { dailyData[item.date] = { sum: 0, count: 0, dateObj: checkDate }; } 
+        dailyData[item.date].sum += val; dailyData[item.date].count += 1;
+    });
+
+    const sortedDates = Object.keys(dailyData).sort((a, b) => dailyData[a].dateObj - dailyData[b].dateObj);
+    const labels = sortedDates; const avgData = sortedDates.map(d => (dailyData[d].sum / dailyData[d].count).toFixed(2)); const sumData = sortedDates.map(d => (dailyData[d].sum).toFixed(2));
+
+    if (sortedDates.length === 0) { if (analyticsChart) { analyticsChart.data.labels = []; analyticsChart.data.datasets[0].data = []; analyticsChart.update(); } return; }
+    if (!analyticsChart) {
+        const ctx = document.getElementById('analyticsChart').getContext('2d');
+        analyticsChart = new Chart(ctx, {
+            data: { labels: labels, datasets: [
+                { type: 'line', label: 'Average Value', data: avgData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
+                { type: 'bar', label: 'Total Sum', data: sumData, backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 1 }
+            ]},
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+    } else { analyticsChart.data.labels = labels; analyticsChart.data.datasets[0].data = avgData; analyticsChart.data.datasets[1].data = sumData; analyticsChart.update(); }
+}
+
 async function saveTable(showVisualStatus = false) {
     if (!SUPABASE_URL) return;
-    if (showVisualStatus) document.getElementById('saveStatus').innerText = "🔄 Loading...";
+    const t = LOCALES[currentLang] || LOCALES['en']; 
+    if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
+
+    // 1. Собираем локальные данные с экрана
+    const localRowsData = [];
+    document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
+        const branchName = row.getAttribute('data-branch') || "";
+        if (row.classList.contains('region-header-row')) {
+            localRowsData.push({ isHeader: true, branch: branchName, id: row.getAttribute('data-id') || "", cells: [] });
+        } else {
+            const cellsData = {};
+            TABLE_CONFIG.columns.forEach(col => {
+                if (col.type === 'index' || col.type === 'action') return;
+                cellsData[col.id] = col.type === 'coordinates' ? 
+                    (row.querySelector('.coords-input')?.innerText.trim() || "") : 
+                    (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
+            });
+            localRowsData.push({ isHeader: false, branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
+        }
+    });
 
     let localHistory = [...globalHistory];
     const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
     const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
 
     if (numCol && dateCol) {
-        MEMORY_TABLE.forEach(row => {
-            if (row.isHeader) return;
-            const dateStr = row.data[dateCol.id]; const valStr = row.data[numCol.id];
+        document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
+            const rowId = row.getAttribute('data-id') || ""; 
+            const branch = row.getAttribute('data-branch') || "";
+            const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
+            const valStr = row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "";
             if (dateStr && valStr) {
-                const exactMatchIndex = localHistory.findIndex(h => h.rowId === row.id && h.date === dateStr);
-                const historyItem = { rowId: row.id, branch: row.branch, date: dateStr, value: valStr };
+                const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
+                const historyItem = { rowId, branch, date: dateStr, value: valStr };
                 if (exactMatchIndex !== -1) localHistory[exactMatchIndex] = historyItem; 
                 else localHistory.push(historyItem);
             }
         });
     }
 
-    let finalTableData = MEMORY_TABLE; 
+    let finalTableData = localRowsData; 
     let finalHistory = localHistory;
-    
-    const bodyData = { 
-        id: TABLE_CONFIG.stateId, 
-        data: { masterToken: MASTER_TOKEN, branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: finalTableData, history: finalHistory } 
-    };
+    let finalBranches = TABLE_CONFIG.branches;
+    let finalColumns = TABLE_CONFIG.columns;
 
-    // 📡 ОФЛАЙН КЭШИРОВАНИЕ
-    if (!navigator.onLine) {
-        localStorage.setItem('offlineSyncPending_' + TABLE_CONFIG.stateId, JSON.stringify(bodyData));
-        if (showVisualStatus) document.getElementById('saveStatus').innerText = "💾 Збережено локально (Офлайн-режим).";
-        return;
-    }
-
-    // СКАЧИВАЕМ СВЕЖУЮ ВЕРСИЮ (Race Condition)
+    // 2. СКАЧИВАЕМ СВЕЖУЮ ВЕРСИЮ ИЗ БАЗЫ (Защита от Race Condition)
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { method: 'GET', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
+        });
+        
         if (response.ok) {
             const resData = await response.json();
             if (resData && resData.length > 0) {
@@ -679,36 +959,62 @@ async function saveTable(showVisualStatus = false) {
                 const serverHistory = serverPayload.history || [];
 
                 if (!IS_ADMIN && CURRENT_BRANCH_NAME) {
+                    // ФИЛИАЛ: Сохраняем чужие данные нетронутыми, обновляем только свои
                     const otherBranchesTable = serverTableData.filter(row => row.branch !== CURRENT_BRANCH_NAME);
-                    finalTableData = [...otherBranchesTable, ...MEMORY_TABLE.filter(r => r.branch === CURRENT_BRANCH_NAME)]; 
+                    finalTableData = [...otherBranchesTable, ...localRowsData]; 
+                    
                     const otherBranchesHistory = serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME);
-                    finalHistory = [...otherBranchesHistory, ...localHistory.filter(h => h.branch === CURRENT_BRANCH_NAME)];
-                    bodyData.data.branches = serverPayload.branches || TABLE_CONFIG.branches;
-                    bodyData.data.columns = serverPayload.columns || TABLE_CONFIG.columns;
+                    const ownHistory = localHistory.filter(h => h.branch === CURRENT_BRANCH_NAME);
+                    finalHistory = [...otherBranchesHistory, ...ownHistory];
+                    
+                    // Филиал не имеет права перезаписывать настройки колонок и список филиалов
+                    finalBranches = serverPayload.branches || TABLE_CONFIG.branches;
+                    finalColumns = serverPayload.columns || TABLE_CONFIG.columns;
                 } else if (IS_ADMIN) {
-                    const localRowIds = new Set(MEMORY_TABLE.map(r => r.id));
-                    const newServerRows = serverTableData.filter(r => !localRowIds.has(r.id) && !r.isHeader && !deletedRowIds.includes(r.id));
-                    finalTableData = [...MEMORY_TABLE, ...newServerRows];
+                    // АДМИН: Берем локальные данные, но добавляем новые строки, которые филиалы создали секунду назад
+                    const localRowIds = new Set(localRowsData.map(r => r.id));
+                    
+                    // Находим строки в базе, которых нет на экране админа, И которые админ не удалял только что
+                    const newServerRows = serverTableData.filter(r => !localRowIds.has(r.id) && !r.isHeader && typeof deletedRowIds !== 'undefined' && !deletedRowIds.includes(r.id));
+                    finalTableData = [...localRowsData, ...newServerRows];
+
                     const localHistIds = new Set(localHistory.map(h => h.rowId + '_' + h.date));
                     const newServerHist = serverHistory.filter(h => !localHistIds.has(h.rowId + '_' + h.date));
                     finalHistory = [...localHistory, ...newServerHist];
                 }
             }
         }
-    } catch (e) { console.warn("Race condition sync failed, keeping local memory", e); }
+    } catch (e) {
+        console.warn("Синхронизация не удалась, сохраняем локальную версию", e);
+    }
 
+    // 3. ОТПРАВЛЯЕМ ОБЪЕДИНЕННЫЕ ДАННЫЕ
     globalHistory = finalHistory;
-    MEMORY_TABLE = finalTableData; 
-    bodyData.data.table = finalTableData;
-    bodyData.data.history = finalHistory;
+    const bodyData = { 
+        id: TABLE_CONFIG.stateId, 
+        data: { 
+            masterToken: MASTER_TOKEN, // Отправляем хэшированный пароль
+            branches: finalBranches, 
+            columns: finalColumns, 
+            table: finalTableData, 
+            history: globalHistory 
+        } 
+    };
 
-    // ОТПРАВЛЯЕМ ОБЪЕДИНЕННЫЕ ДАННЫЕ
     try {
-        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, body: JSON.stringify(bodyData) });
+        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
+        });
         if (!response.ok) throw new Error(`Code ${response.status}`);
-        if (showVisualStatus) document.getElementById('saveStatus').innerText = "✅ Збережено: " + new Date().toLocaleTimeString();
+        if (showVisualStatus) document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
+        
+        // Очищаем кэш удаленных строк после успешного сохранения
         deletedRowIds = []; 
-    } catch (err) { document.getElementById('saveStatus').innerText = "❌ Помилка: " + err.message; }
+    } catch (err) { 
+        document.getElementById('saveStatus').innerText = t.saveError + err.message; 
+    }
     
     updateMapFromTable();
 }
@@ -716,28 +1022,80 @@ async function saveTable(showVisualStatus = false) {
 async function loadTable() {
     const isReady = await checkDatabaseConfig();
     if (!isReady) return; 
-    try {
-        const payload = DB_PAYLOAD;
-        if (payload.columns) TABLE_CONFIG.columns = payload.columns;
-        if (payload.branches) { TABLE_CONFIG.branches = payload.branches; CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null; CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null; }
 
-        globalHistory = payload.history || []; 
-        MEMORY_TABLE = payload.table || [];
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    try {
+        const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+        const payload = DB_PAYLOAD;
         
+        if (payload.columns && Array.isArray(payload.columns)) TABLE_CONFIG.columns = payload.columns;
+        if (payload.branches && typeof payload.branches === 'object') {
+            TABLE_CONFIG.branches = payload.branches; CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null; CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
+        }
+
+        if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
+            document.getElementById('saveStatus').innerHTML = t.denied;
+            document.getElementById('columnManagerPanel').style.display = 'none';
+            document.getElementById('branchManagerPanel').style.display = 'none';
+            return;
+        }
+        
+        globalHistory = payload.history || []; const tableData = payload.table || [];
         buildTableStructure(); renderColumnPills(); applyLocalization(); renderTokenDashboard();
-        rebuildTableWithData(MEMORY_TABLE);
-        
+
+        if (tableData.length === 0) { updateMapFromTable(); return; }
+
+        tableData.forEach(rowData => {
+            let rowBranch = rowData.branch;
+            if (!IS_ADMIN && rowBranch !== CURRENT_BRANCH_NAME) return;
+
+            let row;
+            if (rowData.isHeader) {
+                row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', rowBranch);
+                const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
+                let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>` : '';
+                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${rowBranch} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
+            } else { 
+                row = createDataRow(rowBranch, rowData, '', false); 
+            }
+            tbody.appendChild(row);
+        });
+
+        reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+        buildTableStructure(); renderColumnPills(); updateMapFromTable(); document.getElementById('saveStatus').innerHTML = 'Error: ' + err.message;
+    }
 }
 
-async function clearChartHistory() { if (confirm("Clear history?")) { globalHistory = []; await saveTable(true); } }
-function initMap() { map = L.map('map').setView([48.3794, 31.1656], 6); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
-function exportTable() { const blob = new Blob([JSON.stringify({ branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: MEMORY_TABLE, history: globalHistory }, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `export.json`; a.click(); }
+async function clearChartHistory() { 
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    if (confirm(t.confirmClearHis)) { globalHistory = []; await saveTable(true); } 
+}
+
+function initMap() { 
+    const defaultCenter = [30, 0]; const defaultZoom = 2; 
+    map = L.map('map').setView(defaultCenter, defaultZoom); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); 
+    map.on('click', function(e) {
+        const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        navigator.clipboard.writeText(coordsStr).then(() => { alert(`Coordinates copied:\n${coordsStr}`); });
+    });
+}
+
+function exportTable() { const allRowsData = []; document.querySelectorAll('#dynamicTable tbody tr').forEach(row => { allRowsData.push({ isHeader: row.classList.contains('region-header-row'), branch: row.getAttribute('data-branch') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) }); }); const blob = new Blob([JSON.stringify({ branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: allRowsData, history: globalHistory }, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `export_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
 
 window.onload = async () => { 
-    initMap(); applyLocalization(); await loadTable(); 
-    if (MASTER_TOKEN && !IS_ADMIN) { document.getElementById('columnManagerPanel').style.display = 'none'; document.getElementById('branchManagerPanel').style.display = 'none'; document.getElementById('clearHistoryBtn').style.display = 'none'; document.getElementById('tokenDashboardCard').style.display = 'none'; }
+    initMap(); 
+    applyLocalization();
+    await loadTable(); 
+    
+    if (MASTER_TOKEN && !IS_ADMIN) {
+        document.getElementById('columnManagerPanel').style.display = 'none';
+        document.getElementById('branchManagerPanel').style.display = 'none';
+        document.getElementById('clearHistoryBtn').style.display = 'none';
+        document.getElementById('tokenDashboardCard').style.display = 'none';
+    }
 };
 </script>
 </body>
