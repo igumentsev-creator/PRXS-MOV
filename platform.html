@@ -71,21 +71,21 @@
 
 <div class="container">
     <div class="card setup-screen" id="setupPanel">
-        <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Создание пароля администратора</h2>
-        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (Master Token), чтобы зафиксировать права владельца над этим рабочим пространством.</p>
+        <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Creation of Administrator Password</h2>
+        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.</p>
         <div>
-            <input type="password" id="setupMasterToken" placeholder="Введите новый пароль"><br>
-            <button class="main-btn" id="btnSaveSetup" onclick="saveInitialPassword()">🚀 Сохранить пароль и войти</button>
+            <input type="password" id="setupMasterToken" placeholder="Enter new password"><br>
+            <button class="main-btn" id="btnSaveSetup" onclick="saveInitialPassword()">🚀 Save password & login</button>
         </div>
     </div>
 
     <div class="card login-screen" id="loginPanel">
-        <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Вход в рабочее пространство</h2>
-        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа администратора или сотрудника филиала.</p>
+        <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Workspace Login</h2>
+        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">This workspace is protected. Please enter administrator password or regional branch security token.</p>
         <div id="loginError" class="error-msg"></div>
         <div>
-            <input type="password" id="loginTokenInput" placeholder="Введите пароль / токен"><br>
-            <button class="main-btn" id="btnSubmitLogin" onclick="checkEnteredPassword()">🔓 Войти</button>
+            <input type="password" id="loginTokenInput" placeholder="Enter password / token"><br>
+            <button class="main-btn" id="btnSubmitLogin" onclick="checkEnteredPassword()">🔓 Login</button>
         </div>
     </div>
 
@@ -334,7 +334,7 @@ async function sha256(message) {
 
 async function checkDatabaseConfig() {
     if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
-        document.getElementById('saveStatus').innerHTML = "⚠️ Ошибка: Ссылка не содержит ID компании (?id=название).";
+        document.getElementById('saveStatus').innerHTML = "⚠️ Error: The link does not contain a company ID (?id=name).";
         hideAllDashboardCards();
         return false;
     }
@@ -377,7 +377,7 @@ async function checkDatabaseConfig() {
             return false;
         }
     } catch (e) {
-        document.getElementById('saveStatus').innerHTML = "❌ Ошибка подключения. Проверьте базу данных.";
+        document.getElementById('saveStatus').innerHTML = "❌ Connection error. Please check the database.";
         hideAllDashboardCards();
         return false;
     }
@@ -417,7 +417,7 @@ async function checkEnteredPassword() {
 
 async function saveInitialPassword() {
     const token = document.getElementById('setupMasterToken').value.trim();
-    if (!token) { alert("Пожалуйста, введите пароль."); return; }
+    if (!token) { alert("Please enter a password."); return; }
     
     // Превращаем пароль в хэш перед отправкой
     const hashedToken = await sha256(token);
@@ -433,8 +433,8 @@ async function saveInitialPassword() {
         });
         if (response.ok) {
             window.location.search = `?id=${COMPANY_ID}&token=${token}`;
-        } else { alert("Ошибка сохранения."); }
-    } catch (err) { alert("Ошибка: " + err.message); }
+        } else { alert("Save error."); }
+    } catch (err) { alert("Error: " + err.message); }
 }
 
 function getColumnTitle(col, lang) {
