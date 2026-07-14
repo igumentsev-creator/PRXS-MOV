@@ -188,10 +188,15 @@ const APP_CONFIG = {
     SUPABASE_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1", 
     SUPABASE_KEY: "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z",
 
-    // 2. ID рабочего пространства по умолчанию (если в ссылке нет параметра ?id=...)
+    // 2. Название таблицы в Supabase, где хранятся данные всех рабочих пространств
+    //    ВАЖНО: должно совпадать с именем таблицы, которая уже используется в твоей базе.
+    //    Если захочешь переименовать таблицу в Supabase на своё усмотрение — поменяй и это значение.
+    SUPABASE_TABLE: "ukraine_monitoring",
+
+    // 3. ID рабочего пространства по умолчанию (если в ссылке нет параметра ?id=...)
     DEFAULT_WORKSPACE_ID: "default_workspace",
 
-    // 3. Язык интерфейса по умолчанию при первом входе (en, ua, fr, zh, es, de, hi, it, ja)
+    // 4. Язык интерфейса по умолчанию при первом входе (en, ua, fr, zh, es, de, hi, it, ja)
     DEFAULT_LANG: "en"
 };
 // =====================================================================
@@ -199,64 +204,64 @@ const APP_CONFIG = {
 const LOCALES = {
     en: {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
-        chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
-        wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection",
+        chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Product Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
+        wWind: "Wind", wSpeed: "m/s",
         setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
         loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
     },
     ua: {
         denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора<br>(Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
-        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
-        wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
+        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва позиції / товару", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
+        wWind: "Вітер", wSpeed: "м/с",
         setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), чтобы зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
         loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу администратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
     },
     fr: {
         denied: "❌ ACCÈS REFUSÉ: Jeton invalide ou manquant dans l'URL.", adminSession: "👑 Panneau d'administration principal (Tous les espaces)", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur d'enregistrement: ", totalCount: "Nombre total de lignes:", confirmDelCol: "Supprimer cette colonne? Les données seront perdues.", confirmDelRow: "Supprimer cette ligne?", confirmClearHis: "Effacer l'historique d'analyse?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Gestionnaire de colonnes (Admin uniquement):", lblBranchManager: "🏢 Gestionnaire d'espaces / filiales:", btnSave: "💾 Enregistrer les données", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique d'analyse", btnAddCol: "➕ Ajouter une colonne", btnAddBranch: "➕ Ajouter un espace", colPlaceholder: "Nom de colonne", branchPlaceholder: "Nom de la filiale", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ajouter une ligne", copyLinkBtn: "🔗 Copier le lien", dashTitle: "🔑 Générateur de jetons de sécurité et de liens d'accès régionaux", thBranch: "Région / Filiale", thCoords: "Coordonnées centrales", thToken: "Jeton de sécurité (UUID)", thActions: "Actions", confirmDelBranch: "Supprimer complètement cette région et revocar son lien?",
-        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
-        wWind: "Vent", wSpeed: "m/s", wStability: "Stabilité", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'article / produit", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
+        wWind: "Vent", wSpeed: "m/s",
         setupTitle: "🔑 Création du mot de passe administrateur", setupDesc: "Bienvenue ! Veuillez inventer votre mot de passe secret personnel (Master Token) pour sécuriser vos droits sur cet espace.", setupPlaceholder: "Entrez le nouveau mot de passe", setupBtn: "🚀 Enregistrer et se connecter",
         loginTitle: "🔒 Connexion à l'espace de travail", loginDesc: "Cet espace est protégé. Veuillez entrer le mot de passe administrateur ou le jeton de la filiale.", loginPlaceholder: "Entrez le mot de passe / jeton", loginBtn: "🔓 Se connecter", loginIncorrect: "❌ Mot de passe ou jeton incorrect !"
     },
     zh: {
         denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清理分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
-        chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
-        wWind: "风向", wSpeed: "米/秒", wStability: "稳定性", wInversion: "逆温", wIsothermy: "等温", wConvection: "对外流",
+        chartTitle: "业绩动态", col_id: "№", col_item_name: "项目 / 产品名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
+        wWind: "风向", wSpeed: "米/秒",
         setupTitle: "🔑 创建管理员密码", setupDesc: "欢迎！请想出一个您的个人秘密密码 (Master Token) 来确保对此工作区的所有者权限。", setupPlaceholder: "输入新密码", setupBtn: "🚀 保存密码并登录",
         loginTitle: "🔒 工作区登录", loginDesc: "此工作区受保护。请输入管理员密码或区域分支机构安全令牌。", loginPlaceholder: "输入密码 / 令牌", loginBtn: "🔓 登录", loginIncorrect: "❌ 密码或安全令牌不正确！"
     },
     es: {
         denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Format o inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordonadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
-        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del elemento / objetivo", col_coords: "Coordenadas (Lat, Lng)", col_date: "Date", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Conditions metereológicas", col_action: "Acción",
-        wWind: "Viento", wSpeed: "m/s", wStability: "Estabilidad", wInversion: "Inversión", wIsothermy: "Isotermia", wConvection: "Convección",
+        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del artículo / producto", col_coords: "Coordenadas (Lat, Lng)", col_date: "Date", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Conditions metereológicas", col_action: "Acción",
+        wWind: "Viento", wSpeed: "m/s",
         setupTitle: "🔑 Creación de contraseña de administrador", setupDesc: "¡Bienvenido! Piense en su contraseña secreta personal (Master Token) para asegurar los derechos de propietario.", setupPlaceholder: "Introduzca nueva contraseña", setupBtn: "🚀 Guardar contraseña e iniciar sesión",
         loginTitle: "🔒 Inicio de sesión del espacio", loginDesc: "Este espacio está protegido. Introduzca la contraseña de administrador o el token de la sucursal.", loginPlaceholder: "Introduzca contraseña / token", loginBtn: "🔓 Iniciar sesión", loginIncorrect: "❌ ¡Contraseña o token incorrecto!"
     },
     de: {
         denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte лоschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten speichern", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?",
-        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
-        wWind: "Wind", wSpeed: "m/s", wStability: "Stabilität", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Artikel- / Produktname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
+        wWind: "Wind", wSpeed: "m/s",
         setupTitle: "🔑 Erstellung des Administrator-Passworts", setupDesc: "Willkommen! Bitte denken Sie sich Ihr persönliches Passwort (Master Token) aus, um die Eigentümerrechte zu sichern.", setupPlaceholder: "Neues Passwort eingeben", setupBtn: "🚀 Passwort speichern & anmelden",
         loginTitle: "🔒 Workspace-Login", loginDesc: "Dieser Bereich ist geschützt. Bitte geben Sie das Administrator-Passwort oder das Filial-Token ein.", loginPlaceholder: "Passwort / Token eingeben", loginBtn: "🔓 Anmelden", loginIncorrect: "❌ Falsches Passwort oder Token!"
     },
     hi: {
         denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |माстер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयाр", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?",
-        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
-        wWind: "हवा", wSpeed: "मी/से", wStability: "स्थिरता", wInversion: "इनवर्जन", wIsothermy: "आइसоथर्मी", wConvection: "संवहन",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / उत्पाद का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
+        wWind: "हवा", wSpeed: "मी/से",
         setupTitle: "🔑 व्यवस्थापक पासवर्ड बनाना", setupDesc: "स्वागत है! कृपया इस कार्यक्षेत्र पर स्वामी के अधिकारों को सुरक्षित करने के लिए अपना व्यक्तिगत गुप्त पासवर्ड (मास्टर टोकन) बनाएं।", setupPlaceholder: "नया पासवर्ड दर्ज करें", setupBtn: "🚀 पासवर्ड सहेजें और लॉगिन करें",
         loginTitle: "🔒 कार्यक्षेत्र लॉगिन", loginDesc: "यह कार्यक्षेत्र सुरक्षित है। कृपया व्यवस्थापक पासवर्ड या क्षेत्रीय शाखा सुरक्षा टोकन दर्ज करें।", loginPlaceholder: "पासवर्ड / टोकन दर्ज करें", loginBtn: "🔓 लॉगिन", loginIncorrect: "❌ गलत पासवर्ड या सुरक्षा टोकन!"
     },
     it: {
         denied: "❌ ACCESSO NEGATO: Token non valido o mancante nell'URL.", adminSession: "👑 Pannello di Amministrazione Master (Tutti i Workspace)", secureSession: "🔒 Sessione Sicura", saved: "✅ Salvato: ", saveError: "❌ Errore di Salvataggio: ", totalCount: "Conteggio Righe Totale:", confirmDelCol: "Eliminare questa colonna? I dati andranno persi.", confirmDelRow: "Eliminare questa riga?", confirmClearHis: "Cancellare la cronologia dell'analisi?", missingCoords: "❌ Coordinate mancanti", apiError: "❌ Errore", invalidFormat: "⚠️ Formato non valido", loading: "🔄 Caricamento...", sync: "Sincronizzato con l'Archivio", readyEmpty: "Pronto", lblColManager: "📋 Gestore Colonne (Solo Admin):", lblBranchManager: "🏢 Gestore Workspace / Filiali:", btnSave: "💾 Salva Dati e Struttura", btnExport: "📥 Esporta JSON", btnClearHis: "🧹 Cancella Cronologia Grafico", btnAddCol: "➕ Aungi Colonna", btnAddBranch: "➕ Aungi Workspace", colPlaceholder: "Nome Colonna", branchPlaceholder: "Nome Filiale", coordsPlaceholder: "Coordinate (Lat, Lng)", addBtnRow: "➕ Aungi Riga", copyLinkBtn: "🔗 Copia Link", dashTitle: "🔑 Generatore di Token di Sicurezza e Link di Accesso Regionali", thBranch: "Regione / Workspace", thCoords: "Coordinate Centro", thToken: "Token di Sicurezza (UUID)", thActions: "Azioni", confirmDelBranch: "Eliminare completamente questa regione e revocare il suo link? Il token di sicurezza verrà inserito nella lista nera.",
-        chartTitle: "Dinamica delle Prestazioni", col_id: "№", col_item_name: "Nome Elemento / Obiettivo", col_coords: "Coordinate (Lat, Lng)", col_date: "Data", col_time: "Ora", col_amount: "Quantità / Valore", col_weather: "Condizioni Meteo", col_action: "Azione",
-        wWind: "Vento", wSpeed: "m/s", wStability: "Stabilità", wInversion: "Inversion", wIsothermy: "Isotermia", wConvection: "Confezione",
+        chartTitle: "Dinamica delle Prestazioni", col_id: "№", col_item_name: "Nome Articolo / Prodotto", col_coords: "Coordinate (Lat, Lng)", col_date: "Data", col_time: "Ora", col_amount: "Quantità / Valore", col_weather: "Condizioni Meteo", col_action: "Azione",
+        wWind: "Vento", wSpeed: "m/s",
         setupTitle: "🔑 Creazione password amministratore", setupDesc: "Benvenuto! Inventa la tua password segreta personale (Master Token) per proteggere i tuoi diritti su questo spazio.", setupPlaceholder: "Inserisci nuova password", setupBtn: "🚀 Salva password e accedi",
         loginTitle: "🔒 Accesso allo spazio di lavoro", loginDesc: "Questo spazio è protetto. Inserisci la password dell'amministratore o il token di sicurezza della filiale.", loginPlaceholder: "Inserisci password / token", loginBtn: "🔓 Accedi", loginIncorrect: "❌ Password o token di sicurezza errati!"
     },
     ja: {
         denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 データと構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
-        chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 対象名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
-        wWind: "風向", wSpeed: "m/s", wStability: "安定度", wInversion: "逆転", wIsothermy: "等温", wConvection: "対流",
+        chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 商品名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
+        wWind: "風向", wSpeed: "m/s",
         setupTitle: "🔑 管理者パスワードの作成", setupDesc: "ようこそ！このワークスペースの所有権を確保するために、個人の秘密のパスワード（マスタートークン）を作成してください。", setupPlaceholder: "新しいパスワードを入力", setupBtn: "🚀 パスワードを保存してログイン",
         loginTitle: "🔒 ワークスペースへのログイン", loginDesc: "このワークスペースは保護されています。管理者パスワードまたは地域支店のセキュリティトークンを入力してください。", loginPlaceholder: "パスワード/トークンを入力", loginBtn: "🔓 ログイン", loginIncorrect: "❌ パスワードまたはセキュリティトークンが間違っています！"
     }
@@ -265,6 +270,7 @@ const LOCALES = {
 let currentLang = localStorage.getItem('lang') || APP_CONFIG.DEFAULT_LANG;
 const SUPABASE_URL = APP_CONFIG.SUPABASE_URL; 
 const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY; 
+const SUPABASE_TABLE = APP_CONFIG.SUPABASE_TABLE;
 
 const urlParams = new URLSearchParams(window.location.search);
 const COMPANY_ID = urlParams.get('id') || APP_CONFIG.DEFAULT_WORKSPACE_ID; 
@@ -279,7 +285,7 @@ let TABLE_CONFIG = {
     branches: {},
     columns: [
         { id: "id", title: "№", width: "4%", type: "index" },
-        { id: "item_name", title: "Item / Target Name", width: "16%", type: "text" },
+        { id: "item_name", title: "Item / Product Name", width: "16%", type: "text" },
         { id: "coords", title: "Coordinates (Lat, Lng)", width: "14%", type: "coordinates" },
         { id: "date", title: "Date", width: "10%", type: "date" },
         { id: "time", title: "Time", width: "8%", type: "time" },
@@ -298,6 +304,17 @@ let analyticsChart = null;
 let globalHistory = [];
 let deletedRowIds = []; // Память удаленных строк для защиты при синхронизации
 
+// Экранирование пользовательского текста перед вставкой через innerHTML (защита от XSS)
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 // Функция для криптографического хэширования паролей (SHA-256)
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
@@ -313,7 +330,7 @@ async function checkDatabaseConfig() {
         return false;
     }
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
+        const response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}?id=eq.${TABLE_CONFIG.stateId}`, { 
             method: 'GET', 
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
         });
@@ -400,7 +417,7 @@ async function saveInitialPassword() {
     
     const bodyData = { id: TABLE_CONFIG.stateId, data: { masterToken: hashedToken, branches: {}, columns: TABLE_CONFIG.columns, table: [], history: [] } };
     try {
-        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+        let response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}`, { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
             body: JSON.stringify(bodyData) 
@@ -502,17 +519,29 @@ function getWindDirection(deg) {
     return 'Unknown';
 }
 
+// Стандартные коды погоды Open-Meteo (WMO) -> человекочитаемое описание с иконкой.
+// Обычная информация "стоит ли ждать задержек логистики/явки персонала", без узкоспециальной классификации.
+const WEATHER_CODE_MAP = {
+    0: { icon: '☀️', en: 'Clear sky' }, 1: { icon: '🌤️', en: 'Mostly clear' }, 2: { icon: '⛅', en: 'Partly cloudy' }, 3: { icon: '☁️', en: 'Overcast' },
+    45: { icon: '🌫️', en: 'Fog' }, 48: { icon: '🌫️', en: 'Fog' },
+    51: { icon: '🌦️', en: 'Light drizzle' }, 53: { icon: '🌦️', en: 'Drizzle' }, 55: { icon: '🌧️', en: 'Heavy drizzle' },
+    61: { icon: '🌦️', en: 'Light rain' }, 63: { icon: '🌧️', en: 'Rain' }, 65: { icon: '🌧️', en: 'Heavy rain' },
+    71: { icon: '🌨️', en: 'Light snow' }, 73: { icon: '🌨️', en: 'Snow' }, 75: { icon: '❄️', en: 'Heavy snow' },
+    80: { icon: '🌦️', en: 'Rain showers' }, 81: { icon: '🌧️', en: 'Rain showers' }, 82: { icon: '⛈️', en: 'Violent showers' },
+    95: { icon: '⛈️', en: 'Thunderstorm' }, 96: { icon: '⛈️', en: 'Thunderstorm w/ hail' }, 99: { icon: '⛈️', en: 'Thunderstorm w/ hail' }
+};
+
 async function fetchWeatherData(lat, lng) {
     try {
-        const systemLang = currentLang === 'ua' ? 'uk' : currentLang;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto&language=${systemLang}`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=auto`;
         const res = await fetch(url); if (!res.ok) return null;
         const json = await res.json();
         if (json && json.current) {
             const temp = json.current.temperature_2m; const windSpeed = json.current.wind_speed_10m; const windDeg = json.current.wind_direction_10m; const windDir = getWindDirection(windDeg);
+            const code = json.current.weather_code;
+            const cond = WEATHER_CODE_MAP[code] || { icon: 'ℹ️', en: '—' };
             const t = LOCALES[currentLang] || LOCALES['en'];
-            let stability = t.wIsothermy; if (windSpeed < 2) stability = t.wInversion; else if (windSpeed > 4) stability = t.wConvection;
-            return `${t.wWind}: ${windDir}, ${windSpeed} ${t.wSpeed}; ${t.wStability}: ${stability}; t: ${temp}°C`;
+            return `${cond.icon} ${temp}°C, ${cond.en}; ${t.wWind}: ${windDir} ${windSpeed} ${t.wSpeed}`;
         }
     } catch (e) { console.error(e); }
     return null;
@@ -542,7 +571,7 @@ function renderColumnPills() {
         if (col.type === 'index' || col.type === 'action' || col.id === 'item_name' || col.id === 'weather') return;
         const pill = document.createElement('div'); pill.className = 'pill';
         const displayTitle = getColumnTitle(col, currentLang);
-        pill.innerHTML = `${displayTitle} (${col.type}) <span onclick="removeColumn('${col.id}')">✕</span>`;
+        pill.innerHTML = `${escapeHtml(displayTitle)} (${escapeHtml(col.type)}) <span onclick="removeColumn('${col.id}')">✕</span>`;
         container.appendChild(pill);
     });
 }
@@ -649,7 +678,7 @@ function renderTokenDashboard() {
     Object.entries(TABLE_CONFIG.branches).forEach(([token, branchObj]) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${branchObj.name}</td>
+            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${escapeHtml(branchObj.name)}</td>
             <td>${branchObj.coords ? branchObj.coords.join(', ') : ''}</td>
             <td><span class="token-code">${token}</span></td>
             <td>
@@ -728,7 +757,7 @@ function rebuildTableWithData(backedData) {
         headRow.classList.add('region-header-row'); 
         headRow.setAttribute('data-branch', branchObj.name);
         let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>` : '';
-        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${branchObj.name} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
+        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${escapeHtml(branchObj.name)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${escapeHtml(branchObj.name)}', this)">${t.addBtnRow}</button></td>`;
         tbody.appendChild(headRow);
 
         const branchItems = backedData.filter(d => d.branch === branchObj.name);
@@ -750,7 +779,7 @@ function buildTableStructure() {
     TABLE_CONFIG.columns.forEach(col => {
         colgroup.innerHTML += `<col style="width: ${col.width}">`; 
         const displayTitle = getColumnTitle(col, currentLang);
-        headHtml += `<th>${displayTitle}</th>`;
+        headHtml += `<th>${escapeHtml(displayTitle)}</th>`;
     });
     headHtml += '</tr>'; thead.innerHTML = headHtml;
     tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${t.totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${TABLE_CONFIG.columns.length - 3}"></td>`;
@@ -772,9 +801,9 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
         } else if (col.type === 'action') {
             rowHtml += `<td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>`;
         } else if (col.type === 'coordinates') {
-            rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${val}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)" title="Fetch weather">⛅</button></div></td>`;
+            rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${escapeHtml(val)}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)" title="Fetch weather">⛅</button></div></td>`;
         } else {
-            rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`;
+            rowHtml += `<td contenteditable="true" class="cell-${col.id}">${escapeHtml(val)}</td>`;
         }
     });
     row.innerHTML = rowHtml;
@@ -845,15 +874,15 @@ function updateMapFromTable() {
         if (!finalCoords) {
             if (!row.dataset.lat || !row.dataset.lng) {
                 const found = Object.values(TABLE_CONFIG.branches).find(b => b.name === branch);
-                const baseCoords = found ? found.coords : [48.4, 31.2];
+                const baseCoords = found ? found.coords : [20, 0]; // нейтральная точка, если у филиала нет своих координат
                 row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6); row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
             }
             finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
         }
 
-        let popupText = `<b>🏢 ${branch}</b><br>`;
-        if(itemName) popupText += `Item: ${itemName}<br>`;
-        if(amountVal) popupText += `Value: <b>${amountVal}</b>`;
+        let popupText = `<b>🏢 ${escapeHtml(branch)}</b><br>`;
+        if(itemName) popupText += `Item: ${escapeHtml(itemName)}<br>`;
+        if(amountVal) popupText += `Value: <b>${escapeHtml(amountVal)}</b>`;
 
         if (activeMarkers[rowId]) { activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].getPopup().setContent(popupText); } 
         else { const m = L.circleMarker(finalCoords, { radius: 10, fillColor: '#2563eb', color: '#fff', weight: 2, fillOpacity: 0.8 }).addTo(map); m.bindPopup(popupText); activeMarkers[rowId] = m; }
@@ -946,7 +975,7 @@ async function saveTable(showVisualStatus = false) {
 
     // 2. СКАЧИВАЕМ СВЕЖУЮ ВЕРСИЮ ИЗ БАЗЫ (Защита от Race Condition)
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
+        const response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}?id=eq.${TABLE_CONFIG.stateId}`, { 
             method: 'GET', 
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
         });
@@ -1002,7 +1031,7 @@ async function saveTable(showVisualStatus = false) {
     };
 
     try {
-        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+        let response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}`, { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
             body: JSON.stringify(bodyData) 
@@ -1054,7 +1083,7 @@ async function loadTable() {
                 row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', rowBranch);
                 const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
                 let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>` : '';
-                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${rowBranch} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
+                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${escapeHtml(rowBranch)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${escapeHtml(rowBranch)}', this)">${t.addBtnRow}</button></td>`;
             } else { 
                 row = createDataRow(rowBranch, rowData, '', false); 
             }
