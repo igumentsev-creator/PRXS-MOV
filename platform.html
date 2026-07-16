@@ -247,9 +247,16 @@ async function apiCall(action, secret, payload = null) {
     const body = { action, id: COMPANY_ID, secret };
     if (payload) body.payload = payload;
     
+    // Твой скопированный публичный ключ
+    const ANON_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z"; 
+    
     const res = await fetch(APP_CONFIG.API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${ANON_KEY}`,
+            'apikey': ANON_KEY
+        },
         body: JSON.stringify(body)
     });
     
