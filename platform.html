@@ -265,9 +265,9 @@ const LOCALES = {
         loginTitle: "🔒 Accesso allo spazio di lavoro", loginDesc: "Questo spazio è protetto. Inserisci la password dell'amministratore o il token di sicurezza della filiale.", loginPlaceholder: "Inserisci password / token", loginBtn: "🔓 Accedi", loginIncorrect: "❌ Password o token di sicurezza errati!"
     },
     ja: {
-        denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 データと構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
+        denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 数据と構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
         chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 商品名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
-        wWind: "風向", wSpeed: "m/s",
+        wWind: "风向", wSpeed: "m/s",
         wc: { clear: "快晴", mostly_clear: "ほぼ晴れ", partly_cloudy: "一部曇り", overcast: "曇り", fog: "霧", drizzle_light: "小雨（霧雨）", drizzle: "霧雨", drizzle_heavy: "強い霧雨", rain_light: "小雨", rain: "雨", rain_heavy: "大雨", snow_light: "小雪", snow: "雪", snow_heavy: "大雪", showers: "にわか雨", showers_heavy: "激しいにわか雨", thunderstorm: "雷雨", thunderstorm_hail: "雹を伴う雷雨" },
         setupTitle: "🔑 管理者パスワードの作成", setupDesc: "ようこそ！このワークスペースの所有権を確保するために、個人の秘密のパスワード（マスタートークン）を作成してください。", setupPlaceholder: "新しいパスワードを入力", setupBtn: "🚀 パスワードを保存してログイン",
         loginTitle: "🔒 ワークスペースへのログイン", loginDesc: "このワークスペースは保護されています。管理者パスワードまたは地域支店のセキュリティトークンを入力してください。", loginPlaceholder: "パスワード/トークンを入力", loginBtn: "🔓 ログイン", loginIncorrect: "❌ パスワードまたはセキュリティトークンが間違っています！"
@@ -310,17 +310,15 @@ async function apiCall(action, secret, payload = null) {
     if (payload) body.payload = payload;
     
     const ANON_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z"; 
-    
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const targetUrl = APP_CONFIG.API_URL;
     
-    const res = await fetch(proxyUrl + targetUrl, {
+    // ПРЯМОЙ ЗАПРОС К SUPABASE EDGE FUNCTION БЕЗ CORS-ANYWHERE
+    const res = await fetch(targetUrl, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${ANON_KEY}`,
-            'apikey': ANON_KEY,
-            'X-Requested-With': 'XMLHttpRequest'
+            'apikey': ANON_KEY
         },
         body: JSON.stringify(body)
     });
