@@ -181,12 +181,22 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // =====================================================================
-// 🛠️ СЕКЦИЯ НАСТРОЕК (ПЕРЕВЕДЕНО НА ИСПОЛЬЗОВАНИЕ EDGE FUNCTIONS) 🛠️
+// 🛠️ СЕКЦИЯ НАСТРОЕК (ДЛЯ ВЛАДЕЛЬЦА ПЛАТФОРМЫ И ПОКУПАТЕЛЕЙ) 🛠️
 // =====================================================================
 const APP_CONFIG = {
-    // ВАЖНО: Вставьте сюда полный URL вашей опубликованной функции workspace-api
-    API_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api", 
+    // 1. Учетные данные Supabase (возьмите из настроек вашего проекта: Project Settings -> API)
+    SUPABASE_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1", 
+    SUPABASE_KEY: "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z",
+
+    // 2. Название таблицы в Supabase, где хранятся данные всех рабочих пространств
+    //    ВАЖНО: должно совпадать с именем таблицы, которая уже используется в твоей базе.
+    //    Если захочешь переименовать таблицу в Supabase на своё усмотрение — поменяй и это значение.
+    SUPABASE_TABLE: "ukraine_monitoring",
+
+    // 3. ID рабочего пространства по умолчанию (если в ссылке нет параметра ?id=...)
     DEFAULT_WORKSPACE_ID: "default_workspace",
+
+    // 4. Язык интерфейса по умолчанию при первом входе (en, ua, fr, zh, es, de, hi, it, ja)
     DEFAULT_LANG: "en"
 };
 // =====================================================================
@@ -196,42 +206,114 @@ const LOCALES = {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
         chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Product Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
         wWind: "Wind", wSpeed: "m/s",
-        wc: { clear: "Clear sky", mostly_clear: "Mostly clear", partly_cloudy: "Partly cloudy", overcast: "Overcast", fog: "Fog", drizzle_light: "Light drizzle", drizzle: "Drizzle", drizzle_heavy: "Heavy drizzle", rain_light: "Light rain", rain: "Rain", rain_heavy: "Heavy rain", snow_light: "Light snow", snow: "Snow", snow_heavy: "Heavy snow", showers: "Rain showers", showers_heavy: "Violent showers", thunderstorm: "Thunderstorm", thunderstorm_hail: "Thunderstorm with hail" },
+ wc: { clear: "Clear sky", mostly_clear: "Mostly clear", partly_cloudy: "Partly cloudy", overcast: "Overcast", fog: "Fog", drizzle_light: "Light drizzle", drizzle: "Drizzle", drizzle_heavy: "Heavy drizzle", rain_light: "Light rain", rain: "Rain", rain_heavy: "Heavy rain", snow_light: "Light snow", snow: "Snow", snow_heavy: "Heavy snow", showers: "Rain showers", showers_heavy: "Violent showers", thunderstorm: "Thunderstorm", thunderstorm_hail: "Thunderstorm with hail" },
         setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
         loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
     },
     ua: {
-        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання?",
-        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва позиції / товару", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значества", col_weather: "Погодні умови", col_action: "Дія",
+        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора<br>(Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
+        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва позиції / товару", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
         wWind: "Вітер", wSpeed: "м/с",
-        wc: { clear: "Ясно", mostly_clear: "Переважно ясно", partly_cloudy: "Мінлива хмарність", overcast: "Похмуро", fog: "Туман", drizzle_light: "Легка мряка", drizzle: "Мряка", drizzle_heavy: "Сильна мряка", rain_light: "Невеликий дощ", rain: "Дощ", rain_heavy: "Сильний дощ", snow_light: "Невеликий сніг", snow: "Сніг", snow_heavy: "Сильний сніг", showers: "Зливи", showers_heavy: "Сильні зливи", thunderstorm: "Гроза", thunderstorm_hail: "Гроза з градом" },
-        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
-        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
+ wc: { clear: "Ясно", mostly_clear: "Переважно ясно", partly_cloudy: "Мінлива хмарність", overcast: "Похмуро", fog: "Туман", drizzle_light: "Легка мряка", drizzle: "Мряка", drizzle_heavy: "Сильна мряка", rain_light: "Невеликий дощ", rain: "Дощ", rain_heavy: "Сильний дощ", snow_light: "Невеликий сніг", snow: "Сніг", snow_heavy: "Сильний сніг", showers: "Зливи", showers_heavy: "Сильні зливи", thunderstorm: "Гроза", thunderstorm_hail: "Гроза з градом" },
+        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), чтобы зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
+        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу администратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
     },
-    ru: { /* ... Можете добавить русский перевод по аналогии ... */ }
+    fr: {
+        denied: "❌ ACCÈS REFUSÉ: Jeton invalide ou manquant dans l'URL.", adminSession: "👑 Panneau d'administration principal (Tous les espaces)", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur d'enregistrement: ", totalCount: "Nombre total de lignes:", confirmDelCol: "Supprimer cette colonne? Les données seront perdues.", confirmDelRow: "Supprimer cette ligne?", confirmClearHis: "Effacer l'historique d'analyse?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Gestionnaire de colonnes (Admin uniquement):", lblBranchManager: "🏢 Gestionnaire d'espaces / filiales:", btnSave: "💾 Enregistrer les données", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique d'analyse", btnAddCol: "➕ Ajouter une colonne", btnAddBranch: "➕ Ajouter un espace", colPlaceholder: "Nom de colonne", branchPlaceholder: "Nom de la filiale", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ajouter une ligne", copyLinkBtn: "🔗 Copier le lien", dashTitle: "🔑 Générateur de jetons de sécurité et de liens d'accès régionaux", thBranch: "Région / Filiale", thCoords: "Coordonnées centrales", thToken: "Jeton de sécurité (UUID)", thActions: "Actions", confirmDelBranch: "Supprimer complètement cette région et revocar son lien?",
+        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'article / produit", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
+        wWind: "Vent", wSpeed: "m/s",
+ wc: { clear: "Ciel dégagé", mostly_clear: "Généralement dégagé", partly_cloudy: "Partiellement nuageux", overcast: "Couvert", fog: "Brouillard", drizzle_light: "Bruine légère", drizzle: "Bruine", drizzle_heavy: "Forte bruine", rain_light: "Pluie légère", rain: "Pluie", rain_heavy: "Forte pluie", snow_light: "Neige légère", snow: "Neige", snow_heavy: "Forte neige", showers: "Averses", showers_heavy: "Fortes averses", thunderstorm: "Orage", thunderstorm_hail: "Orage avec grêle" },
+        setupTitle: "🔑 Création du mot de passe administrateur", setupDesc: "Bienvenue ! Veuillez inventer votre mot de passe secret personnel (Master Token) pour sécuriser vos droits sur cet espace.", setupPlaceholder: "Entrez le nouveau mot de passe", setupBtn: "🚀 Enregistrer et se connecter",
+        loginTitle: "🔒 Connexion à l'espace de travail", loginDesc: "Cet espace est protégé. Veuillez entrer le mot de passe administrateur ou le jeton de la filiale.", loginPlaceholder: "Entrez le mot de passe / jeton", loginBtn: "🔓 Se connecter", loginIncorrect: "❌ Mot de passe ou jeton incorrect !"
+    },
+    zh: {
+        denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清理分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
+        chartTitle: "业绩动态", col_id: "№", col_item_name: "项目 / 产品名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
+        wWind: "风向", wSpeed: "米/秒",
+ wc: { clear: "晴天", mostly_clear: "大致晴朗", partly_cloudy: "局部多云", overcast: "阴天", fog: "雾", drizzle_light: "小毛毛雨", drizzle: "毛毛雨", drizzle_heavy: "大毛毛雨", rain_light: "小雨", rain: "中雨", rain_heavy: "大雨", snow_light: "小雪", snow: "中雪", snow_heavy: "大雪", showers: "阵雨", showers_heavy: "强阵雨", thunderstorm: "雷暴", thunderstorm_hail: "雷暴伴冰雹" },
+        setupTitle: "🔑 创建管理员密码", setupDesc: "欢迎！请想出一个您的个人秘密密码 (Master Token) 来确保对此工作区的所有者权限。", setupPlaceholder: "输入新密码", setupBtn: "🚀 保存密码并登录",
+        loginTitle: "🔒 工作区登录", loginDesc: "此工作区受保护。请输入管理员密码或区域分支机构安全令牌。", loginPlaceholder: "输入密码 / 令牌", loginBtn: "🔓 登录", loginIncorrect: "❌ 密码或安全令牌不正确！"
+    },
+    es: {
+        denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Format o inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordonadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
+        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del artículo / producto", col_coords: "Coordenadas (Lat, Lng)", col_date: "Date", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Conditions metereológicas", col_action: "Acción",
+        wWind: "Viento", wSpeed: "m/s",
+ wc: { clear: "Cielo despejado", mostly_clear: "Mayormente despejado", partly_cloudy: "Parcialmente nublado", overcast: "Nublado", fog: "Niebla", drizzle_light: "Llovizna ligera", drizzle: "Llovizna", drizzle_heavy: "Llovizna intensa", rain_light: "Lluvia ligera", rain: "Lluvia", rain_heavy: "Lluvia intensa", snow_light: "Nieve ligera", snow: "Nieve", snow_heavy: "Nieve intensa", showers: "Chubascos", showers_heavy: "Chubascos fuertes", thunderstorm: "Tormenta eléctrica", thunderstorm_hail: "Tormenta con granizo" },
+        setupTitle: "🔑 Creación de contraseña de administrador", setupDesc: "¡Bienvenido! Piense en su contraseña secreta personal (Master Token) para asegurar los derechos de propietario.", setupPlaceholder: "Introduzca nueva contraseña", setupBtn: "🚀 Guardar contraseña e iniciar sesión",
+        loginTitle: "🔒 Inicio de sesión del espacio", loginDesc: "Este espacio está protegido. Introduzca la contraseña de administrador o el token de la sucursal.", loginPlaceholder: "Introduzca contraseña / token", loginBtn: "🔓 Iniciar sesión", loginIncorrect: "❌ ¡Contraseña o token incorrecto!"
+    },
+    de: {
+        denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte лоschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten speichern", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?",
+        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Artikel- / Produktname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
+        wWind: "Wind", wSpeed: "m/s",
+ wc: { clear: "Klarer Himmel", mostly_clear: "Überwiegend klar", partly_cloudy: "Teilweise bewölkt", overcast: "Bedeckt", fog: "Nebel", drizzle_light: "Leichter Nieselregen", drizzle: "Nieselregen", drizzle_heavy: "Starker Nieselregen", rain_light: "Leichter Regen", rain: "Regen", rain_heavy: "Starker Regen", snow_light: "Leichter Schnee", snow: "Schnee", snow_heavy: "Starker Schnee", showers: "Regenschauer", showers_heavy: "Starke Schauer", thunderstorm: "Gewitter", thunderstorm_hail: "Gewitter mit Hagel" },
+        setupTitle: "🔑 Erstellung des Administrator-Passworts", setupDesc: "Willkommen! Bitte denken Sie sich Ihr persönliches Passwort (Master Token) aus, um die Eigentümerrechte zu sichern.", setupPlaceholder: "Neues Passwort eingeben", setupBtn: "🚀 Passwort speichern & anmelden",
+        loginTitle: "🔒 Workspace-Login", loginDesc: "Dieser Bereich ist geschützt. Bitte geben Sie das Administrator-Passwort oder das Filial-Token ein.", loginPlaceholder: "Passwort / Token eingeben", loginBtn: "🔓 Anmelden", loginIncorrect: "❌ Falsches Passwort oder Token!"
+    },
+    hi: {
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |माстер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयाр", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / उत्पाद का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
+        wWind: "हवा", wSpeed: "मी/से",
+ wc: { clear: "साफ आसमान", mostly_clear: "ज्यादातर साफ", partly_cloudy: "आंशिक बादल", overcast: "बादल छाए", fog: "कोहरा", drizzle_light: "हल्की बूंदाबांदी", drizzle: "बूंदाबांदी", drizzle_heavy: "तेज बूंदाबांदी", rain_light: "हल्की बारिश", rain: "बारिश", rain_heavy: "तेज बारिश", snow_light: "हल्की बर्फबारी", snow: "बर्फबारी", snow_heavy: "भारी बर्फबारी", showers: "बौछारें", showers_heavy: "तेज बौछारें", thunderstorm: "आंधी-तूफान", thunderstorm_hail: "ओलों के साथ तूफान" },
+        setupTitle: "🔑 व्यवस्थापक पासवर्ड बनाना", setupDesc: "स्वागत है! कृपया इस कार्यक्षेत्र पर स्वामी के अधिकारों को सुरक्षित करने के लिए अपना व्यक्तिगत गुप्त पासवर्ड (मास्टर टोकन) बनाएं।", setupPlaceholder: "नया पासवर्ड दर्ज करें", setupBtn: "🚀 पासवर्ड सहेजें और लॉगिन करें",
+        loginTitle: "🔒 कार्यक्षेत्र लॉगिन", loginDesc: "यह कार्यक्षेत्र सुरक्षित है। कृपया व्यवस्थापक पासवर्ड या क्षेत्रीय शाखा सुरक्षा टोकन दर्ज करें।", loginPlaceholder: "पासवर्ड / टोकन दर्ज करें", loginBtn: "🔓 लॉगिन", loginIncorrect: "❌ गलत पासवर्ड या सुरक्षा टोकन!"
+    },
+    it: {
+        denied: "❌ ACCESSO NEGATO: Token non valido o mancante nell'URL.", adminSession: "👑 Pannello di Amministrazione Master (Tutti i Workspace)", secureSession: "🔒 Sessione Sicura", saved: "✅ Salvato: ", saveError: "❌ Errore di Salvataggio: ", totalCount: "Conteggio Righe Totale:", confirmDelCol: "Eliminare questa colonna? I dati andranno persi.", confirmDelRow: "Eliminare questa riga?", confirmClearHis: "Cancellare la cronologia dell'analisi?", missingCoords: "❌ Coordinate mancanti", apiError: "❌ Errore", invalidFormat: "⚠️ Formato non valido", loading: "🔄 Caricamento...", sync: "Sincronizzato con l'Archivio", readyEmpty: "Pronto", lblColManager: "📋 Gestore Colonne (Solo Admin):", lblBranchManager: "🏢 Gestore Workspace / Filiali:", btnSave: "💾 Salva Dati e Struttura", btnExport: "📥 Esporta JSON", btnClearHis: "🧹 Cancella Cronologia Grafico", btnAddCol: "➕ Aungi Colonna", btnAddBranch: "➕ Aungi Workspace", colPlaceholder: "Nome Colonna", branchPlaceholder: "Nome Filiale", coordsPlaceholder: "Coordinate (Lat, Lng)", addBtnRow: "➕ Aungi Riga", copyLinkBtn: "🔗 Copia Link", dashTitle: "🔑 Generatore di Token di Sicurezza e Link di Accesso Regionali", thBranch: "Regione / Workspace", thCoords: "Coordinate Centro", thToken: "Token di Sicurezza (UUID)", thActions: "Azioni", confirmDelBranch: "Eliminare completamente questa regione e revocare il suo link? Il token di sicurezza verrà inserito nella lista nera.",
+        chartTitle: "Dinamica delle Prestazioni", col_id: "№", col_item_name: "Nome Articolo / Prodotto", col_coords: "Coordinate (Lat, Lng)", col_date: "Data", col_time: "Ora", col_amount: "Quantità / Valore", col_weather: "Condizioni Meteo", col_action: "Azione",
+        wWind: "Vento", wSpeed: "m/s",
+ wc: { clear: "Cielo sereno", mostly_clear: "Prevalentemente sereno", partly_cloudy: "Parzialmente nuvoloso", overcast: "Nuvoloso", fog: "Nebbia", drizzle_light: "Pioviggine leggera", drizzle: "Pioviggine", drizzle_heavy: "Pioviggine intensa", rain_light: "Pioggia leggera", rain: "Pioggia", rain_heavy: "Pioggia intensa", snow_light: "Neve leggera", snow: "Neve", snow_heavy: "Neve intensa", showers: "Rovesci", showers_heavy: "Rovesci intensi", thunderstorm: "Temporale", thunderstorm_hail: "Temporale con grandine" },
+        setupTitle: "🔑 Creazione password amministratore", setupDesc: "Benvenuto! Inventa la tua password segreta personale (Master Token) per proteggere i tuoi diritti su questo spazio.", setupPlaceholder: "Inserisci nuova password", setupBtn: "🚀 Salva password e accedi",
+        loginTitle: "🔒 Accesso allo spazio di lavoro", loginDesc: "Questo spazio è protetto. Inserisci la password dell'amministratore o il token di sicurezza della filiale.", loginPlaceholder: "Inserisci password / token", loginBtn: "🔓 Accedi", loginIncorrect: "❌ Password o token di sicurezza errati!"
+    },
+    ja: {
+        denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 データと構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
+        chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 商品名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
+        wWind: "風向", wSpeed: "m/s",
+ wc: { clear: "快晴", mostly_clear: "ほぼ晴れ", partly_cloudy: "一部曇り", overcast: "曇り", fog: "霧", drizzle_light: "小雨（霧雨）", drizzle: "霧雨", drizzle_heavy: "強い霧雨", rain_light: "小雨", rain: "雨", rain_heavy: "大雨", snow_light: "小雪", snow: "雪", snow_heavy: "大雪", showers: "にわか雨", showers_heavy: "激しいにわか雨", thunderstorm: "雷雨", thunderstorm_hail: "雹を伴う雷雨" },
+        setupTitle: "🔑 管理者パスワードの作成", setupDesc: "ようこそ！このワークスペースの所有権を確保するために、個人の秘密のパスワード（マスタートークン）を作成してください。", setupPlaceholder: "新しいパスワードを入力", setupBtn: "🚀 パスワードを保存してログイン",
+        loginTitle: "🔒 ワークスペースへのログイン", loginDesc: "このワークスペースは保護されています。管理者パスワードまたは地域支店のセキュリティトークンを入力してください。", loginPlaceholder: "パスワード/トークンを入力", loginBtn: "🔓 ログイン", loginIncorrect: "❌ パスワードまたはセキュリティトークンが間違っています！"
+    }
 };
 
 let currentLang = localStorage.getItem('lang') || APP_CONFIG.DEFAULT_LANG;
+const SUPABASE_URL = APP_CONFIG.SUPABASE_URL; 
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY; 
+const SUPABASE_TABLE = APP_CONFIG.SUPABASE_TABLE;
 
 const urlParams = new URLSearchParams(window.location.search);
 const COMPANY_ID = urlParams.get('id') || APP_CONFIG.DEFAULT_WORKSPACE_ID; 
 const USER_TOKEN = urlParams.get('token') || '';
 
+let MASTER_TOKEN = "";
 let DB_PAYLOAD = null; 
 
 let TABLE_CONFIG = {
+    stateId: COMPANY_ID, 
+    masterToken: '', 
     branches: {},
-    columns: []
+    columns: [
+        { id: "id", title: "№", width: "4%", type: "index" },
+        { id: "item_name", title: "Item / Product Name", width: "16%", type: "text" },
+        { id: "coords", title: "Coordinates (Lat, Lng)", width: "14%", type: "coordinates" },
+        { id: "date", title: "Date", width: "10%", type: "date" },
+        { id: "time", title: "Time", width: "8%", type: "time" },
+        { id: "amount", title: "Amount / Value", width: "12%", type: "number" },
+        { id: "weather", title: "Weather Conditions", width: "16%", type: "text" },
+        { id: "action", title: "Action", width: "8%", type: "action" }
+    ]
 };
 
 let IS_ADMIN = false;
+let CURRENT_BRANCH_OBJ = null;
 let CURRENT_BRANCH_NAME = null;
 
 let map, activeMarkers = {};
 let analyticsChart = null; 
 let globalHistory = [];
-let deletedRowIds = []; 
+let deletedRowIds = []; // Память удаленных строк для защиты при синхронизации
 
+// Экранирование пользовательского текста перед вставкой через innerHTML (защита от XSS)
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
@@ -242,84 +324,61 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-// УНИВЕРСАЛЬНЫЙ АДАПТЕР ДЛЯ ОБЩЕНИЯ С EDGE FUNCTION (С ИСПОЛЬЗОВАНИЕМ CORS-ПРОКСИ)
-async function apiCall(action, secret, payload = null) {
-    const body = { action, id: COMPANY_ID, secret };
-    if (payload) body.payload = payload;
-    
-    // Твой скопированный публичный ключ
-    const ANON_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z"; 
-    
-    // Используем CORS-прокси для обхода ограничений браузера на запросы к внешним API
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-    const targetUrl = APP_CONFIG.API_URL;
-    
-    const res = await fetch(proxyUrl + targetUrl, {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${ANON_KEY}`,
-            'apikey': ANON_KEY,
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(body)
-    });
-    
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.error) {
-        throw new Error(data.error || `HTTP ${res.status}`);
-    }
-    return data;
+// Функция для криптографического хэширования паролей (SHA-256)
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ПРОВЕРКА СОСТОЯНИЯ (Init/Load)
-async function checkAuthState() {
-    if (!USER_TOKEN) {
-        try {
-            await apiCall("login", "check_exists");
-        } catch (e) {
-            hideAllDashboardCards();
-            if (e.message === "Workspace not found") {
-                document.getElementById('setupPanel').style.display = 'block';
-                return false;
-            } else {
-                console.error("ОШИБКА API:", e.message);
-                document.getElementById('loginPanel').style.display = 'block';
-                const errorEl = document.getElementById('loginError');
-                errorEl.innerText = "API Error: " + e.message;
-                errorEl.style.display = 'block';
-                return false;
-            }
-        }
+async function checkDatabaseConfig() {
+    if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
+        document.getElementById('saveStatus').innerHTML = "⚠️ Error: The link does not contain a company ID (?id=name).";
+        hideAllDashboardCards();
         return false;
     }
-
     try {
-        const res = await apiCall("load", USER_TOKEN);
+        const response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}?id=eq.${TABLE_CONFIG.stateId}`, { 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
+        });
+        if (!response.ok) throw new Error();
+        const resData = await response.json();
         
-        IS_ADMIN = res.role === "admin";
-        CURRENT_BRANCH_NAME = res.role === "branch" ? res.branchName : null;
-        
-        TABLE_CONFIG.columns = res.columns || [];
-        if (IS_ADMIN) {
-            TABLE_CONFIG.branches = res.branches || {};
-        }
-        DB_PAYLOAD = { table: res.table, history: res.history }; 
-        
-        document.getElementById('loginPanel').style.display = 'none';
-        document.getElementById('setupPanel').style.display = 'none';
-        showAllDashboardCards();
-        return true;
-    } catch (e) {
-        hideAllDashboardCards();
-        if (e.message === "Workspace not found") {
-            document.getElementById('setupPanel').style.display = 'block';
+        if (resData && resData.length > 0 && resData[0].data.masterToken) {
+            const dbMasterToken = resData[0].data.masterToken;
+            DB_PAYLOAD = resData[0].data; 
+            
+            // Хэшируем токен из ссылки для проверки
+            const hashedUrlToken = USER_TOKEN ? await sha256(USER_TOKEN) : '';
+            const isBranchToken = DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(USER_TOKEN);
+            
+            // Сравниваем хэши (или проверяем филиал)
+            if (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken || isBranchToken) {
+                IS_ADMIN = (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken);
+                MASTER_TOKEN = dbMasterToken; // Запоминаем именно хэш для будущих сохранений
+                TABLE_CONFIG.masterToken = dbMasterToken;
+                
+                document.getElementById('loginPanel').style.display = 'none';
+                document.getElementById('setupPanel').style.display = 'none';
+                showAllDashboardCards();
+                return true;
+            } else {
+                document.getElementById('loginPanel').style.display = 'block';
+                document.getElementById('setupPanel').style.display = 'none';
+                hideAllDashboardCards();
+                return false;
+            }
         } else {
-            document.getElementById('loginPanel').style.display = 'block';
-            const errorEl = document.getElementById('loginError');
-            errorEl.innerText = "Load Error: " + e.message;
-            errorEl.style.display = 'block';
+            document.getElementById('setupPanel').style.display = 'block';
+            document.getElementById('loginPanel').style.display = 'none';
+            hideAllDashboardCards();
+            return false;
         }
+    } catch (e) {
+        document.getElementById('saveStatus').innerHTML = "❌ Connection error. Please check the database.";
+        hideAllDashboardCards();
         return false;
     }
 }
@@ -339,36 +398,43 @@ function showAllDashboardCards() {
     document.getElementById('tableCard').style.display = 'block';
 }
 
-// ЛОГИН
 async function checkEnteredPassword() {
-    const token = document.getElementById('loginTokenInput').value.trim();
-    if (!token) return;
+    const enteredPass = document.getElementById('loginTokenInput').value.trim();
+    const t = LOCALES[currentLang] || LOCALES['en'];
+    if (!enteredPass) return;
     
-    try {
-        const res = await apiCall("login", token);
-        if (res.ok) {
-            window.location.search = `?id=${COMPANY_ID}&token=${token}`;
-        }
-    } catch (err) {
-        const t = LOCALES[currentLang] || LOCALES['en'];
+    const hashedPass = await sha256(enteredPass);
+    const isBranchToken = DB_PAYLOAD && DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(enteredPass);
+    
+    if (hashedPass === DB_PAYLOAD.masterToken || enteredPass === DB_PAYLOAD.masterToken || isBranchToken) {
+        window.location.search = `?id=${COMPANY_ID}&token=${enteredPass}`;
+    } else {
         const errorEl = document.getElementById('loginError');
         errorEl.innerText = t.loginIncorrect;
         errorEl.style.display = 'block';
     }
 }
 
-// ПЕРВИЧНАЯ НАСТРОЙКА (Setup)
 async function saveInitialPassword() {
     const token = document.getElementById('setupMasterToken').value.trim();
-    if (!token) return alert("Please enter a password.");
-    if (token.length < 6) return alert("Password must be at least 6 characters long.");
+    if (!token) { alert("Please enter a password."); return; }
     
+    // Превращаем пароль в хэш перед отправкой
+    const hashedToken = await sha256(token);
+    MASTER_TOKEN = hashedToken;
+    TABLE_CONFIG.masterToken = hashedToken;
+    
+    const bodyData = { id: TABLE_CONFIG.stateId, data: { masterToken: hashedToken, branches: {}, columns: TABLE_CONFIG.columns, table: [], history: [] } };
     try {
-        await apiCall("setup", token);
-        window.location.search = `?id=${COMPANY_ID}&token=${token}`;
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
+        let response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
+        });
+        if (response.ok) {
+            window.location.search = `?id=${COMPANY_ID}&token=${token}`;
+        } else { alert("Save error."); }
+    } catch (err) { alert("Error: " + err.message); }
 }
 
 function getColumnTitle(col, lang) {
@@ -376,7 +442,7 @@ function getColumnTitle(col, lang) {
     if (typeof col.title === 'object' && col.title !== null) {
         return col.title[lang] || col.title['en'] || Object.values(col.title)[0] || col.id;
     }
-    const t = LOCALES[lang] || LOCALES['en'];
+    const t = LOCALES[lang];
     if (t && t['col_' + col.id]) return t['col_' + col.id];
     return col.title;
 }
@@ -462,6 +528,7 @@ function getWindDirection(deg) {
     return 'Unknown';
 }
 
+// Стандартные коды погоды Open-Meteo (WMO) -> ключ описания в LOCALES[lang].wc
 const WEATHER_CODE_MAP = {
     0: { icon: '☀️', key: 'clear' }, 1: { icon: '🌤️', key: 'mostly_clear' }, 2: { icon: '⛅', key: 'partly_cloudy' }, 3: { icon: '☁️', key: 'overcast' },
     45: { icon: '🌫️', key: 'fog' }, 48: { icon: '🌫️', key: 'fog' },
@@ -518,16 +585,49 @@ function renderColumnPills() {
     });
 }
 
+// -------------------------------------------------------------
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА (Google + MyMemory Fallback)
+// -------------------------------------------------------------
 async function translateText(text, sourceLang, targetLang) {
     try {
-        const getValidCode = (lang) => { if (lang === 'ua') return 'uk'; if (lang === 'zh') return 'zh-CN'; return lang; };
-        const src = getValidCode(sourceLang); const tgt = getValidCode(targetLang);
+        const getValidCode = (lang) => {
+            if (lang === 'ua') return 'uk';
+            if (lang === 'zh') return 'zh-CN';
+            return lang;
+        };
+
+        const src = getValidCode(sourceLang);
+        const tgt = getValidCode(targetLang);
+        
         if (src.toLowerCase() === tgt.toLowerCase()) return text;
+        
+        // 1. Google Translate API
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=${tgt}&dt=t&q=${encodeURIComponent(text)}`;
         const res = await fetch(url);
-        if (res.ok) { const data = await res.json(); if (data && data[0] && data[0][0] && data[0][0][0]) return data[0][0][0]; }
+        
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data[0] && data[0][0] && data[0][0][0]) {
+                return data[0][0][0];
+            }
+        }
+        
+        // 2. MyMemory Fallback
+        const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
+        
+        const fbRes = await fetch(fbUrl);
+        if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            if (fbData.responseData && fbData.responseData.translatedText) {
+                return fbData.responseData.translatedText;
+            }
+        }
+        
         return text;
-    } catch (e) { return text; }
+    } catch (e) {
+        console.error("Translation error for lang:", targetLang, e);
+        return text;
+    }
 }
 
 async function addNewColumn() {
@@ -542,11 +642,13 @@ async function addNewColumn() {
     
     const titleObject = {};
     const langs = Object.keys(LOCALES);
+    
     for (const langKey of langs) {
         if (currentLang.toLowerCase() === langKey.toLowerCase()) {
             titleObject[langKey] = titleValue;
         } else {
             titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
+            // Увеличенная задержка 600мс для обхода блокировок Rate Limit
             await new Promise(r => setTimeout(r, 600));
         }
     }
@@ -656,7 +758,7 @@ function backupTableData() {
 
 function rebuildTableWithData(backedData) {
     const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
-    const targetBranches = IS_ADMIN ? Object.entries(TABLE_CONFIG.branches) : [[USER_TOKEN, { name: CURRENT_BRANCH_NAME }]];
+    const targetBranches = IS_ADMIN ? Object.entries(TABLE_CONFIG.branches) : Object.entries(TABLE_CONFIG.branches).filter(([tok, b]) => b.name === CURRENT_BRANCH_NAME);
     const t = LOCALES[currentLang] || LOCALES['en'];
 
     targetBranches.forEach(([token, branchObj]) => {
@@ -735,7 +837,7 @@ function removeRow(btn) {
     if (confirm(t.confirmDelRow)) {
         const row = btn.closest('tr'); 
         const rowId = row.getAttribute('data-id');
-        deletedRowIds.push(rowId); 
+        deletedRowIds.push(rowId); // Запоминаем, что эту строку мы удалили осознанно
         if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
         row.remove(); 
         reindexTable(); 
@@ -780,8 +882,8 @@ function updateMapFromTable() {
         let finalCoords = parseCoordinates(coordsStr);
         if (!finalCoords) {
             if (!row.dataset.lat || !row.dataset.lng) {
-                const found = IS_ADMIN ? Object.values(TABLE_CONFIG.branches).find(b => b.name === branch) : null;
-                const baseCoords = found ? found.coords : [48.3794, 31.1656];
+                const found = Object.values(TABLE_CONFIG.branches).find(b => b.name === branch);
+                const baseCoords = found ? found.coords : [20, 0]; // нейтральная точка, если у филиала нет своих координат
                 row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6); row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
             }
             finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
@@ -833,11 +935,12 @@ function updateAnalytics() {
     } else { analyticsChart.data.labels = labels; analyticsChart.data.datasets[0].data = avgData; analyticsChart.data.datasets[1].data = sumData; analyticsChart.update(); }
 }
 
-// СОХРАНЕНИЕ
 async function saveTable(showVisualStatus = false) {
+    if (!SUPABASE_URL) return;
     const t = LOCALES[currentLang] || LOCALES['en']; 
     if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
 
+    // 1. Собираем локальные данные с экрана
     const localRowsData = [];
     document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
         const branchName = row.getAttribute('data-branch') || "";
@@ -874,22 +977,78 @@ async function saveTable(showVisualStatus = false) {
         });
     }
 
-    globalHistory = localHistory;
-    
-    // Подготовка пакета для отправки в Edge Function
-    const payload = { 
-        table: localRowsData, 
-        history: globalHistory 
-    };
-    
-    if (IS_ADMIN) {
-        payload.branches = TABLE_CONFIG.branches;
-        payload.columns = TABLE_CONFIG.columns;
+    let finalTableData = localRowsData; 
+    let finalHistory = localHistory;
+    let finalBranches = TABLE_CONFIG.branches;
+    let finalColumns = TABLE_CONFIG.columns;
+
+    // 2. СКАЧИВАЕМ СВЕЖУЮ ВЕРСИЮ ИЗ БАЗЫ (Защита от Race Condition)
+    try {
+        const response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}?id=eq.${TABLE_CONFIG.stateId}`, { 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
+        });
+        
+        if (response.ok) {
+            const resData = await response.json();
+            if (resData && resData.length > 0) {
+                const serverPayload = resData[0].data; 
+                const serverTableData = serverPayload.table || []; 
+                const serverHistory = serverPayload.history || [];
+
+                if (!IS_ADMIN && CURRENT_BRANCH_NAME) {
+                    // ФИЛИАЛ: Сохраняем чужие данные нетронутыми, обновляем только свои
+                    const otherBranchesTable = serverTableData.filter(row => row.branch !== CURRENT_BRANCH_NAME);
+                    finalTableData = [...otherBranchesTable, ...localRowsData]; 
+                    
+                    const otherBranchesHistory = serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME);
+                    const ownHistory = localHistory.filter(h => h.branch === CURRENT_BRANCH_NAME);
+                    finalHistory = [...otherBranchesHistory, ...ownHistory];
+                    
+                    // Филиал не имеет права перезаписывать настройки колонок и список филиалов
+                    finalBranches = serverPayload.branches || TABLE_CONFIG.branches;
+                    finalColumns = serverPayload.columns || TABLE_CONFIG.columns;
+                } else if (IS_ADMIN) {
+                    // АДМИН: Берем локальные данные, но добавляем новые строки, которые филиалы создали секунду назад
+                    const localRowIds = new Set(localRowsData.map(r => r.id));
+                    
+                    // Находим строки в базе, которых нет на экране админа, И которые админ не удалял только что
+                    const newServerRows = serverTableData.filter(r => !localRowIds.has(r.id) && !r.isHeader && typeof deletedRowIds !== 'undefined' && !deletedRowIds.includes(r.id));
+                    finalTableData = [...localRowsData, ...newServerRows];
+
+                    const localHistIds = new Set(localHistory.map(h => h.rowId + '_' + h.date));
+                    const newServerHist = serverHistory.filter(h => !localHistIds.has(h.rowId + '_' + h.date));
+                    finalHistory = [...localHistory, ...newServerHist];
+                }
+            }
+        }
+    } catch (e) {
+        console.warn("Синхронизация не удалась, сохраняем локальную версию", e);
     }
 
+    // 3. ОТПРАВЛЯЕМ ОБЪЕДИНЕННЫЕ ДАННЫЕ
+    globalHistory = finalHistory;
+    const bodyData = { 
+        id: TABLE_CONFIG.stateId, 
+        data: { 
+            masterToken: MASTER_TOKEN, // Отправляем хэшированный пароль
+            branches: finalBranches, 
+            columns: finalColumns, 
+            table: finalTableData, 
+            history: globalHistory 
+        } 
+    };
+
     try {
-        await apiCall("save", USER_TOKEN, payload);
+        let response = await fetch(`${SUPABASE_URL}/${SUPABASE_TABLE}`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
+        });
+        if (!response.ok) throw new Error(`Code ${response.status}`);
         if (showVisualStatus) document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
+        
+        // Очищаем кэш удаленных строк после успешного сохранения
         deletedRowIds = []; 
     } catch (err) { 
         document.getElementById('saveStatus').innerText = t.saveError + err.message; 
@@ -899,30 +1058,40 @@ async function saveTable(showVisualStatus = false) {
 }
 
 async function loadTable() {
-    const isReady = await checkAuthState();
+    const isReady = await checkDatabaseConfig();
     if (!isReady) return; 
 
     const t = LOCALES[currentLang] || LOCALES['en'];
     try {
         const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+        const payload = DB_PAYLOAD;
         
-        globalHistory = DB_PAYLOAD.history || []; 
-        const tableData = DB_PAYLOAD.table || [];
+        if (payload.columns && Array.isArray(payload.columns)) TABLE_CONFIG.columns = payload.columns;
+        if (payload.branches && typeof payload.branches === 'object') {
+            TABLE_CONFIG.branches = payload.branches; CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null; CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
+        }
+
+        if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
+            document.getElementById('saveStatus').innerHTML = t.denied;
+            document.getElementById('columnManagerPanel').style.display = 'none';
+            document.getElementById('branchManagerPanel').style.display = 'none';
+            return;
+        }
         
+        globalHistory = payload.history || []; const tableData = payload.table || [];
         buildTableStructure(); renderColumnPills(); applyLocalization(); renderTokenDashboard();
 
         if (tableData.length === 0) { updateMapFromTable(); return; }
 
         tableData.forEach(rowData => {
             let rowBranch = rowData.branch;
+            if (!IS_ADMIN && rowBranch !== CURRENT_BRANCH_NAME) return;
+
             let row;
             if (rowData.isHeader) {
                 row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', rowBranch);
-                let adminButtons = '';
-                if (IS_ADMIN) {
-                    const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
-                    adminButtons = `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>`;
-                }
+                const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
+                let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>` : '';
                 row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${escapeHtml(rowBranch)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${escapeHtml(rowBranch)}', this)">${t.addBtnRow}</button></td>`;
             } else { 
                 row = createDataRow(rowBranch, rowData, '', false); 
@@ -930,18 +1099,10 @@ async function loadTable() {
             tbody.appendChild(row);
         });
 
-        reindexTable(); updateMapFromTable(); 
-        document.getElementById('saveStatus').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
-        
-        if (!IS_ADMIN && tableData.length > 1) {
-            const firstCoordRow = tableData.find(r => !r.isHeader && r.data.coords);
-            if (firstCoordRow) {
-                const parsed = parseCoordinates(firstCoordRow.data.coords);
-                if (parsed) map.setView(parsed, 11);
-            }
-        }
+        reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
+        if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
     } catch (err) {
-        document.getElementById('saveStatus').innerHTML = 'Error: ' + err.message;
+        buildTableStructure(); renderColumnPills(); updateMapFromTable(); document.getElementById('saveStatus').innerHTML = 'Error: ' + err.message;
     }
 }
 
@@ -951,7 +1112,7 @@ async function clearChartHistory() {
 }
 
 function initMap() { 
-    const defaultCenter = [48.3794, 31.1656]; const defaultZoom = 5; 
+    const defaultCenter = [30, 0]; const defaultZoom = 2; 
     map = L.map('map').setView(defaultCenter, defaultZoom); 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); 
     map.on('click', function(e) {
@@ -960,32 +1121,14 @@ function initMap() {
     });
 }
 
-function exportTable() { 
-    const allRowsData = []; 
-    document.querySelectorAll('#dynamicTable tbody tr').forEach(row => { 
-        allRowsData.push({ 
-            isHeader: row.classList.contains('region-header-row'), 
-            branch: row.getAttribute('data-branch') || "", 
-            id: row.getAttribute('data-id') || "", 
-            cells: [...row.cells].map(cell => cell.innerText) 
-        }); 
-    }); 
-    const exportData = { columns: TABLE_CONFIG.columns, table: allRowsData, history: globalHistory };
-    if (IS_ADMIN) exportData.branches = TABLE_CONFIG.branches;
-    
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' }); 
-    const a = document.createElement('a'); 
-    a.href = URL.createObjectURL(blob); 
-    a.download = `export_${new Date().toISOString().slice(0,10)}.json`; 
-    a.click(); 
-}
+function exportTable() { const allRowsData = []; document.querySelectorAll('#dynamicTable tbody tr').forEach(row => { allRowsData.push({ isHeader: row.classList.contains('region-header-row'), branch: row.getAttribute('data-branch') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) }); }); const blob = new Blob([JSON.stringify({ branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: allRowsData, history: globalHistory }, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `export_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
 
 window.onload = async () => { 
     initMap(); 
     applyLocalization();
     await loadTable(); 
     
-    if (!IS_ADMIN) {
+    if (MASTER_TOKEN && !IS_ADMIN) {
         document.getElementById('columnManagerPanel').style.display = 'none';
         document.getElementById('branchManagerPanel').style.display = 'none';
         document.getElementById('clearHistoryBtn').style.display = 'none';
