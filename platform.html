@@ -6,7 +6,6 @@
     <title>Universal Data Collection Platform</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* CSS стили остались без изменений */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
         .container { max-width: 100%; margin: auto; }
@@ -267,11 +266,16 @@ async function checkAuthState() {
         try {
             await apiCall("login", "check_exists");
         } catch (e) {
+            hideAllDashboardCards();
             if (e.message === "Workspace not found") {
                 document.getElementById('setupPanel').style.display = 'block';
                 return false;
-            } else { 
+            } else {
+                console.error("ОШИБКА API:", e.message);
                 document.getElementById('loginPanel').style.display = 'block';
+                const errorEl = document.getElementById('loginError');
+                errorEl.innerText = "API Error: " + e.message;
+                errorEl.style.display = 'block';
                 return false;
             }
         }
@@ -295,12 +299,15 @@ async function checkAuthState() {
         showAllDashboardCards();
         return true;
     } catch (e) {
+        hideAllDashboardCards();
         if (e.message === "Workspace not found") {
             document.getElementById('setupPanel').style.display = 'block';
         } else {
             document.getElementById('loginPanel').style.display = 'block';
+            const errorEl = document.getElementById('loginError');
+            errorEl.innerText = "Load Error: " + e.message;
+            errorEl.style.display = 'block';
         }
-        hideAllDashboardCards();
         return false;
     }
 }
@@ -966,7 +973,6 @@ window.onload = async () => {
     applyLocalization();
     await loadTable(); 
     
-    // Если это филиал, прячем админские панели
     if (!IS_ADMIN) {
         document.getElementById('columnManagerPanel').style.display = 'none';
         document.getElementById('branchManagerPanel').style.display = 'none';
