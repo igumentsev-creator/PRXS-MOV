@@ -202,7 +202,7 @@ const LOCALES = {
     },
     ua: {
         denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання?",
-        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва позиції / товару", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
+        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва позиції / товару", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значества", col_weather: "Погодні умови", col_action: "Дія",
         wWind: "Вітер", wSpeed: "м/с",
         wc: { clear: "Ясно", mostly_clear: "Переважно ясно", partly_cloudy: "Мінлива хмарність", overcast: "Похмуро", fog: "Туман", drizzle_light: "Легка мряка", drizzle: "Мряка", drizzle_heavy: "Сильна мряка", rain_light: "Невеликий дощ", rain: "Дощ", rain_heavy: "Сильний дощ", snow_light: "Невеликий сніг", snow: "Сніг", snow_heavy: "Сильний сніг", showers: "Зливи", showers_heavy: "Сильні зливи", thunderstorm: "Гроза", thunderstorm_hail: "Гроза з градом" },
         setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
@@ -242,7 +242,7 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-// УНИВЕРСАЛЬНЫЙ АДАПТЕР ДЛЯ ОБЩЕНИЯ С EDGE FUNCTION
+// УНИВЕРСАЛЬНЫЙ АДАПТЕР ДЛЯ ОБЩЕНИЯ С EDGE FUNCTION (С ИСПОЛЬЗОВАНИЕМ CORS-ПРОКСИ)
 async function apiCall(action, secret, payload = null) {
     const body = { action, id: COMPANY_ID, secret };
     if (payload) body.payload = payload;
@@ -250,12 +250,17 @@ async function apiCall(action, secret, payload = null) {
     // Твой скопированный публичный ключ
     const ANON_KEY = "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z"; 
     
-    const res = await fetch(APP_CONFIG.API_URL, {
+    // Используем CORS-прокси для обхода ограничений браузера на запросы к внешним API
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const targetUrl = APP_CONFIG.API_URL;
+    
+    const res = await fetch(proxyUrl + targetUrl, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${ANON_KEY}`,
-            'apikey': ANON_KEY
+            'apikey': ANON_KEY,
+            'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify(body)
     });
