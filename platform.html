@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universal Data Collection Platform</title>
-    <meta http-equiv="Content-Security-Policy" 
-          content="default-src 'self'; 
-                   script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; 
-                   style-src 'self' 'unsafe-inline' https://unpkg.com; 
-                   img-src 'self' data: https://*.tile.openstreetmap.org; 
-                   connect-src 'self' https://api.open-meteo.com https://translate.googleapis.com https://api.mymemory.translated.net;">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-          crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
+        body { font-family: Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
         .container { max-width: 100%; margin: auto; }
         .card { background: white; border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
         
@@ -53,13 +45,12 @@
         .readonly { background: #f8fafc; color: #64748b; font-weight: bold; }
         
         .toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; align-items: center; }
-        button.main-btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); transition: background 0.2s; }
+        button.main-btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
         button.main-btn:hover { background: #1d4ed8; }
-        button.main-btn:disabled { background: #94a3b8; cursor: not-allowed; }
         
         .config-panel { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e1; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
         .config-panel select, .config-panel input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
-        .config-panel button { background: #059669; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+        .config-panel button { background: #059669; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .config-panel button:hover { background: #047857; }
         .pill { background: #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; font-weight: bold; color: #334155; }
         .pill span { cursor: pointer; color: #ef4444; }
@@ -74,12 +65,6 @@
         .setup-screen, .login-screen { display: none; background: #ffffff; border: 2px solid #3b82f6; border-radius: 18px; padding: 25px; margin-bottom: 20px; text-align: center; }
         .setup-screen input, .login-screen input { width: 100%; max-width: 400px; padding: 10px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; text-align: center; }
         .error-msg { color: #dc2626; font-weight: bold; margin-bottom: 10px; display: none; font-size: 14px; }
-
-        .toast { position: fixed; top: 20px; right: 20px; background: #1e293b; color: white; padding: 12px 20px; border-radius: 8px; z-index: 1000; animation: slideIn 0.3s ease; max-width: 400px; word-break: break-all; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        
-        .password-strength { height: 4px; background: #e2e8f0; border-radius: 2px; margin-top: 5px; max-width: 400px; margin: 5px auto; }
-        .password-strength-bar { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; }
     </style>
 </head>
 <body>
@@ -87,20 +72,19 @@
 <div class="container">
     <div class="card setup-screen" id="setupPanel">
         <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Создание пароля администратора</h2>
-        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (минимум 8 символов, буквы и цифры).</p>
+        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (Master Token), чтобы зафиксировать права владельца над этим рабочим пространством.</p>
         <div>
-            <input type="password" id="setupMasterToken" placeholder="Введите новый пароль" minlength="8" autocomplete="new-password"><br>
-            <div class="password-strength"><div class="password-strength-bar" id="passwordStrengthBar"></div></div>
+            <input type="password" id="setupMasterToken" placeholder="Введите новый пароль"><br>
             <button class="main-btn" id="btnSaveSetup" onclick="saveInitialPassword()">🚀 Сохранить пароль и войти</button>
         </div>
     </div>
 
     <div class="card login-screen" id="loginPanel">
         <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Вход в рабочее пространство</h2>
-        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа.</p>
+        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа администратора или сотрудника филиала.</p>
         <div id="loginError" class="error-msg"></div>
         <div>
-            <input type="password" id="loginTokenInput" placeholder="Введите пароль / токен" autocomplete="current-password"><br>
+            <input type="password" id="loginTokenInput" placeholder="Введите пароль / токен"><br>
             <button class="main-btn" id="btnSubmitLogin" onclick="checkEnteredPassword()">🔓 Войти</button>
         </div>
     </div>
@@ -131,7 +115,7 @@
 
         <div class="config-panel" id="columnManagerPanel">
             <strong id="lblColManager">📋 Column Manager (Admin Only):</strong>
-            <input type="text" id="newColTitle" placeholder="Column Name" maxlength="50">
+            <input type="text" id="newColTitle" placeholder="Column Name">
             <select id="newColType">
                 <option value="text">Text</option>
                 <option value="number">Number (for Chart)</option>
@@ -145,8 +129,8 @@
 
         <div class="config-panel" id="branchManagerPanel">
             <strong id="lblBranchManager">🏢 Workspace / Branch Manager:</strong>
-            <input type="text" id="newBranchName" placeholder="Branch Name" maxlength="100">
-            <input type="text" id="newBranchCoords" placeholder="Coords (Lat, Lng)">
+            <input type="text" id="newBranchName" placeholder="Branch Name">
+            <input type="text" id="newBranchCoords" placeholder="Coords">
             <button id="btnAddBranch" onclick="addNewBranch()">➕ Add Workspace</button>
         </div>
 
@@ -193,70 +177,105 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" 
-        integrity="sha256-4MtUBJgBePvZ9rfUyFwGgZnQrH0LVK3iA3gENQnP5g=" 
-        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // =====================================================================
-// БЕЗОПАСНАЯ КОНФИГУРАЦИЯ
+// 🛠️ СЕКЦИЯ НАСТРОЕК (ДЛЯ ВЛАДЕЛЬЦА ПЛАТФОРМЫ И ПОКУПАТЕЛЕЙ) 🛠️
 // =====================================================================
-const SECURITY_CONFIG = {
-    MAX_LOGIN_ATTEMPTS: 5,
-    LOCKOUT_DURATION: 15 * 60 * 1000, // 15 минут
-    MIN_PASSWORD_LENGTH: 8,
-    SESSION_DURATION: 24 * 60 * 60 * 1000, // 24 часа
-    TOKEN_LENGTH: 32
-};
-
 const APP_CONFIG = {
-    SUPABASE_URL: "", // Будет установлено после загрузки
-    SUPABASE_KEY: "", // Будет установлено после загрузки
+    // 1. Учетные данные Supabase (возьмите из настроек вашего проекта: Project Settings -> API)
+    SUPABASE_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/rest/v1", 
+    SUPABASE_KEY: "sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z",
+
+    // 2. ID рабочего пространства по умолчанию (если в ссылке нет параметра ?id=...)
     DEFAULT_WORKSPACE_ID: "default_workspace",
+
+    // 3. Язык интерфейса по умолчанию при первом входе (en, ua, fr, zh, es, de, hi, it, ja)
     DEFAULT_LANG: "en"
 };
+// =====================================================================
 
-// =====================================================================
-// ЛОКАЛИЗАЦИЯ
-// =====================================================================
 const LOCALES = {
     en: {
         denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
         chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
         wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection",
-        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please create a strong password (min 8 characters, letters and numbers).", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
-        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!", loginLocked: "🔒 Too many attempts. Please wait {minutes} minutes.",
-        passwordWeak: "Weak password", passwordMedium: "Medium password", passwordStrong: "Strong password"
+        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!"
     },
     ua: {
-        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора (Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
+        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора<br>(Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
         chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
         wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
-        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Створіть надійний пароль (мінімум 8 символів, літери та цифри).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
-        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!", loginLocked: "🔒 Забагато спроб. Зачекайте {minutes} хвилин.",
-        passwordWeak: "Слабкий пароль", passwordMedium: "Середній пароль", passwordStrong: "Надійний пароль"
+        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token), чтобы зафіксувати права власника над цим робочим простором.", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
+        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу администратора або співробітника філії.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
+    },
+    fr: {
+        denied: "❌ ACCÈS REFUSÉ: Jeton invalide ou manquant dans l'URL.", adminSession: "👑 Panneau d'administration principal (Tous les espaces)", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur d'enregistrement: ", totalCount: "Nombre total de lignes:", confirmDelCol: "Supprimer cette colonne? Les données seront perdues.", confirmDelRow: "Supprimer cette ligne?", confirmClearHis: "Effacer l'historique d'analyse?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Gestionnaire de colonnes (Admin uniquement):", lblBranchManager: "🏢 Gestionnaire d'espaces / filiales:", btnSave: "💾 Enregistrer les données", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique d'analyse", btnAddCol: "➕ Ajouter une colonne", btnAddBranch: "➕ Ajouter un espace", colPlaceholder: "Nom de colonne", branchPlaceholder: "Nom de la filiale", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ajouter une ligne", copyLinkBtn: "🔗 Copier le lien", dashTitle: "🔑 Générateur de jetons de sécurité et de liens d'accès régionaux", thBranch: "Région / Filiale", thCoords: "Coordonnées centrales", thToken: "Jeton de sécurité (UUID)", thActions: "Actions", confirmDelBranch: "Supprimer complètement cette région et revocar son lien?",
+        chartTitle: "Dynamique des performances", col_id: "№", col_item_name: "Nom de l'élément / cible", col_coords: "Coordonnées (Lat, Lng)", col_date: "Date", col_time: "Heure", col_amount: "Montant / Valeur", col_weather: "Conditions météorologiques", col_action: "Action",
+        wWind: "Vent", wSpeed: "m/s", wStability: "Stabilité", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        setupTitle: "🔑 Création du mot de passe administrateur", setupDesc: "Bienvenue ! Veuillez inventer votre mot de passe secret personnel (Master Token) pour sécuriser vos droits sur cet espace.", setupPlaceholder: "Entrez le nouveau mot de passe", setupBtn: "🚀 Enregistrer et se connecter",
+        loginTitle: "🔒 Connexion à l'espace de travail", loginDesc: "Cet espace est protégé. Veuillez entrer le mot de passe administrateur ou le jeton de la filiale.", loginPlaceholder: "Entrez le mot de passe / jeton", loginBtn: "🔓 Se connecter", loginIncorrect: "❌ Mot de passe ou jeton incorrect !"
+    },
+    zh: {
+        denied: "❌ 访问被拒绝：URL中令牌无效 or 缺失。", adminSession: "👑 主管控制面板（所有工作区）", secureSession: "🔒 安全会话", saved: "✅ 已保存: ", saveError: "❌ 保存错误: ", totalCount: "总行数:", confirmDelCol: "删除此列？数据将会丢失。", confirmDelRow: "删除此行？", confirmClearHis: "清除分析历史记录？", missingCoords: "❌ 缺少坐标", apiError: "❌ 错误", invalidFormat: "⚠️ 格式无效", loading: "🔄 加载中...", sync: "与存储同步", readyEmpty: "就绪", lblColManager: "📋 列管理器（仅限管理员）：", lblBranchManager: "🏢 工作区/分支机构管理器：", btnSave: "💾 保存数据 and 结构", btnExport: "📥 导出 JSON", btnClearHis: "🧹 清理分析历史", btnAddCol: "➕ 添加列", btnAddBranch: "➕ 工作区", colPlaceholder: "列名", branchPlaceholder: "分支机构名称", coordsPlaceholder: "坐标 (纬度, 经度)", addBtnRow: "➕ 添加行", copyLinkBtn: "🔗 复制链接", dashTitle: "🔑 安全令牌与区域访问链接生成器", thBranch: "区域 / 工作区", thCoords: "中心坐标", thToken: "安全令牌 (UUID)", thActions: "操作", confirmDelBranch: "完全删除该区域并撤销 strength 其链接？该安全令牌将被拉黑。",
+        chartTitle: "业绩动态", col_id: "№", col_item_name: "项 / 目标名称", col_coords: "坐标 (纬度, 经度)", col_date: "日期", col_time: "时间", col_amount: "金额 / 数值", col_weather: "天气状况", col_action: "操作",
+        wWind: "风向", wSpeed: "米/秒", wStability: "稳定性", wInversion: "逆温", wIsothermy: "等温", wConvection: "对外流",
+        setupTitle: "🔑 创建管理员密码", setupDesc: "欢迎！请想出一个您的个人秘密密码 (Master Token) 来确保对此工作区的所有者权限。", setupPlaceholder: "输入新密码", setupBtn: "🚀 保存密码并登录",
+        loginTitle: "🔒 工作区登录", loginDesc: "此工作区受保护。请输入管理员密码或区域分支机构安全令牌。", loginPlaceholder: "输入密码 / 令牌", loginBtn: "🔓 登录", loginIncorrect: "❌ 密码或安全令牌不正确！"
+    },
+    es: {
+        denied: "❌ ACCESO DENEGADO: Token inválido o ausente.", adminSession: "👑 Panel de Administración Maestro", secureSession: "🔒 Sesión Segura", saved: "✅ Guardado: ", saveError: "❌ Error: ", totalCount: "Recuento Total de Filas:", confirmDelCol: "¿Eliminar esta columna?", confirmDelRow: "¿Eliminar esta fila?", confirmClearHis: "¿Borrar historial?", missingCoords: "❌ Faltan coordenadas", apiError: "❌ Error", invalidFormat: "⚠️ Format o inválido", loading: "🔄 Cargando...", sync: "Sincronizado", readyEmpty: "Listo", lblColManager: "📋 Gestor de Columnas (Solo Admin):", lblBranchManager: "🏢 Gestor de Espacios / Filiales:", btnSave: "💾 Guardar Datos", btnExport: "📥 Exportar JSON", btnClearHis: "🧹 Borrar Historial", btnAddCol: "➕ Añadir Columna", btnAddBranch: "➕ Añadir Espacio", colPlaceholder: "Nombre de Columna", branchPlaceholder: "Nombre de Filial", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Añadir Fila", copyLinkBtn: "🔗 Copiar Enlace", dashTitle: "🔑 Generador de tokens de seguridad y enlaces de acceso regional", thBranch: "Región / Filial", thCoords: "Coordonadas centrales", thToken: "Token de seguridad (UUID)", thActions: "Acciones", confirmDelBranch: "¿Eliminar por completo esta región y revocar su enlace?",
+        chartTitle: "Dinámica de rendimiento", col_id: "№", col_item_name: "Nombre del elemento / objetivo", col_coords: "Coordenadas (Lat, Lng)", col_date: "Date", col_time: "Hora", col_amount: "Cantidad / Valor", col_weather: "Conditions metereológicas", col_action: "Acción",
+        wWind: "Viento", wSpeed: "m/s", wStability: "Estabilidad", wInversion: "Inversión", wIsothermy: "Isotermia", wConvection: "Convección",
+        setupTitle: "🔑 Creación de contraseña de administrador", setupDesc: "¡Bienvenido! Piense en su contraseña secreta personal (Master Token) para asegurar los derechos de propietario.", setupPlaceholder: "Introduzca nueva contraseña", setupBtn: "🚀 Guardar contraseña e iniciar sesión",
+        loginTitle: "🔒 Inicio de sesión del espacio", loginDesc: "Este espacio está protegido. Introduzca la contraseña de administrador o el token de la sucursal.", loginPlaceholder: "Introduzca contraseña / token", loginBtn: "🔓 Iniciar sesión", loginIncorrect: "❌ ¡Contraseña o token incorrecto!"
+    },
+    de: {
+        denied: "❌ ZUGRIFF VERWEIGERT: Ungültiges Token.", adminSession: "👑 Master-Admin-Panel (Alle Bereiche)", secureSession: "🔒 Sichere Sitzung", saved: "✅ Gespeichert: ", saveError: "❌ Fehler: ", totalCount: "Gesamtzeilenanzahl:", confirmDelCol: "Diese Spalte лоschen?", confirmDelRow: "Diese Zeile löschen?", confirmClearHis: "Analysehistorie löschen?", missingCoords: "❌ Fehlende Koordinaten", apiError: "❌ Fehler", invalidFormat: "⚠️ Ungültiges Format", loading: "🔄 Lädt...", sync: "Synchronisiert", readyEmpty: "Bereit", lblColManager: "📋 Spaltenmanager (Nur Admin):", lblBranchManager: "🏢 Arbeitsbereichsmanager:", btnSave: "💾 Daten speichern", btnExport: "📥 JSON exportieren", btnClearHis: "🧹 Historie löschen", btnAddCol: "➕ Spalte hinzufügen", btnAddBranch: "➕ Arbeitsbereich hinzufügen", colPlaceholder: "Spaltenname", branchPlaceholder: "Filialname", coordsPlaceholder: "Koords (Lat, Lng)", addBtnRow: "➕ Zeile hinzufügen", copyLinkBtn: "🔗 Link kopieren", dashTitle: "🔑 Sicherheitstoken & Regionaler Zugangslink-Generator", thBranch: "Region / Filiale", thCoords: "Zentrumskoordinaten", thToken: "Sicherheitstoken (UUID)", thActions: "Aktionen", confirmDelBranch: "Diesen Bereich vollständig löschen und Link sperren?",
+        chartTitle: "Performance-Dynamik", col_id: "№", col_item_name: "Element- / Zielname", col_coords: "Koordinaten (Lat, Lng)", col_date: "Datum", col_time: "Uhrzeit", col_amount: "Betrag / Wert", col_weather: "Wetterbedingungen", col_action: "Aktion",
+        wWind: "Wind", wSpeed: "m/s", wStability: "Stabilität", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+        setupTitle: "🔑 Erstellung des Administrator-Passworts", setupDesc: "Willkommen! Bitte denken Sie sich Ihr persönliches Passwort (Master Token) aus, um die Eigentümerrechte zu sichern.", setupPlaceholder: "Neues Passwort eingeben", setupBtn: "🚀 Passwort speichern & anmelden",
+        loginTitle: "🔒 Workspace-Login", loginDesc: "Dieser Bereich ist geschützt. Bitte geben Sie das Administrator-Passwort oder das Filial-Token ein.", loginPlaceholder: "Passwort / Token eingeben", loginBtn: "🔓 Anmelden", loginIncorrect: "❌ Falsches Passwort oder Token!"
+    },
+    hi: {
+        denied: "❌ पहुंच अस्वीकृत: अमान्य टोकन।", adminSession: "👑 |माстер एडмин पैनल (सभी कार्यक्षेत्र)", secureSession: "🔒 सुरक्षित सत्र", saved: "✅ सहेजा गया: ", saveError: "❌ सहेजने में त्रुटि:", totalCount: "कुल पंक्तियों की संख्या:", confirmDelCol: "इस कॉलम को हटाएं?", confirmDelRow: "इस पंक्ति को हटाएं?", confirmClearHis: "इतिहास साफ़ करें?", missingCoords: "❌ गायब निर्देशांक", apiError: "❌ त्रुटи", invalidFormat: "⚠️ अमान्य प्रारूप", loading: "🔄 लोड हो रहा है...", sync: "सिंक किया गया", readyEmpty: "तैयाр", lblColManager: "📋 कॉलम प्रबंधक (केवल Edmin):", lblBranchManager: "🏢 कार्यक्षेत्र / शाखा प्रबंधक:", btnSave: "💾 डेटा सहेजें", btnExport: "📥 जेसन निर्यात करें", btnClearHis: "🧹 इतिहास साफ़ करें", btnAddCol: "➕ कॉलम जोड़ें", btnAddBranch: "➕ कार्यक्षेत्र जोड़ें", colPlaceholder: "कॉलम का नाम", branchPlaceholder: "शाखा का नाम", coordsPlaceholder: "निर्देशांक", addBtnRow: "➕ पंक्ति जोड़ें", copyLinkBtn: "🔗 लिंक कॉपी करें", dashTitle: "🔑 सुरक्षा टोकн और क्षेत्रीय पहुंच लिंक जनरेटर", thBranch: "क्षेत्र / कार्यक्षेत्र", thCoords: "केंद्र निर्देशांक", thToken: "सुरक्षा टोकन (UUID)", thActions: "कार्रवाиयाँ", confirmDelBranch: "क्या इस क्षेत्र को पूरी तरह से हटा दें और इसका लिंक रद्द कर दें?",
+        chartTitle: "प्रदर्शन गतिशीलता", col_id: "№", col_item_name: "वस्तु / लक्ष्य का नाम", col_coords: "निर्देशांक (अक्षांश, देशांतर)", col_date: "दिनांक", col_time: "समय", col_amount: "मात्रा / मूल्य", col_weather: "मौसम की स्थिति", col_action: "कार्रवाई",
+        wWind: "हवा", wSpeed: "मी/से", wStability: "स्थिरता", wInversion: "इनवर्जन", wIsothermy: "आइसоथर्मी", wConvection: "संवहन",
+        setupTitle: "🔑 व्यवस्थापक पासवर्ड बनाना", setupDesc: "स्वागत है! कृपया इस कार्यक्षेत्र पर स्वामी के अधिकारों को सुरक्षित करने के लिए अपना व्यक्तिगत गुप्त पासवर्ड (मास्टर टोकन) बनाएं।", setupPlaceholder: "नया पासवर्ड दर्ज करें", setupBtn: "🚀 पासवर्ड सहेजें और लॉगिन करें",
+        loginTitle: "🔒 कार्यक्षेत्र लॉगिन", loginDesc: "यह कार्यक्षेत्र सुरक्षित है। कृपया व्यवस्थापक पासवर्ड या क्षेत्रीय शाखा सुरक्षा टोकन दर्ज करें।", loginPlaceholder: "पासवर्ड / टोकन दर्ज करें", loginBtn: "🔓 लॉगिन", loginIncorrect: "❌ गलत पासवर्ड या सुरक्षा टोकन!"
+    },
+    it: {
+        denied: "❌ ACCESSO NEGATO: Token non valido o mancante nell'URL.", adminSession: "👑 Pannello di Amministrazione Master (Tutti i Workspace)", secureSession: "🔒 Sessione Sicura", saved: "✅ Salvato: ", saveError: "❌ Errore di Salvataggio: ", totalCount: "Conteggio Righe Totale:", confirmDelCol: "Eliminare questa colonna? I dati andranno persi.", confirmDelRow: "Eliminare questa riga?", confirmClearHis: "Cancellare la cronologia dell'analisi?", missingCoords: "❌ Coordinate mancanti", apiError: "❌ Errore", invalidFormat: "⚠️ Formato non valido", loading: "🔄 Caricamento...", sync: "Sincronizzato con l'Archivio", readyEmpty: "Pronto", lblColManager: "📋 Gestore Colonne (Solo Admin):", lblBranchManager: "🏢 Gestore Workspace / Filiali:", btnSave: "💾 Salva Dati e Struttura", btnExport: "📥 Esporta JSON", btnClearHis: "🧹 Cancella Cronologia Grafico", btnAddCol: "➕ Aungi Colonna", btnAddBranch: "➕ Aungi Workspace", colPlaceholder: "Nome Colonna", branchPlaceholder: "Nome Filiale", coordsPlaceholder: "Coordinate (Lat, Lng)", addBtnRow: "➕ Aungi Riga", copyLinkBtn: "🔗 Copia Link", dashTitle: "🔑 Generatore di Token di Sicurezza e Link di Accesso Regionali", thBranch: "Regione / Workspace", thCoords: "Coordinate Centro", thToken: "Token di Sicurezza (UUID)", thActions: "Azioni", confirmDelBranch: "Eliminare completamente questa regione e revocare il suo link? Il token di sicurezza verrà inserito nella lista nera.",
+        chartTitle: "Dinamica delle Prestazioni", col_id: "№", col_item_name: "Nome Elemento / Obiettivo", col_coords: "Coordinate (Lat, Lng)", col_date: "Data", col_time: "Ora", col_amount: "Quantità / Valore", col_weather: "Condizioni Meteo", col_action: "Azione",
+        wWind: "Vento", wSpeed: "m/s", wStability: "Stabilità", wInversion: "Inversion", wIsothermy: "Isotermia", wConvection: "Confezione",
+        setupTitle: "🔑 Creazione password amministratore", setupDesc: "Benvenuto! Inventa la tua password segreta personale (Master Token) per proteggere i tuoi diritti su questo spazio.", setupPlaceholder: "Inserisci nuova password", setupBtn: "🚀 Salva password e accedi",
+        loginTitle: "🔒 Accesso allo spazio di lavoro", loginDesc: "Questo spazio è protetto. Inserisci la password dell'amministratore o il token di sicurezza della filiale.", loginPlaceholder: "Inserisci password / token", loginBtn: "🔓 Accedi", loginIncorrect: "❌ Password o token di sicurezza errati!"
+    },
+    ja: {
+        denied: "❌ アクセス拒否：URLのトークンが無効、または見つかりません。", adminSession: "👑 マスター管理者パネル（すべてのワークスペース）", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ 保存エラー: ", totalCount: "総行数:", confirmDelCol: "この列を削除しますか？データは失われます。", confirmDelRow: "この行を削除しますか？", confirmClearHis: "分析履歴をクリアしますか？", missingCoords: "❌ 座標がありません", apiError: "❌ エラー", invalidFormat: "⚠️ 无効な形式", loading: "🔄 読み込み中...", sync: "ストレージと同期済み", readyEmpty: "準備完了", lblColManager: "📋 列マネージャー（管理者のみ）:", lblBranchManager: "🏢 ワークスペース / 支店マネージャー:", btnSave: "💾 データと構造を保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 分析履歴をクリア", btnAddCol: "➕ 列を追加", btnAddBranch: "➕ ワークスペースを追加", colPlaceholder: "列名", branchPlaceholder: "支店名", coordsPlaceholder: "座標 (緯度, 経度)", addBtnRow: "➕ 行を追加", copyLinkBtn: "🔗 リンクをコピー", dashTitle: "🔑 セキュリティトークン＆地域アクセスリンク生成器", thBranch: "地域 / ワークスペース", thCoords: "中心座標", thToken: "セキュリティトークン (UUID)", thActions: "操作", confirmDelBranch: "この地域を完全に削除し、リンクを無効化しますか？セキュリティトークンはブラックリストに登録されます。",
+        chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目 / 対象名", col_coords: "座標 (緯度, 経度)", col_date: "日付", col_time: "時間", col_amount: "金額 / 数値", col_weather: "気象条件", col_action: "操作",
+        wWind: "風向", wSpeed: "m/s", wStability: "安定度", wInversion: "逆転", wIsothermy: "等温", wConvection: "対流",
+        setupTitle: "🔑 管理者パスワードの作成", setupDesc: "ようこそ！このワークスペースの所有権を確保するために、個人の秘密のパスワード（マスタートークン）を作成してください。", setupPlaceholder: "新しいパスワードを入力", setupBtn: "🚀 パスワードを保存してログイン",
+        loginTitle: "🔒 ワークスペースへのログイン", loginDesc: "このワークスペースは保護されています。管理者パスワードまたは地域支店のセキュリティトークンを入力してください。", loginPlaceholder: "パスワード/トークンを入力", loginBtn: "🔓 ログイン", loginIncorrect: "❌ パスワードまたはセキュリティトークンが間違っています！"
     }
 };
 
-// =====================================================================
-// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
-// =====================================================================
 let currentLang = localStorage.getItem('lang') || APP_CONFIG.DEFAULT_LANG;
-let SUPABASE_URL = APP_CONFIG.SUPABASE_URL;
-let SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY;
+const SUPABASE_URL = APP_CONFIG.SUPABASE_URL; 
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY; 
 
 const urlParams = new URLSearchParams(window.location.search);
-const COMPANY_ID = SecurityUtils.sanitizeInput(urlParams.get('id') || APP_CONFIG.DEFAULT_WORKSPACE_ID);
-const USER_TOKEN = SecurityUtils.sanitizeInput(urlParams.get('token') || '');
+const COMPANY_ID = urlParams.get('id') || APP_CONFIG.DEFAULT_WORKSPACE_ID; 
+const USER_TOKEN = urlParams.get('token') || '';
 
 let MASTER_TOKEN = "";
-let DB_PAYLOAD = null;
+let DB_PAYLOAD = null; 
 
 let TABLE_CONFIG = {
-    stateId: COMPANY_ID,
-    masterToken: '',
+    stateId: COMPANY_ID, 
+    masterToken: '', 
     branches: {},
     columns: [
         { id: "id", title: "№", width: "4%", type: "index" },
@@ -275,148 +294,46 @@ let CURRENT_BRANCH_OBJ = null;
 let CURRENT_BRANCH_NAME = null;
 
 let map, activeMarkers = {};
-let analyticsChart = null;
+let analyticsChart = null; 
 let globalHistory = [];
-let deletedRowIds = [];
-let loginAttempts = 0;
-let firstAttemptTime = 0;
+let deletedRowIds = []; // Память удаленных строк для защиты при синхронизации
 
-// =====================================================================
-// УТИЛИТЫ БЕЗОПАСНОСТИ
-// =====================================================================
-const SecurityUtils = {
-    sanitizeInput(input) {
-        if (!input) return '';
-        return input.replace(/[<>"'&]/g, '');
-    },
+// Функция для криптографического хэширования паролей (SHA-256)
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
-    sanitizeHTML(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    },
-
-    async sha256(message) {
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    },
-
-    generateSecureToken() {
-        const array = new Uint32Array(4);
-        crypto.getRandomValues(array);
-        return Array.from(array).map(x => x.toString(36)).join('').substring(0, 32);
-    },
-
-    checkPasswordStrength(password) {
-        let score = 0;
-        if (password.length >= 8) score++;
-        if (password.length >= 12) score++;
-        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-        if (/\d/.test(password)) score++;
-        if (/[^a-zA-Z0-9]/.test(password)) score++;
-        
-        if (score <= 2) return { strength: 'weak', width: '33%', color: '#ef4444' };
-        if (score <= 3) return { strength: 'medium', width: '66%', color: '#f59e0b' };
-        return { strength: 'strong', width: '100%', color: '#10b981' };
-    },
-
-    validateCoordinates(str) {
-        if (!str) return null;
-        let cleanStr = str.toString().replace(/[()]/g, '').replace(/,/g, ' ').trim();
-        const arr = cleanStr.split(/\s+/);
-        if (arr.length >= 2) {
-            const val1 = parseFloat(arr[0]);
-            const val2 = parseFloat(arr[1]);
-            if (!isNaN(val1) && !isNaN(val2)) {
-                if (val1 >= -90 && val1 <= 90 && val2 >= -180 && val2 <= 180) {
-                    return [val1, val2];
-                }
-            }
-        }
-        return null;
-    }
-};
-
-// =====================================================================
-// УТИЛИТЫ UI
-// =====================================================================
-const UIUtils = {
-    showToast(message, duration = 3000) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.3s';
-            setTimeout(() => toast.remove(), 300);
-        }, duration);
-    },
-
-    showError(elementId, message) {
-        const el = document.getElementById(elementId);
-        if (el) {
-            el.innerText = message;
-            el.style.display = 'block';
-        }
-    },
-
-    hideError(elementId) {
-        const el = document.getElementById(elementId);
-        if (el) el.style.display = 'none';
-    },
-
-    setLoading(buttonId, isLoading) {
-        const btn = document.getElementById(buttonId);
-        if (btn) {
-            btn.disabled = isLoading;
-            btn.style.opacity = isLoading ? '0.7' : '1';
-        }
-    }
-};
-
-// =====================================================================
-// АУТЕНТИФИКАЦИЯ
-// =====================================================================
 async function checkDatabaseConfig() {
     if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
-        document.getElementById('saveStatus').innerHTML = "⚠️ Error: No workspace ID in URL.";
+        document.getElementById('saveStatus').innerHTML = "⚠️ Ошибка: Ссылка не содержит ID компании (?id=название).";
         hideAllDashboardCards();
         return false;
     }
-
     try {
-        // В реальном приложении здесь должен быть запрос к вашему бэкенду
-        // Сейчас имитируем проверку конфигурации
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, {
-            method: 'GET',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
+        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
         });
-
-        if (!response.ok) throw new Error('Database connection failed');
-
+        if (!response.ok) throw new Error();
         const resData = await response.json();
-
-        if (resData && resData.length > 0 && resData[0].data && resData[0].data.masterToken) {
+        
+        if (resData && resData.length > 0 && resData[0].data.masterToken) {
             const dbMasterToken = resData[0].data.masterToken;
-            DB_PAYLOAD = resData[0].data;
-
-            const hashedUrlToken = USER_TOKEN ? await SecurityUtils.sha256(USER_TOKEN) : '';
-            const isBranchToken = DB_PAYLOAD.branches && 
-                                  Object.values(DB_PAYLOAD.branches).some(b => 
-                                      b.tokenHash === hashedUrlToken || b.tokenHash === USER_TOKEN
-                                  );
-
+            DB_PAYLOAD = resData[0].data; 
+            
+            // Хэшируем токен из ссылки для проверки
+            const hashedUrlToken = USER_TOKEN ? await sha256(USER_TOKEN) : '';
+            const isBranchToken = DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(USER_TOKEN);
+            
+            // Сравниваем хэши (или проверяем филиал)
             if (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken || isBranchToken) {
                 IS_ADMIN = (hashedUrlToken === dbMasterToken || USER_TOKEN === dbMasterToken);
-                MASTER_TOKEN = dbMasterToken;
+                MASTER_TOKEN = dbMasterToken; // Запоминаем именно хэш для будущих сохранений
                 TABLE_CONFIG.masterToken = dbMasterToken;
-
+                
                 document.getElementById('loginPanel').style.display = 'none';
                 document.getElementById('setupPanel').style.display = 'none';
                 showAllDashboardCards();
@@ -434,143 +351,66 @@ async function checkDatabaseConfig() {
             return false;
         }
     } catch (e) {
-        console.error('Database check failed:', e);
-        document.getElementById('saveStatus').innerHTML = "❌ Connection error. Please check configuration.";
+        document.getElementById('saveStatus').innerHTML = "❌ Ошибка подключения. Проверьте базу данных.";
         hideAllDashboardCards();
         return false;
     }
 }
 
 function hideAllDashboardCards() {
-    ['mainDashboardCard', 'tokenDashboardCard', 'mapCard', 'chartCard', 'tableCard'].forEach(id => {
-        document.getElementById(id).style.display = 'none';
-    });
+    document.getElementById('mainDashboardCard').style.display = 'none';
+    document.getElementById('tokenDashboardCard').style.display = 'none';
+    document.getElementById('mapCard').style.display = 'none';
+    document.getElementById('chartCard').style.display = 'none';
+    document.getElementById('tableCard').style.display = 'none';
 }
 
 function showAllDashboardCards() {
-    ['mainDashboardCard', 'mapCard', 'chartCard', 'tableCard'].forEach(id => {
-        document.getElementById(id).style.display = 'block';
-    });
+    document.getElementById('mainDashboardCard').style.display = 'block';
+    document.getElementById('mapCard').style.display = 'block';
+    document.getElementById('chartCard').style.display = 'block';
+    document.getElementById('tableCard').style.display = 'block';
 }
 
 async function checkEnteredPassword() {
-    const t = LOCALES[currentLang] || LOCALES['en'];
     const enteredPass = document.getElementById('loginTokenInput').value.trim();
-
+    const t = LOCALES[currentLang] || LOCALES['en'];
     if (!enteredPass) return;
-
-    // Защита от брутфорса
-    if (loginAttempts >= SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS) {
-        const elapsed = Date.now() - firstAttemptTime;
-        if (elapsed < SECURITY_CONFIG.LOCKOUT_DURATION) {
-            const minutesLeft = Math.ceil((SECURITY_CONFIG.LOCKOUT_DURATION - elapsed) / 60000);
-            UIUtils.showError('loginError', t.loginLocked.replace('{minutes}', minutesLeft));
-            return;
-        }
-        loginAttempts = 0;
-    }
-
-    UIUtils.setLoading('btnSubmitLogin', true);
     
-    try {
-        const hashedPass = await SecurityUtils.sha256(enteredPass);
-        const isBranchToken = DB_PAYLOAD && DB_PAYLOAD.branches && 
-                              Object.values(DB_PAYLOAD.branches).some(b => 
-                                  b.tokenHash === hashedPass
-                              );
-
-        if (hashedPass === DB_PAYLOAD.masterToken || enteredPass === DB_PAYLOAD.masterToken || isBranchToken) {
-            loginAttempts = 0;
-            // Передаём хэш вместо открытого пароля
-            const tokenForUrl = hashedPass === DB_PAYLOAD.masterToken ? hashedPass : enteredPass;
-            window.location.search = `?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(tokenForUrl)}`;
-        } else {
-            if (loginAttempts === 0) firstAttemptTime = Date.now();
-            loginAttempts++;
-            UIUtils.showError('loginError', t.loginIncorrect);
-        }
-    } catch (e) {
-        UIUtils.showError('loginError', 'Error processing login');
-    } finally {
-        UIUtils.setLoading('btnSubmitLogin', false);
+    const hashedPass = await sha256(enteredPass);
+    const isBranchToken = DB_PAYLOAD && DB_PAYLOAD.branches && Object.keys(DB_PAYLOAD.branches).includes(enteredPass);
+    
+    if (hashedPass === DB_PAYLOAD.masterToken || enteredPass === DB_PAYLOAD.masterToken || isBranchToken) {
+        window.location.search = `?id=${COMPANY_ID}&token=${enteredPass}`;
+    } else {
+        const errorEl = document.getElementById('loginError');
+        errorEl.innerText = t.loginIncorrect;
+        errorEl.style.display = 'block';
     }
 }
 
 async function saveInitialPassword() {
     const token = document.getElementById('setupMasterToken').value.trim();
-    const t = LOCALES[currentLang] || LOCALES['en'];
-
-    if (!token) {
-        UIUtils.showToast("Please enter a password.");
-        return;
-    }
-
-    if (token.length < SECURITY_CONFIG.MIN_PASSWORD_LENGTH) {
-        UIUtils.showToast(`Password must be at least ${SECURITY_CONFIG.MIN_PASSWORD_LENGTH} characters.`);
-        return;
-    }
-
-    const strengthCheck = SecurityUtils.checkPasswordStrength(token);
-    if (strengthCheck.strength === 'weak') {
-        UIUtils.showToast(t.passwordWeak + '. Please use a stronger password.');
-        return;
-    }
-
-    UIUtils.setLoading('btnSaveSetup', true);
-
+    if (!token) { alert("Пожалуйста, введите пароль."); return; }
+    
+    // Превращаем пароль в хэш перед отправкой
+    const hashedToken = await sha256(token);
+    MASTER_TOKEN = hashedToken;
+    TABLE_CONFIG.masterToken = hashedToken;
+    
+    const bodyData = { id: TABLE_CONFIG.stateId, data: { masterToken: hashedToken, branches: {}, columns: TABLE_CONFIG.columns, table: [], history: [] } };
     try {
-        const hashedToken = await SecurityUtils.sha256(token);
-        MASTER_TOKEN = hashedToken;
-        TABLE_CONFIG.masterToken = hashedToken;
-
-        const bodyData = {
-            id: TABLE_CONFIG.stateId,
-            data: {
-                masterToken: hashedToken,
-                branches: {},
-                columns: TABLE_CONFIG.columns,
-                table: [],
-                history: []
-            }
-        };
-
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify(bodyData)
+        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
         });
-
         if (response.ok) {
-            window.location.search = `?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(hashedToken)}`;
-        } else {
-            UIUtils.showToast("Error saving. Please try again.");
-        }
-    } catch (err) {
-        console.error('Save initial password error:', err);
-        UIUtils.showToast("Error: " + err.message);
-    } finally {
-        UIUtils.setLoading('btnSaveSetup', false);
-    }
+            window.location.search = `?id=${COMPANY_ID}&token=${token}`;
+        } else { alert("Ошибка сохранения."); }
+    } catch (err) { alert("Ошибка: " + err.message); }
 }
 
-// Мониторинг силы пароля
-document.getElementById('setupMasterToken')?.addEventListener('input', function(e) {
-    const strength = SecurityUtils.checkPasswordStrength(e.target.value);
-    const bar = document.getElementById('passwordStrengthBar');
-    if (bar) {
-        bar.style.width = strength.width;
-        bar.style.background = strength.color;
-    }
-});
-
-// =====================================================================
-// ЛОКАЛИЗАЦИЯ
-// =====================================================================
 function getColumnTitle(col, lang) {
     if (!col) return '';
     if (typeof col.title === 'object' && col.title !== null) {
@@ -594,52 +434,40 @@ function changeLanguage(langCode) {
 
 function applyLocalization() {
     const t = LOCALES[currentLang] || LOCALES['en'];
-    
-    // Основные элементы
-    const elements = {
-        'btnSave': t.btnSave,
-        'btnExport': t.btnExport,
-        'clearHistoryBtn': t.btnClearHis,
-        'lblColManager': t.lblColManager,
-        'lblBranchManager': t.lblBranchManager,
-        'btnAddCol': t.btnAddCol,
-        'btnAddBranch': t.btnAddBranch,
-        'lblTokenDashboardTitle': t.dashTitle,
-        'thDashBranch': t.thBranch,
-        'thDashCoords': t.thCoords,
-        'thDashToken': t.thToken,
-        'thDashActions': t.thActions,
-        'lblSetupTitle': t.setupTitle,
-        'lblSetupDesc': t.setupDesc,
-        'lblLoginTitle': t.loginTitle,
-        'lblLoginDesc': t.loginDesc
-    };
-
-    Object.entries(elements).forEach(([id, text]) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = text;
-    });
-
-    // Placeholders
+    document.getElementById('btnSave').innerText = t.btnSave;
+    document.getElementById('btnExport').innerText = t.btnExport;
+    document.getElementById('clearHistoryBtn').innerText = t.btnClearHis;
+    document.getElementById('lblColManager').innerText = t.lblColManager;
+    document.getElementById('lblBranchManager').innerText = t.lblBranchManager;
+    document.getElementById('btnAddCol').innerText = t.btnAddCol;
+    document.getElementById('btnAddBranch').innerText = t.btnAddBranch;
     document.getElementById('newColTitle').placeholder = t.colPlaceholder;
     document.getElementById('newBranchName').placeholder = t.branchPlaceholder;
     document.getElementById('newBranchCoords').placeholder = t.coordsPlaceholder;
-    document.getElementById('setupMasterToken').placeholder = t.setupPlaceholder;
-    document.getElementById('loginTokenInput').placeholder = t.loginPlaceholder;
-    document.getElementById('btnSaveSetup').innerText = t.setupBtn;
-    document.getElementById('btnSubmitLogin').innerText = t.loginBtn;
     document.getElementById('langDropdown').value = currentLang;
 
-    // Заголовок страницы
+    document.getElementById('lblTokenDashboardTitle').innerText = t.dashTitle;
+    document.getElementById('thDashBranch').innerText = t.thBranch;
+    document.getElementById('thDashCoords').innerText = t.thCoords;
+    document.getElementById('thDashToken').innerText = t.thToken;
+    document.getElementById('thDashActions').innerText = t.thActions;
+    
+    document.getElementById('lblSetupTitle').innerText = t.setupTitle;
+    document.getElementById('lblSetupDesc').innerText = t.setupDesc;
+    document.getElementById('setupMasterToken').placeholder = t.setupPlaceholder;
+    document.getElementById('btnSaveSetup').innerText = t.setupBtn;
+
+    document.getElementById('lblLoginTitle').innerText = t.loginTitle;
+    document.getElementById('lblLoginDesc').innerText = t.loginDesc;
+    document.getElementById('loginTokenInput').placeholder = t.loginPlaceholder;
+    document.getElementById('btnSubmitLogin').innerText = t.loginBtn;
+
     if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
         document.getElementById('pageTitle').innerHTML = t.denied;
     } else {
-        document.getElementById('pageTitle').innerHTML = IS_ADMIN ? 
-            t.adminSession : 
-            `${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
+        document.getElementById('pageTitle').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
     }
-
-    // Заголовок графика
+    
     const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
     if (numCol) {
         const localizedNumTitle = getColumnTitle(numCol, currentLang);
@@ -647,104 +475,82 @@ function applyLocalization() {
     }
 }
 
-// =====================================================================
-// РАБОТА С ТАБЛИЦЕЙ
-// =====================================================================
 function getCurrentDateTime() {
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
-    const time = now.toTimeString().split(' ')[0].substring(0, 5);
+    const time = now.toTimeString().split(' ')[0].substring(0, 5); 
     return { date: `${day}.${month}.${year}`, time: time };
 }
 
 function parseCoordinates(str) {
-    return SecurityUtils.validateCoordinates(str);
+    if (!str) return null;
+    let cleanStr = str.toString().replace(/[()]/g, '').replace(/,/g, ' ').trim();
+    const arr = cleanStr.split(/\s+/);
+    if (arr.length >= 2) {
+        const val1 = parseFloat(arr[0]); const val2 = parseFloat(arr[1]);
+        if (!isNaN(val1) && !isNaN(val2)) {
+            if (val1 >= -90 && val1 <= 90 && val2 >= -180 && val2 <= 180) return [val1, val2];
+        }
+    }
+    return null;
 }
 
 function getWindDirection(deg) {
-    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    const index = Math.round(deg / 45) % 8;
-    return directions[index];
+    if (deg >= 337.5 || deg < 22.5) return 'N'; if (deg >= 22.5 && deg < 67.5) return 'NE'; if (deg >= 67.5 && deg < 112.5) return 'E'; if (deg >= 112.5 && deg < 157.5) return 'SE'; if (deg >= 157.5 && deg < 202.5) return 'S'; if (deg >= 202.5 && deg < 247.5) return 'SW'; if (deg >= 247.5 && deg < 292.5) return 'W'; if (deg >= 292.5 && deg < 337.5) return 'NW';
+    return 'Unknown';
 }
 
 async function fetchWeatherData(lat, lng) {
     try {
         const systemLang = currentLang === 'ua' ? 'uk' : currentLang;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto`;
-        
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto&language=${systemLang}`;
+        const res = await fetch(url); if (!res.ok) return null;
         const json = await res.json();
-        if (!json || !json.current) return null;
-
-        const temp = json.current.temperature_2m;
-        const windSpeed = json.current.wind_speed_10m;
-        const windDeg = json.current.wind_direction_10m;
-        const windDir = getWindDirection(windDeg);
-        
-        const t = LOCALES[currentLang] || LOCALES['en'];
-        let stability = t.wIsothermy;
-        if (windSpeed < 2) stability = t.wInversion;
-        else if (windSpeed > 4) stability = t.wConvection;
-        
-        return `${t.wWind}: ${windDir}, ${windSpeed} ${t.wSpeed}; ${t.wStability}: ${stability}; t: ${temp}°C`;
-    } catch (e) {
-        console.error('Weather fetch error:', e);
-        return null;
-    }
+        if (json && json.current) {
+            const temp = json.current.temperature_2m; const windSpeed = json.current.wind_speed_10m; const windDeg = json.current.wind_direction_10m; const windDir = getWindDirection(windDeg);
+            const t = LOCALES[currentLang] || LOCALES['en'];
+            let stability = t.wIsothermy; if (windSpeed < 2) stability = t.wInversion; else if (windSpeed > 4) stability = t.wConvection;
+            return `${t.wWind}: ${windDir}, ${windSpeed} ${t.wSpeed}; ${t.wStability}: ${stability}; t: ${temp}°C`;
+        }
+    } catch (e) { console.error(e); }
+    return null;
 }
 
 async function triggerWeatherUpdate(btn) {
     const t = LOCALES[currentLang] || LOCALES['en'];
-    const row = btn.closest('tr');
-    if (!row) return;
-    
-    const coordsCell = row.querySelector('.coords-input');
+    const row = btn.closest('tr'); const coordsCell = row.querySelector('.coords-input');
     const weatherColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
     if (weatherColIdx === -1 || !coordsCell) return;
-
-    const weatherCell = row.cells[weatherColIdx];
-    const coordsStr = coordsCell.innerText.trim();
     
-    if (!coordsStr) {
-        weatherCell.innerText = t.missingCoords;
-        return;
-    }
-
+    const weatherCell = row.cells[weatherColIdx]; const coordsStr = coordsCell.innerText.trim();
+    if (!coordsStr) { weatherCell.innerText = t.missingCoords; return; }
+    
     const parsed = parseCoordinates(coordsStr);
     if (parsed) {
         weatherCell.innerText = t.loading;
         const text = await fetchWeatherData(parsed[0], parsed[1]);
-        weatherCell.innerText = text ? SecurityUtils.sanitizeHTML(text) : t.apiError;
-        saveTable(false);
-    } else {
-        weatherCell.innerText = t.invalidFormat;
-    }
+        if (text) { weatherCell.innerText = text; saveTable(false); } else { weatherCell.innerText = t.apiError; }
+    } else { weatherCell.innerText = t.invalidFormat; }
 }
 
 function renderColumnPills() {
     if (!IS_ADMIN) return;
-    const container = document.getElementById('activeColumnsPills');
-    container.innerHTML = '';
-    
+    const container = document.getElementById('activeColumnsPills'); container.innerHTML = '';
     TABLE_CONFIG.columns.forEach(col => {
-        if (['index', 'action', 'item_name', 'weather'].includes(col.type) || 
-            ['id', 'item_name', 'weather'].includes(col.id)) return;
-            
-        const pill = document.createElement('div');
-        pill.className = 'pill';
-        const displayTitle = SecurityUtils.sanitizeHTML(getColumnTitle(col, currentLang));
+        if (col.type === 'index' || col.type === 'action' || col.id === 'item_name' || col.id === 'weather') return;
+        const pill = document.createElement('div'); pill.className = 'pill';
+        const displayTitle = getColumnTitle(col, currentLang);
         pill.innerHTML = `${displayTitle} (${col.type}) <span onclick="removeColumn('${col.id}')">✕</span>`;
         container.appendChild(pill);
     });
 }
 
+// -------------------------------------------------------------
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА (Google + MyMemory Fallback)
+// -------------------------------------------------------------
 async function translateText(text, sourceLang, targetLang) {
-    if (sourceLang.toLowerCase() === targetLang.toLowerCase()) return text;
-    
     try {
         const getValidCode = (lang) => {
             if (lang === 'ua') return 'uk';
@@ -754,80 +560,68 @@ async function translateText(text, sourceLang, targetLang) {
 
         const src = getValidCode(sourceLang);
         const tgt = getValidCode(targetLang);
-
-        // Google Translate API
+        
+        if (src.toLowerCase() === tgt.toLowerCase()) return text;
+        
+        // 1. Google Translate API
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=${tgt}&dt=t&q=${encodeURIComponent(text)}`;
         const res = await fetch(url);
-
+        
         if (res.ok) {
             const data = await res.json();
             if (data && data[0] && data[0][0] && data[0][0][0]) {
-                return SecurityUtils.sanitizeHTML(data[0][0][0]);
+                return data[0][0][0];
             }
         }
-
-        // MyMemory Fallback
-        const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
-        const fbRes = await fetch(fbUrl);
         
+        // 2. MyMemory Fallback
+        const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
+        
+        const fbRes = await fetch(fbUrl);
         if (fbRes.ok) {
             const fbData = await fbRes.json();
             if (fbData.responseData && fbData.responseData.translatedText) {
-                return SecurityUtils.sanitizeHTML(fbData.responseData.translatedText);
+                return fbData.responseData.translatedText;
             }
         }
-
+        
         return text;
     } catch (e) {
-        console.error('Translation error:', e);
+        console.error("Translation error for lang:", targetLang, e);
         return text;
     }
 }
 
 async function addNewColumn() {
     if (!IS_ADMIN) return;
-    
-    const titleInput = document.getElementById('newColTitle');
-    const titleValue = SecurityUtils.sanitizeInput(titleInput.value.trim());
-    const type = document.getElementById('newColType').value;
-    
+    const titleValue = document.getElementById('newColTitle').value.trim(); const type = document.getElementById('newColType').value;
     if (!titleValue) return;
-
-    const statusEl = document.getElementById('saveStatus');
-    statusEl.innerText = "🔄 Translating column structure...";
     
+    const statusEl = document.getElementById('saveStatus');
+    statusEl.innerText = "🔄 Translating column structure... (Please wait)";
     const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
-    const id = (cleanPrefix || 'col') + '_' + SecurityUtils.generateSecureToken().substring(0, 6);
-
+    const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
+    
     const titleObject = {};
     const langs = Object.keys(LOCALES);
-
-    // Переводим только для нескольких основных языков для скорости
-    const mainLangs = langs.filter(l => ['en', 'ua', 'fr', 'es', 'de'].includes(l));
     
-    for (const langKey of mainLangs) {
+    for (const langKey of langs) {
         if (currentLang.toLowerCase() === langKey.toLowerCase()) {
             titleObject[langKey] = titleValue;
         } else {
             titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
-            await new Promise(r => setTimeout(r, 200));
+            // Увеличенная задержка 600мс для обхода блокировок Rate Limit
+            await new Promise(r => setTimeout(r, 600));
         }
     }
-
+    
     const weatherIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
     const insertAt = weatherIdx !== -1 ? weatherIdx : TABLE_CONFIG.columns.length - 1;
+    TABLE_CONFIG.columns.splice(insertAt, 0, { id, title: titleObject, width: "12%", type });
+    document.getElementById('newColTitle').value = '';
     
-    TABLE_CONFIG.columns.splice(insertAt, 0, {
-        id,
-        title: titleObject,
-        width: "12%",
-        type
-    });
-
-    titleInput.value = '';
-
-    const currentRows = backupTableData();
-    buildTableStructure();
+    const currentRows = backupTableData(); 
+    buildTableStructure(); 
     renderColumnPills();
     rebuildTableWithData(currentRows);
     await saveTable(true);
@@ -836,11 +630,10 @@ async function addNewColumn() {
 function removeColumn(id) {
     if (!IS_ADMIN) return;
     const t = LOCALES[currentLang] || LOCALES['en'];
-    
     if (confirm(t.confirmDelCol)) {
         TABLE_CONFIG.columns = TABLE_CONFIG.columns.filter(c => c.id !== id);
-        const currentRows = backupTableData();
-        buildTableStructure();
+        const currentRows = backupTableData(); 
+        buildTableStructure(); 
         renderColumnPills();
         rebuildTableWithData(currentRows);
         saveTable(true);
@@ -848,33 +641,20 @@ function removeColumn(id) {
 }
 
 function renderTokenDashboard() {
-    if (!IS_ADMIN) {
-        document.getElementById('tokenDashboardCard').style.display = 'none';
-        return;
-    }
-    
+    if (!IS_ADMIN) { document.getElementById('tokenDashboardCard').style.display = 'none'; return; }
     document.getElementById('tokenDashboardCard').style.display = 'block';
-    const tbody = document.getElementById('tokenDashboardBody');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('tokenDashboardBody'); tbody.innerHTML = '';
     const t = LOCALES[currentLang] || LOCALES['en'];
 
     Object.entries(TABLE_CONFIG.branches).forEach(([token, branchObj]) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">
-                🏢 ${SecurityUtils.sanitizeHTML(branchObj.name)}
-            </td>
-            <td>${branchObj.coords ? SecurityUtils.sanitizeHTML(branchObj.coords.join(', ')) : ''}</td>
-            <td><span class="token-code">${SecurityUtils.sanitizeHTML(token)}</span></td>
+            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${branchObj.name}</td>
+            <td>${branchObj.coords ? branchObj.coords.join(', ') : ''}</td>
+            <td><span class="token-code">${token}</span></td>
             <td>
-                <button class="btn-action copy-link-btn" style="width: auto; padding: 4px 10px; float: none; display: inline-block; margin-right: 5px;" 
-                        onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(token)}')">
-                    ${t.copyLinkBtn}
-                </button>
-                <button class="btn-action del-row-btn" style="width: auto; padding: 4px 10px; display: inline-block;" 
-                        onclick="deleteBranch('${SecurityUtils.sanitizeHTML(token)}')">
-                    ❌
-                </button>
+                <button class="btn-action copy-link-btn" style="width: auto; padding: 4px 10px; float: none; display: inline-block; margin-right: 5px;" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>
+                <button class="btn-action del-row-btn" style="width: auto; padding: 4px 10px; display: inline-block;" onclick="deleteBranch('${token}')">❌</button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -883,33 +663,20 @@ function renderTokenDashboard() {
 
 function addNewBranch() {
     if (!IS_ADMIN) return;
-    
-    const nameInput = document.getElementById('newBranchName');
-    const coordsInput = document.getElementById('newBranchCoords');
-    const name = SecurityUtils.sanitizeInput(nameInput.value.trim());
-    const coordsStr = coordsInput.value.trim();
-    
+    const name = document.getElementById('newBranchName').value.trim();
+    const coordsStr = document.getElementById('newBranchCoords').value.trim();
     if (!name || !coordsStr) return;
-
+    
     const coords = parseCoordinates(coordsStr);
     const t = LOCALES[currentLang] || LOCALES['en'];
+    if (!coords) { alert(t.invalidFormat); return; }
     
-    if (!coords) {
-        UIUtils.showToast(t.invalidFormat);
-        return;
-    }
-
-    const newToken = SecurityUtils.generateSecureToken();
-    TABLE_CONFIG.branches[newToken] = {
-        name,
-        coords,
-        tokenHash: newToken
-    };
-
-    nameInput.value = '';
-    coordsInput.value = '';
-
-    const currentRows = backupTableData();
+    const newToken = 'usr_' + Math.random().toString(36).substr(2, 9);
+    TABLE_CONFIG.branches[newToken] = { name, coords };
+    document.getElementById('newBranchName').value = '';
+    document.getElementById('newBranchCoords').value = '';
+    
+    const currentRows = backupTableData(); 
     rebuildTableWithData(currentRows);
     renderTokenDashboard();
     saveTable(true);
@@ -919,7 +686,6 @@ function deleteBranch(token) {
     if (!IS_ADMIN) return;
     const t = LOCALES[currentLang] || LOCALES['en'];
     const branchName = TABLE_CONFIG.branches[token]?.name;
-    
     if (confirm(t.confirmDelBranch)) {
         delete TABLE_CONFIG.branches[token];
         let currentRows = backupTableData();
@@ -932,126 +698,74 @@ function deleteBranch(token) {
 
 function copyBranchLink(token) {
     const currentUrl = window.location.href.split('?')[0];
-    const fullLink = `${currentUrl}?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(token)}`;
-    
-    navigator.clipboard.writeText(fullLink).then(() => {
-        UIUtils.showToast("Link copied to clipboard!");
-    }).catch(() => {
-        // Fallback для старых браузеров
-        const textArea = document.createElement('textarea');
-        textArea.value = fullLink;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        UIUtils.showToast("Link copied to clipboard!");
-    });
+    const fullLink = `${currentUrl}?id=${COMPANY_ID}&token=${token}`; 
+    navigator.clipboard.writeText(fullLink).then(() => { alert("Success! Link copied to clipboard:\n" + fullLink); });
 }
 
 function backupTableData() {
     const backup = [];
     document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-        const branch = row.getAttribute('data-branch');
-        const rowId = row.getAttribute('data-id');
+        const branch = row.getAttribute('data-branch'); const rowId = row.getAttribute('data-id');
         const cellsData = {};
-        
         TABLE_CONFIG.columns.forEach((col) => {
             if (col.type === 'index' || col.type === 'action') return;
-            
-            const cell = row.querySelector(`.cell-${col.id}`) || 
-                        (col.type === 'coordinates' ? row.querySelector('.coords-container') : null);
-            
-            if (cell) {
-                let value = col.type === 'coordinates' ? 
-                    (row.querySelector('.coords-input')?.innerText.trim() || "") : 
-                    cell.innerText.trim();
-                
-                cellsData[col.id] = SecurityUtils.sanitizeHTML(value);
-            }
+            const cell = row.querySelector(`.cell-${col.id}`) || (col.type === 'coordinates' ? row.querySelector('.coords-container') : null);
+            if (!cell) return;
+            cellsData[col.id] = col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : cell.innerText.trim();
         });
-        
         backup.push({ id: rowId, branch, data: cellsData });
     });
     return backup;
 }
 
 function rebuildTableWithData(backedData) {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-    
-    const targetBranches = IS_ADMIN ? 
-        Object.entries(TABLE_CONFIG.branches) : 
-        Object.entries(TABLE_CONFIG.branches).filter(([tok, b]) => b.name === CURRENT_BRANCH_NAME);
-    
+    const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+    const targetBranches = IS_ADMIN ? Object.entries(TABLE_CONFIG.branches) : Object.entries(TABLE_CONFIG.branches).filter(([tok, b]) => b.name === CURRENT_BRANCH_NAME);
     const t = LOCALES[currentLang] || LOCALES['en'];
 
     targetBranches.forEach(([token, branchObj]) => {
-        const headRow = document.createElement('tr');
-        headRow.classList.add('region-header-row');
+        const headRow = document.createElement('tr'); 
+        headRow.classList.add('region-header-row'); 
         headRow.setAttribute('data-branch', branchObj.name);
-        
-        let adminButtons = IS_ADMIN ? 
-            `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(token)}')">${t.copyLinkBtn}</button>` : 
-            '';
-        
-        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${SecurityUtils.sanitizeHTML(branchObj.name)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${SecurityUtils.sanitizeHTML(branchObj.name)}', this)">${t.addBtnRow}</button></td>`;
+        let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>` : '';
+        headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${branchObj.name} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
         tbody.appendChild(headRow);
 
         const branchItems = backedData.filter(d => d.branch === branchObj.name);
-        
-        if (branchItems.length === 0) {
+        if (branchItems.length === 0) { 
             const baseCoordsStr = branchObj.coords ? branchObj.coords.join(', ') : '';
-            tbody.appendChild(createDataRow(branchObj.name, null, baseCoordsStr, true));
+            tbody.appendChild(createDataRow(branchObj.name, null, baseCoordsStr, true)); 
         } else {
-            branchItems.forEach(item => {
-                tbody.appendChild(createDataRow(branchObj.name, item, '', false));
-            });
+            branchItems.forEach(item => { tbody.appendChild(createDataRow(branchObj.name, item, '', false)); });
         }
     });
-    
-    reindexTable();
-    updateMapFromTable();
+    reindexTable(); updateMapFromTable();
 }
 
 function buildTableStructure() {
-    const colgroup = document.getElementById('tableColgroup');
-    const thead = document.getElementById('tableHead');
-    const tfoot = document.getElementById('tableFoot');
-    
-    colgroup.innerHTML = '';
-    let headHtml = '<tr>';
+    const colgroup = document.getElementById('tableColgroup'); const thead = document.getElementById('tableHead'); const tfoot = document.getElementById('tableFoot');
+    colgroup.innerHTML = ''; let headHtml = '<tr>';
     const t = LOCALES[currentLang] || LOCALES['en'];
-
+    
     TABLE_CONFIG.columns.forEach(col => {
-        colgroup.innerHTML += `<col style="width: ${col.width}">`;
-        const displayTitle = SecurityUtils.sanitizeHTML(getColumnTitle(col, currentLang));
+        colgroup.innerHTML += `<col style="width: ${col.width}">`; 
+        const displayTitle = getColumnTitle(col, currentLang);
         headHtml += `<th>${displayTitle}</th>`;
     });
-    
-    headHtml += '</tr>';
-    thead.innerHTML = headHtml;
+    headHtml += '</tr>'; thead.innerHTML = headHtml;
     tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${t.totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${TABLE_CONFIG.columns.length - 3}"></td>`;
 }
 
 function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstInit = false) {
-    const row = document.createElement('tr');
-    row.setAttribute('data-branch', branchName);
+    const row = document.createElement('tr'); row.setAttribute('data-branch', branchName);
+    const rowId = rawItem?.id || 'row_' + Math.random().toString(36).substr(2, 9); row.setAttribute('data-id', rowId);
     
-    const rowId = rawItem?.id || 'row_' + SecurityUtils.generateSecureToken().substring(0, 8);
-    row.setAttribute('data-id', rowId);
-
     let rowHtml = '';
     TABLE_CONFIG.columns.forEach((col) => {
         let val = '';
-        if (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) {
-            val = SecurityUtils.sanitizeHTML(rawItem.data[col.id]);
-        }
-        if (col.id === 'item_name' && isFirstInit && (!val || val.trim() === '')) {
-            val = SecurityUtils.sanitizeHTML(branchName);
-        }
-        if (col.type === 'coordinates' && isFirstInit && (!val || val.trim() === '') && defaultCoords) {
-            val = SecurityUtils.sanitizeHTML(defaultCoords);
-        }
+        if (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) { val = rawItem.data[col.id]; }
+        if (col.id === 'item_name' && isFirstInit && (!val || val.trim() === '')) val = branchName;
+        if (col.type === 'coordinates' && isFirstInit && (!val || val.trim() === '') && defaultCoords) val = defaultCoords;
 
         if (col.type === 'index') {
             rowHtml += `<td class="readonly index-cell"></td>`;
@@ -1063,114 +777,68 @@ function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstIn
             rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`;
         }
     });
-    
     row.innerHTML = rowHtml;
 
-    // Обработчик изменений с защитой от XSS
     row.addEventListener('input', (e) => {
         const targetCell = e.target.closest('td') || e.target.closest('.coords-container')?.parentNode;
         if (targetCell) {
-            const cellIdx = targetCell.cellIndex;
-            const targetColConfig = TABLE_CONFIG.columns[cellIdx];
-            
+            const cellIdx = targetCell.cellIndex; const targetColConfig = TABLE_CONFIG.columns[cellIdx];
             if (targetColConfig && targetColConfig.type !== 'date' && targetColConfig.type !== 'time') {
                 const dt = getCurrentDateTime();
-                const dCell = row.querySelector('.cell-date');
-                const tCell = row.querySelector('.cell-time');
-                if (dCell) dCell.innerText = dt.date;
-                if (tCell) tCell.innerText = dt.time;
-            }
-            
-            // Санитизация ввода
-            if (e.target.contentEditable === 'true') {
-                const sanitized = SecurityUtils.sanitizeHTML(e.target.innerText);
-                if (sanitized !== e.target.innerText) {
-                    e.target.innerText = sanitized;
-                }
+                const dCell = row.querySelector('.cell-date'); const tCell = row.querySelector('.cell-time');
+                if (dCell) dCell.innerText = dt.date; if (tCell) tCell.innerText = dt.time;
             }
         }
-        updateMapFromTable();
-        saveTable(false);
+        updateMapFromTable(); saveTable(false); 
     });
-
     return row;
 }
 
 function removeRow(btn) {
     const t = LOCALES[currentLang] || LOCALES['en'];
     if (confirm(t.confirmDelRow)) {
-        const row = btn.closest('tr');
+        const row = btn.closest('tr'); 
         const rowId = row.getAttribute('data-id');
-        deletedRowIds.push(rowId);
-        
-        if (activeMarkers[rowId]) {
-            map.removeLayer(activeMarkers[rowId]);
-            delete activeMarkers[rowId];
-        }
-        
-        row.remove();
-        reindexTable();
-        saveTable(true);
+        deletedRowIds.push(rowId); // Запоминаем, что эту строку мы удалили осознанно
+        if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
+        row.remove(); 
+        reindexTable(); 
+        saveTable(true); 
         updateMapFromTable();
     }
 }
 
 function reindexTable() {
-    let currentNumber = 1;
-    let totalCount = 0;
-    
+    let currentNumber = 1; let totalCount = 0;
     document.querySelectorAll('#tableBody tr').forEach((row) => {
-        if (row.classList.contains('region-header-row')) {
-            currentNumber = 1;
-        } else {
-            const indexCell = row.querySelector('.index-cell');
-            if (indexCell) indexCell.innerText = currentNumber++;
-            totalCount++;
-        }
+        if (row.classList.contains('region-header-row')) { currentNumber = 1; } 
+        else { const indexCell = row.querySelector('.index-cell'); if (indexCell) indexCell.innerText = currentNumber++; totalCount++; }
     });
-    
-    const totalEl = document.getElementById('totalRowsCount');
-    if (totalEl) totalEl.innerText = totalCount;
+    const totalEl = document.getElementById('totalRowsCount'); if (totalEl) totalEl.innerText = totalCount;
 }
 
 function addBranchRow(branchName, buttonElement) {
     const headerRow = buttonElement.closest('tr');
     const newRow = createDataRow(branchName, null, '', false);
-    headerRow.after(newRow);
-    reindexTable();
-    saveTable(true);
-    
+    headerRow.after(newRow); reindexTable(); saveTable(true); 
     const firstEditable = newRow.querySelector('[contenteditable="true"]');
     if (firstEditable) firstEditable.focus();
 }
 
-// =====================================================================
-// КАРТА И АНАЛИТИКА
-// =====================================================================
 function updateMapFromTable() {
     if (!map) return;
     const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
-
+    
     rows.forEach(row => {
-        const rowId = row.getAttribute('data-id');
-        const branch = row.getAttribute('data-branch');
-        const itemCell = row.querySelector('.cell-item_name');
-        const coordsInput = row.querySelector('.coords-input');
-        
-        let itemName = itemCell ? SecurityUtils.sanitizeHTML(itemCell.innerText.trim()) : "";
-        let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
+        const rowId = row.getAttribute('data-id'); const branch = row.getAttribute('data-branch');
+        const itemCell = row.querySelector('.cell-item_name'); const coordsInput = row.querySelector('.coords-input');
+        let itemName = itemCell ? itemCell.innerText.trim() : ""; let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
 
         const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
-        let amountVal = numCol ? 
-            SecurityUtils.sanitizeHTML(row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "") : 
-            "";
+        let amountVal = numCol ? (row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "") : "";
 
         if (!itemName && !coordsStr) {
-            if (activeMarkers[rowId]) {
-                map.removeLayer(activeMarkers[rowId]);
-                delete activeMarkers[rowId];
-            }
-            return;
+            if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; } return; 
         }
 
         let finalCoords = parseCoordinates(coordsStr);
@@ -1178,32 +846,18 @@ function updateMapFromTable() {
             if (!row.dataset.lat || !row.dataset.lng) {
                 const found = Object.values(TABLE_CONFIG.branches).find(b => b.name === branch);
                 const baseCoords = found ? found.coords : [48.4, 31.2];
-                row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6);
-                row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
+                row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6); row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
             }
             finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
         }
 
-        let popupText = `<b>🏢 ${SecurityUtils.sanitizeHTML(branch)}</b><br>`;
-        if (itemName) popupText += `Item: ${itemName}<br>`;
-        if (amountVal) popupText += `Value: <b>${amountVal}</b>`;
+        let popupText = `<b>🏢 ${branch}</b><br>`;
+        if(itemName) popupText += `Item: ${itemName}<br>`;
+        if(amountVal) popupText += `Value: <b>${amountVal}</b>`;
 
-        if (activeMarkers[rowId]) {
-            activeMarkers[rowId].setLatLng(finalCoords);
-            activeMarkers[rowId].getPopup().setContent(popupText);
-        } else {
-            const m = L.circleMarker(finalCoords, {
-                radius: 10,
-                fillColor: '#2563eb',
-                color: '#fff',
-                weight: 2,
-                fillOpacity: 0.8
-            }).addTo(map);
-            m.bindPopup(popupText);
-            activeMarkers[rowId] = m;
-        }
+        if (activeMarkers[rowId]) { activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].getPopup().setContent(popupText); } 
+        else { const m = L.circleMarker(finalCoords, { radius: 10, fillColor: '#2563eb', color: '#fff', weight: 2, fillOpacity: 0.8 }).addTo(map); m.bindPopup(popupText); activeMarkers[rowId] = m; }
     });
-    
     updateAnalytics();
 }
 
@@ -1215,123 +869,54 @@ function updateAnalytics() {
     const t = LOCALES[currentLang] || LOCALES['en'];
     const localizedNumTitle = getColumnTitle(numCol, currentLang);
     document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
-
-    const dailyData = {};
+    
+    const dailyData = {}; 
     globalHistory.forEach(item => {
         if (!item.date || !item.value) return;
-        const val = parseFloat(item.value.toString().replace(',', '.'));
-        if (isNaN(val)) return;
-        
-        const parts = item.date.split(/[./-]/);
-        if (parts.length !== 3) return;
-        
-        const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-        if (isNaN(dateObj.getTime())) return;
-        
-        const checkDate = new Date(dateObj);
-        checkDate.setHours(0, 0, 0, 0);
-        
-        if (!dailyData[item.date]) {
-            dailyData[item.date] = { sum: 0, count: 0, dateObj: checkDate };
-        }
-        dailyData[item.date].sum += val;
-        dailyData[item.date].count += 1;
+        const val = parseFloat(item.value.toString().replace(',', '.')); if (isNaN(val)) return;
+        const parts = item.date.split(/[./-]/); if (parts.length !== 3) return;
+        const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)); if (isNaN(dateObj.getTime())) return;
+        const checkDate = new Date(dateObj); checkDate.setHours(0,0,0,0);
+        if (!dailyData[item.date]) { dailyData[item.date] = { sum: 0, count: 0, dateObj: checkDate }; } 
+        dailyData[item.date].sum += val; dailyData[item.date].count += 1;
     });
 
     const sortedDates = Object.keys(dailyData).sort((a, b) => dailyData[a].dateObj - dailyData[b].dateObj);
-    const labels = sortedDates;
-    const avgData = sortedDates.map(d => (dailyData[d].sum / dailyData[d].count).toFixed(2));
-    const sumData = sortedDates.map(d => dailyData[d].sum.toFixed(2));
+    const labels = sortedDates; const avgData = sortedDates.map(d => (dailyData[d].sum / dailyData[d].count).toFixed(2)); const sumData = sortedDates.map(d => (dailyData[d].sum).toFixed(2));
 
-    if (sortedDates.length === 0) {
-        if (analyticsChart) {
-            analyticsChart.data.labels = [];
-            analyticsChart.data.datasets[0].data = [];
-            analyticsChart.data.datasets[1].data = [];
-            analyticsChart.update();
-        }
-        return;
-    }
-
+    if (sortedDates.length === 0) { if (analyticsChart) { analyticsChart.data.labels = []; analyticsChart.data.datasets[0].data = []; analyticsChart.update(); } return; }
     if (!analyticsChart) {
         const ctx = document.getElementById('analyticsChart').getContext('2d');
         analyticsChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        type: 'line',
-                        label: 'Average Value',
-                        data: avgData,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                        borderWidth: 2,
-                        tension: 0.2,
-                        fill: true
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Total Sum',
-                        data: sumData,
-                        backgroundColor: 'rgba(16, 185, 129, 0.4)',
-                        borderColor: '#10b981',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            data: { labels: labels, datasets: [
+                { type: 'line', label: 'Average Value', data: avgData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
+                { type: 'bar', label: 'Total Sum', data: sumData, backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 1 }
+            ]},
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
-    } else {
-        analyticsChart.data.labels = labels;
-        analyticsChart.data.datasets[0].data = avgData;
-        analyticsChart.data.datasets[1].data = sumData;
-        analyticsChart.update();
-    }
+    } else { analyticsChart.data.labels = labels; analyticsChart.data.datasets[0].data = avgData; analyticsChart.data.datasets[1].data = sumData; analyticsChart.update(); }
 }
 
 async function saveTable(showVisualStatus = false) {
     if (!SUPABASE_URL) return;
-    
-    const t = LOCALES[currentLang] || LOCALES['en'];
+    const t = LOCALES[currentLang] || LOCALES['en']; 
     if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
 
-    // Собираем локальные данные с санитизацией
+    // 1. Собираем локальные данные с экрана
     const localRowsData = [];
     document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
-        const branchName = SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || "");
-        
+        const branchName = row.getAttribute('data-branch') || "";
         if (row.classList.contains('region-header-row')) {
-            localRowsData.push({
-                isHeader: true,
-                branch: branchName,
-                id: row.getAttribute('data-id') || "",
-                cells: []
-            });
+            localRowsData.push({ isHeader: true, branch: branchName, id: row.getAttribute('data-id') || "", cells: [] });
         } else {
             const cellsData = {};
             TABLE_CONFIG.columns.forEach(col => {
                 if (col.type === 'index' || col.type === 'action') return;
-                let value = col.type === 'coordinates' ?
-                    (row.querySelector('.coords-input')?.innerText.trim() || "") :
+                cellsData[col.id] = col.type === 'coordinates' ? 
+                    (row.querySelector('.coords-input')?.innerText.trim() || "") : 
                     (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
-                cellsData[col.id] = SecurityUtils.sanitizeHTML(value);
             });
-            
-            localRowsData.push({
-                isHeader: false,
-                branch: branchName,
-                id: row.getAttribute('data-id') || "",
-                data: cellsData
-            });
+            localRowsData.push({ isHeader: false, branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
         }
     });
 
@@ -1341,66 +926,56 @@ async function saveTable(showVisualStatus = false) {
 
     if (numCol && dateCol) {
         document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-            const rowId = row.getAttribute('data-id') || "";
-            const branch = SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || "");
+            const rowId = row.getAttribute('data-id') || ""; 
+            const branch = row.getAttribute('data-branch') || "";
             const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
             const valStr = row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "";
-            
             if (dateStr && valStr) {
                 const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
-                const historyItem = {
-                    rowId,
-                    branch,
-                    date: SecurityUtils.sanitizeHTML(dateStr),
-                    value: SecurityUtils.sanitizeHTML(valStr)
-                };
-                
-                if (exactMatchIndex !== -1) {
-                    localHistory[exactMatchIndex] = historyItem;
-                } else {
-                    localHistory.push(historyItem);
-                }
+                const historyItem = { rowId, branch, date: dateStr, value: valStr };
+                if (exactMatchIndex !== -1) localHistory[exactMatchIndex] = historyItem; 
+                else localHistory.push(historyItem);
             }
         });
     }
 
-    let finalTableData = localRowsData;
+    let finalTableData = localRowsData; 
     let finalHistory = localHistory;
     let finalBranches = TABLE_CONFIG.branches;
     let finalColumns = TABLE_CONFIG.columns;
 
-    // Синхронизация с сервером
+    // 2. СКАЧИВАЕМ СВЕЖУЮ ВЕРСИЮ ИЗ БАЗЫ (Защита от Race Condition)
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, {
-            method: 'GET',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
+        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring?id=eq.${TABLE_CONFIG.stateId}`, { 
+            method: 'GET', 
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } 
         });
-
+        
         if (response.ok) {
             const resData = await response.json();
             if (resData && resData.length > 0) {
-                const serverPayload = resData[0].data;
-                const serverTableData = serverPayload.table || [];
+                const serverPayload = resData[0].data; 
+                const serverTableData = serverPayload.table || []; 
                 const serverHistory = serverPayload.history || [];
 
                 if (!IS_ADMIN && CURRENT_BRANCH_NAME) {
+                    // ФИЛИАЛ: Сохраняем чужие данные нетронутыми, обновляем только свои
                     const otherBranchesTable = serverTableData.filter(row => row.branch !== CURRENT_BRANCH_NAME);
-                    finalTableData = [...otherBranchesTable, ...localRowsData];
-
+                    finalTableData = [...otherBranchesTable, ...localRowsData]; 
+                    
                     const otherBranchesHistory = serverHistory.filter(h => h.branch !== CURRENT_BRANCH_NAME);
                     const ownHistory = localHistory.filter(h => h.branch === CURRENT_BRANCH_NAME);
                     finalHistory = [...otherBranchesHistory, ...ownHistory];
-
+                    
+                    // Филиал не имеет права перезаписывать настройки колонок и список филиалов
                     finalBranches = serverPayload.branches || TABLE_CONFIG.branches;
                     finalColumns = serverPayload.columns || TABLE_CONFIG.columns;
                 } else if (IS_ADMIN) {
+                    // АДМИН: Берем локальные данные, но добавляем новые строки, которые филиалы создали секунду назад
                     const localRowIds = new Set(localRowsData.map(r => r.id));
-                    const newServerRows = serverTableData.filter(r =>
-                        !localRowIds.has(r.id) && !r.isHeader && !deletedRowIds.includes(r.id)
-                    );
+                    
+                    // Находим строки в базе, которых нет на экране админа, И которые админ не удалял только что
+                    const newServerRows = serverTableData.filter(r => !localRowIds.has(r.id) && !r.isHeader && typeof deletedRowIds !== 'undefined' && !deletedRowIds.includes(r.id));
                     finalTableData = [...localRowsData, ...newServerRows];
 
                     const localHistIds = new Set(localHistory.map(h => h.rowId + '_' + h.date));
@@ -1410,66 +985,52 @@ async function saveTable(showVisualStatus = false) {
             }
         }
     } catch (e) {
-        console.warn("Sync failed, using local version", e);
+        console.warn("Синхронизация не удалась, сохраняем локальную версию", e);
     }
 
+    // 3. ОТПРАВЛЯЕМ ОБЪЕДИНЕННЫЕ ДАННЫЕ
     globalHistory = finalHistory;
-    const bodyData = {
-        id: TABLE_CONFIG.stateId,
-        data: {
-            masterToken: MASTER_TOKEN,
-            branches: finalBranches,
-            columns: finalColumns,
-            table: finalTableData,
-            history: globalHistory
-        }
+    const bodyData = { 
+        id: TABLE_CONFIG.stateId, 
+        data: { 
+            masterToken: MASTER_TOKEN, // Отправляем хэшированный пароль
+            branches: finalBranches, 
+            columns: finalColumns, 
+            table: finalTableData, 
+            history: globalHistory 
+        } 
     };
 
     try {
-        const response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify(bodyData)
+        let response = await fetch(`${SUPABASE_URL}/ukraine_monitoring`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'resolution=merge-duplicates' }, 
+            body: JSON.stringify(bodyData) 
         });
-
         if (!response.ok) throw new Error(`Code ${response.status}`);
-
-        if (showVisualStatus) {
-            document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
-        }
+        if (showVisualStatus) document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
         
-        deletedRowIds = [];
-    } catch (err) {
-        document.getElementById('saveStatus').innerText = t.saveError + err.message;
+        // Очищаем кэш удаленных строк после успешного сохранения
+        deletedRowIds = []; 
+    } catch (err) { 
+        document.getElementById('saveStatus').innerText = t.saveError + err.message; 
     }
-
+    
     updateMapFromTable();
 }
 
 async function loadTable() {
     const isReady = await checkDatabaseConfig();
-    if (!isReady) return;
+    if (!isReady) return; 
 
     const t = LOCALES[currentLang] || LOCALES['en'];
-    
     try {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
+        const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
         const payload = DB_PAYLOAD;
-
-        if (payload.columns && Array.isArray(payload.columns)) {
-            TABLE_CONFIG.columns = payload.columns;
-        }
         
+        if (payload.columns && Array.isArray(payload.columns)) TABLE_CONFIG.columns = payload.columns;
         if (payload.branches && typeof payload.branches === 'object') {
-            TABLE_CONFIG.branches = payload.branches;
-            CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null;
-            CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
+            TABLE_CONFIG.branches = payload.branches; CURRENT_BRANCH_OBJ = TABLE_CONFIG.branches[USER_TOKEN] || null; CURRENT_BRANCH_NAME = CURRENT_BRANCH_OBJ ? CURRENT_BRANCH_OBJ.name : null;
         }
 
         if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
@@ -1478,19 +1039,11 @@ async function loadTable() {
             document.getElementById('branchManagerPanel').style.display = 'none';
             return;
         }
+        
+        globalHistory = payload.history || []; const tableData = payload.table || [];
+        buildTableStructure(); renderColumnPills(); applyLocalization(); renderTokenDashboard();
 
-        globalHistory = payload.history || [];
-        const tableData = payload.table || [];
-
-        buildTableStructure();
-        renderColumnPills();
-        applyLocalization();
-        renderTokenDashboard();
-
-        if (tableData.length === 0) {
-            updateMapFromTable();
-            return;
-        }
+        if (tableData.length === 0) { updateMapFromTable(); return; }
 
         tableData.forEach(rowData => {
             let rowBranch = rowData.branch;
@@ -1498,146 +1051,52 @@ async function loadTable() {
 
             let row;
             if (rowData.isHeader) {
-                row = document.createElement('tr');
-                row.classList.add('region-header-row');
-                row.setAttribute('data-branch', rowBranch);
-                
-                const targetToken = Object.keys(TABLE_CONFIG.branches).find(k =>
-                    TABLE_CONFIG.branches[k].name === rowBranch
-                ) || '';
-                
-                let adminButtons = IS_ADMIN ?
-                    `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(targetToken)}')">${t.copyLinkBtn}</button>` :
-                    '';
-                
-                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${SecurityUtils.sanitizeHTML(rowBranch)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${SecurityUtils.sanitizeHTML(rowBranch)}', this)">${t.addBtnRow}</button></td>`;
-            } else {
-                row = createDataRow(rowBranch, rowData, '', false);
+                row = document.createElement('tr'); row.classList.add('region-header-row'); row.setAttribute('data-branch', rowBranch);
+                const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
+                let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${targetToken}')">${t.copyLinkBtn}</button>` : '';
+                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${rowBranch} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${rowBranch}', this)">${t.addBtnRow}</button></td>`;
+            } else { 
+                row = createDataRow(rowBranch, rowData, '', false); 
             }
-            
             tbody.appendChild(row);
         });
 
-        reindexTable();
-        updateMapFromTable();
-        
-        document.getElementById('saveStatus').innerHTML = IS_ADMIN ?
-            t.adminSession :
-            `${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
-
-        if (!IS_ADMIN && CURRENT_BRANCH_OBJ && CURRENT_BRANCH_OBJ.coords) {
-            map.setView(CURRENT_BRANCH_OBJ.coords, 11);
-        }
+        reindexTable(); updateMapFromTable(); document.getElementById('saveStatus').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
+        if (!IS_ADMIN && CURRENT_BRANCH_OBJ) map.setView(CURRENT_BRANCH_OBJ.coords, 11);
     } catch (err) {
-        console.error('Load table error:', err);
-        buildTableStructure();
-        renderColumnPills();
-        updateMapFromTable();
-        document.getElementById('saveStatus').innerHTML = 'Error: ' + err.message;
+        buildTableStructure(); renderColumnPills(); updateMapFromTable(); document.getElementById('saveStatus').innerHTML = 'Error: ' + err.message;
     }
 }
 
-async function clearChartHistory() {
+async function clearChartHistory() { 
     const t = LOCALES[currentLang] || LOCALES['en'];
-    if (confirm(t.confirmClearHis)) {
-        globalHistory = [];
-        await saveTable(true);
-    }
+    if (confirm(t.confirmClearHis)) { globalHistory = []; await saveTable(true); } 
 }
 
-function initMap() {
-    const defaultCenter = [30, 0];
-    const defaultZoom = 2;
-    
-    map = L.map('map').setView(defaultCenter, defaultZoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
+function initMap() { 
+    const defaultCenter = [30, 0]; const defaultZoom = 2; 
+    map = L.map('map').setView(defaultCenter, defaultZoom); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); 
     map.on('click', function(e) {
         const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
-        navigator.clipboard.writeText(coordsStr).then(() => {
-            UIUtils.showToast(`Coordinates copied:\n${coordsStr}`);
-        }).catch(() => {
-            UIUtils.showToast(`Coordinates: ${coordsStr}`);
-        });
+        navigator.clipboard.writeText(coordsStr).then(() => { alert(`Coordinates copied:\n${coordsStr}`); });
     });
 }
 
-function exportTable() {
-    const allRowsData = [];
-    document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
-        allRowsData.push({
-            isHeader: row.classList.contains('region-header-row'),
-            branch: SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || ""),
-            id: row.getAttribute('data-id') || "",
-            cells: [...row.cells].map(cell => SecurityUtils.sanitizeHTML(cell.innerText))
-        });
-    });
+function exportTable() { const allRowsData = []; document.querySelectorAll('#dynamicTable tbody tr').forEach(row => { allRowsData.push({ isHeader: row.classList.contains('region-header-row'), branch: row.getAttribute('data-branch') || "", id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => cell.innerText) }); }); const blob = new Blob([JSON.stringify({ branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: allRowsData, history: globalHistory }, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `export_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
 
-    const exportData = {
-        branches: TABLE_CONFIG.branches,
-        columns: TABLE_CONFIG.columns,
-        table: allRowsData,
-        history: globalHistory
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `export_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-}
-
-// =====================================================================
-// ИНИЦИАЛИЗАЦИЯ
-// =====================================================================
-async function loadSecureConfig() {
-    try {
-        // В реальном приложении здесь должен быть запрос к защищённому эндпоинту
-        // для получения ключей API
-        const response = await fetch('/api/config');
-        if (response.ok) {
-            const config = await response.json();
-            SUPABASE_URL = config.supabaseUrl;
-            SUPABASE_KEY = config.supabaseKey;
-        }
-    } catch (e) {
-        console.warn('Could not load secure config, using defaults');
-        // Fallback для демонстрации
-        SUPABASE_URL = APP_CONFIG.SUPABASE_URL;
-        SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY;
-    }
-}
-
-window.onload = async () => {
-    await loadSecureConfig();
-    initMap();
+window.onload = async () => { 
+    initMap(); 
     applyLocalization();
-    await loadTable();
-
+    await loadTable(); 
+    
     if (MASTER_TOKEN && !IS_ADMIN) {
         document.getElementById('columnManagerPanel').style.display = 'none';
         document.getElementById('branchManagerPanel').style.display = 'none';
         document.getElementById('clearHistoryBtn').style.display = 'none';
         document.getElementById('tokenDashboardCard').style.display = 'none';
     }
-
-    // Автоматическое сохранение каждые 5 минут
-    setInterval(() => {
-        if (MASTER_TOKEN) {
-            saveTable(false);
-        }
-    }, 300000);
 };
-
-// Обработка закрытия страницы
-window.addEventListener('beforeunload', () => {
-    if (MASTER_TOKEN) {
-        saveTable(false);
-    }
-});
 </script>
 </body>
 </html>
