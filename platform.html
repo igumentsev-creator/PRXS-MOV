@@ -397,7 +397,8 @@
             document.getElementById('pageTitle').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         }
         
-        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount");
+        // PRO: Ищем любую колонку-число, чтобы локализовать заголовок
+        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount" || c.type === "number");
         const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
         document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
     }
@@ -446,9 +447,9 @@
         
         let localHistoryFromScreen = [];
 
-        // Динамически находим текущие индексы колонок даты и показателей
+        // PRO ИСПРАВЛЕНИЕ: Ищем по типу 'number', а не жестко по id!
         const dateColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
-        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount');
+        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
 
         rows.forEach(row => {
             const rowId = row.getAttribute('data-id');
@@ -459,7 +460,6 @@
             let itemName = itemCell ? itemCell.innerText.trim() : "";
             let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
 
-            // --- ЭКСПЕРТНЫЙ ДИНАМИЧЕСКИЙ ПОИСК ЯЧЕЕК ---
             let dateStr = "";
             let amountVal = "";
 
@@ -471,7 +471,8 @@
             }
 
             if (dateStr) {
-                let cleanValue = amountVal.replace(',', '.').trim();
+                // Броня от пробелов: убираем пробелы и меняем запятую на точку
+                let cleanValue = amountVal.replace(/\s/g, '').replace(',', '.').trim();
                 localHistoryFromScreen.push({ 
                     rowId: rowId, 
                     branch: branch, 
@@ -588,15 +589,15 @@
                 }
             }
 
-            // Динамически ищем колонки даты и показателей
+            // PRO: Ищем номер колонки по типу
             const dIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
-            const aIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount');
+            const aIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
             
             const dateStr = (dIdx !== -1 && row.cells[dIdx]) ? row.cells[dIdx].innerText.trim() : "";
             const valStr = (aIdx !== -1 && row.cells[aIdx]) ? row.cells[aIdx].innerText.trim() : "";
 
             if (dateStr) {
-                let cleanValue = valStr.replace(',', '.').trim();
+                let cleanValue = valStr.replace(/\s/g, '').replace(',', '.').trim();
                 const exactMatchIndex = globalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
                 const historyItem = { 
                     rowId: rowId, 
@@ -623,7 +624,6 @@
             if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
             row.remove();
             
-            // Удаляем запись из истории графика
             globalHistory = globalHistory.filter(h => h.rowId !== rowId);
             
             reindexTable();
@@ -815,6 +815,8 @@
         
         const statusEl = document.getElementById('saveStatus');
         statusEl.innerText = "🔄 Translating column... (Please wait)";
+        
+        // Генерируется ID, который мы теперь игнорируем при поиске чисел!
         const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
         const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
         
@@ -946,16 +948,17 @@
 
     // --- АНАЛИТИКА ---
     function updateAnalytics() {
-        const numColId = "amount";
         const t = LOCALES[currentLang] || LOCALES['en'];
-        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === numColId);
+        // PRO: Ищем конфиг колонки по типу, чтобы взять её имя
+        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount" || c.type === "number");
         const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
         document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
         
         const dailyData = {}; 
         globalHistory.forEach(item => {
             if (!item.date || !item.value) return;
-            const val = parseFloat(item.value.toString().replace(',', '.'));
+            // Броня от пробелов при чтении из истории
+            const val = parseFloat(item.value.toString().replace(/\s/g, '').replace(',', '.'));
             if (isNaN(val)) return;
             const parts = item.date.split(/[./-]/);
             if (parts.length !== 3) return;
@@ -1039,9 +1042,9 @@
 
         let localHistory = [...globalHistory];
 
-        // Динамически находим индексы перед сохранением в БД
+        // PRO: Ищем индексы перед сохранением тоже по ТИПУ колонки
         const dateColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
-        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount');
+        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
 
         document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
             const rowId = row.getAttribute('data-id') || ""; 
@@ -1051,7 +1054,7 @@
             let valStr = (amountColIdx !== -1 && row.cells[amountColIdx]) ? row.cells[amountColIdx].innerText.trim() : "";
             
             if (dateStr) {
-                let cleanValue = valStr.replace(',', '.').trim();
+                let cleanValue = valStr.replace(/\s/g, '').replace(',', '.').trim();
                 const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
                 const historyItem = { 
                     rowId: rowId, 
