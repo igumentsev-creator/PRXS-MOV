@@ -92,7 +92,7 @@
     <!-- Индикатор загрузки системы -->
     <div id="loadingPanel" class="card auth-screen" style="border-color: transparent; box-shadow: none; background: transparent;">
         <h2>🔄 Підключення...</h2>
-        <p id="systemStatus">Ініціалізація структури...</p>
+        <p id="systemStatus">Ініціалізація... структури...</p>
     </div>
 
     <!-- ЭКРАН 1: Создание пространства (Setup) -->
@@ -432,7 +432,7 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Клик по карте теперь ОДНОЗНАЧНО копирует координаты в буфер обмена[cite: 1]
+        // Клик по карте теперь ОДНОЗНАЧНО копирует координаты в буфер обмена
         map.on('click', function(e) {
             const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
             navigator.clipboard.writeText(coordsStr).then(() => {
@@ -679,7 +679,7 @@
         if (deg >= 202.5 && deg < 247.5) return 'SW';
         if (deg >= 247.5 && deg < 292.5) return 'W';
         if (deg >= 292.5 && deg < 337.5) return 'NW';
-        return 'Unknown';
+        return 'Unknown'; 
     }
 
     async function fetchWeatherData(lat, lng) {
