@@ -83,26 +83,28 @@
 <body>
 
 <div class="container">
+    <!-- Изначально интерфейс скрыт, показывается только загрузка -->
     <div class="card setup-screen" id="setupPanel">
         <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Створення пароля адміністратора</h2>
-        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (минимум 6 символов).</p>
+        <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Welcome! Please create a strong password (min 6 characters).</p>
         <div>
-            <input type="password" id="setupMasterToken" placeholder="Введите новый пароль" minlength="6" autocomplete="new-password"><br>
+            <input type="password" id="setupMasterToken" placeholder="Enter new password" minlength="6" autocomplete="new-password"><br>
             <div class="password-strength"><div class="password-strength-bar" id="passwordStrengthBar"></div></div>
-            <button class="main-btn" id="btnSaveSetup" onclick="saveInitialPassword()">🚀 Сохранить пароль и войти</button>
+            <button class="main-btn" id="btnSaveSetup" onclick="saveInitialPassword()">🚀 Save password</button>
         </div>
     </div>
 
     <div class="card login-screen" id="loginPanel">
         <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Вход в рабочее пространство</h2>
-        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа.</p>
+        <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">This workspace is protected. Enter token.</p>
         <div id="loginError" class="error-msg"></div>
         <div>
-            <input type="password" id="loginTokenInput" placeholder="Введите пароль / токен" autocomplete="current-password"><br>
-            <button class="main-btn" id="btnSubmitLogin" onclick="checkEnteredPassword()">🔓 Войти</button>
+            <input type="password" id="loginTokenInput" placeholder="Password / token" autocomplete="current-password"><br>
+            <button class="main-btn" id="btnSubmitLogin" onclick="checkEnteredPassword()">🔓 Login</button>
         </div>
     </div>
 
+    <!-- CARDS ARE HIDDEN BY DEFAULT IN V3 -->
     <div class="card" id="mainDashboardCard" style="display: none;">
         <div class="header-main">
             <h1 id="pageTitle">Workspace Data Collection</h1>
@@ -114,26 +116,23 @@
                     <option value="zh">🌐 中文</option>
                     <option value="es">🌐 Español</option>
                     <option value="de">🌐 Deutsch</option>
-                    <option value="hi">🌐 हिन्दी</option>
-                    <option value="it">🌐 Italiano</option>
-                    <option value="ja">🌐 日本語</option>
                 </select>
             </div>
         </div>
         
         <div class="toolbar">
-            <button class="main-btn" id="btnSave" onclick="saveTable(true)">💾 Save Data & Structure</button>
+            <button class="main-btn" id="btnSave" onclick="saveTable(true)">💾 Save Data</button>
             <button class="main-btn" id="btnExport" onclick="exportTable()">📥 Export JSON</button>
-            <button class="main-btn" style="background: #dc2626;" id="clearHistoryBtn" onclick="clearChartHistory()">🧹 Clear Analytics History</button>
+            <button class="main-btn" style="background: #dc2626;" id="clearHistoryBtn" onclick="clearChartHistory()">🧹 Clear Analytics</button>
         </div>
 
         <div class="config-panel" id="columnManagerPanel">
-            <strong id="lblColManager">📋 Column Manager (Admin Only):</strong>
+            <strong id="lblColManager">📋 Column Manager:</strong>
             <input type="text" id="newColTitle" placeholder="Column Name" maxlength="50">
             <select id="newColType">
                 <option value="text">Text</option>
-                <option value="number">Number (for Chart)</option>
-                <option value="coordinates">Coordinates (Lat, Lng)</option>
+                <option value="number">Number (Chart)</option>
+                <option value="coordinates">Coordinates</option>
                 <option value="date">Date</option>
                 <option value="time">Time</option>
             </select>
@@ -142,7 +141,7 @@
         </div>
 
         <div class="config-panel" id="branchManagerPanel">
-            <strong id="lblBranchManager">🏢 Workspace / Branch Manager:</strong>
+            <strong id="lblBranchManager">🏢 Workspace Manager:</strong>
             <input type="text" id="newBranchName" placeholder="Branch Name" maxlength="100">
             <input type="text" id="newBranchCoords" placeholder="Coords (Lat, Lng)">
             <button id="btnAddBranch" onclick="addNewBranch()">➕ Add Workspace</button>
@@ -152,7 +151,7 @@
     </div>
 
     <div class="card" id="tokenDashboardCard" style="display: none;">
-        <h3 id="lblTokenDashboardTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Security Tokens & Regional Access Links Generator</h3>
+        <h3 id="lblTokenDashboardTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Security Tokens & Links</h3>
         <div style="overflow-x: auto;">
             <table class="token-dashboard">
                 <thead>
@@ -171,10 +170,8 @@
     <div class="card" id="mapCard" style="display: none;"><div id="map"></div></div>
 
     <div class="card" id="chartCard" style="display: none;">
-        <h2 id="chartTitle" style="text-align: center; color: #1e3a8a; margin-bottom: 15px; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Performance Dynamics</h2>
-        <div style="position: relative; height: 320px; width: 100%;">
-            <canvas id="analyticsChart"></canvas>
-        </div>
+        <h2 id="chartTitle" style="text-align: center; color: #1e3a8a; margin-bottom: 15px; font-size: 18px; text-transform: uppercase;">Performance Dynamics</h2>
+        <div style="position: relative; height: 320px; width: 100%;"><canvas id="analyticsChart"></canvas></div>
     </div>
 
     <div class="card" id="tableCard" style="display: none;">
@@ -183,11 +180,13 @@
                 <colgroup id="tableColgroup"></colgroup>
                 <thead id="tableHead"></thead>
                 <tbody id="tableBody"></tbody>
-                <tfoot>
-                    <tr class="total-row" id="tableFoot"></tr>
-                </tfoot>
+                <tfoot><tr class="total-row" id="tableFoot"></tr></tfoot>
             </table>
         </div>
+    </div>
+    
+    <div style="text-align: center; color: #cbd5e1; font-size: 11px; margin-top: 10px; font-weight: bold;">
+        Platform v3.0 (Optimized)
     </div>
 </div>
 
@@ -243,18 +242,18 @@ const SECURITY_CONFIG = { MAX_LOGIN_ATTEMPTS: 5, LOCKOUT_DURATION: 15 * 60 * 100
 
 const LOCALES = {
     en: {
-        denied: "❌ ACCESS DENIED: Invalid or missing token.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
-        chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
+        denied: "❌ ACCESS DENIED: Invalid or missing token.", adminSession: "👑 Master Admin Panel", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows:", confirmDelCol: "Delete this column?", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized", readyEmpty: "Ready", lblColManager: "📋 Column Manager:", lblBranchManager: "🏢 Workspace Manager:", btnSave: "💾 Save Data", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens", thBranch: "Region / Workspace", thCoords: "Coords", thToken: "Token (UUID)", thActions: "Actions", confirmDelBranch: "Delete region?",
+        chartTitle: "Performance", col_id: "№", col_item_name: "Item Name", col_coords: "Coordinates", col_date: "Date", col_time: "Time", col_amount: "Amount", col_weather: "Weather", col_action: "Action",
         wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection",
-        setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please create a strong password (min 6 characters, letters and numbers).", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
-        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or token!", loginLocked: "🔒 Too many attempts. Please wait {minutes} minutes."
+        setupTitle: "🔑 Setup Password", setupDesc: "Create a strong password.", setupPlaceholder: "Enter password", setupBtn: "🚀 Save & Login",
+        loginTitle: "🔒 Workspace Login", loginDesc: "Enter your secure token.", loginPlaceholder: "Token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect token!", loginLocked: "🔒 Locked. Wait {minutes} min."
     },
     ua: {
-        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен.", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів:", btnSave: "💾 Зберегти Дані", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання?",
-        chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
+        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен.", adminSession: "👑 Майстер-панель", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка: ", totalCount: "Рядків:", confirmDelCol: "Видалити колонку?", confirmDelRow: "Видалити рядок?", confirmClearHis: "Очистити історію?", missingCoords: "❌ Немає координат", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок:", lblBranchManager: "🏢 Менеджер Філій:", btnSave: "💾 Зберегти Дані", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва", branchPlaceholder: "Філія", coordsPlaceholder: "Шир, Дов", addBtnRow: "➕ Додати", copyLinkBtn: "🔗 Копіювати", dashTitle: "🔑 Токени безпеки", thBranch: "Філія", thCoords: "Координати", thToken: "Токен", thActions: "Дії", confirmDelBranch: "Видалити філію?",
+        chartTitle: "Динаміка", col_id: "№", col_item_name: "Об'єкт", col_coords: "Координати", col_date: "Дата", col_time: "Час", col_amount: "Значення", col_weather: "Погода", col_action: "Дія",
         wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
-        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Створіть надійний пароль (мінімум 6 символів, літери та цифри).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти та увійти",
-        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!", loginLocked: "🔒 Забагато спроб. Зачекайте {minutes} хвилин."
+        setupTitle: "🔑 Пароль адміністратора", setupDesc: "Створіть надійний пароль.", setupPlaceholder: "Новий пароль", setupBtn: "🚀 Зберегти",
+        loginTitle: "🔒 Вхід", loginDesc: "Введіть токен доступу.", loginPlaceholder: "Токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний токен!", loginLocked: "🔒 Зачекайте {minutes} хв."
     }
 };
 
@@ -286,11 +285,8 @@ async function fetchApi(action, payload = null) {
 // =====================================================================
 async function initializeApp() {
     try {
-        if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
-            throw new Error("No workspace ID in URL.");
-        }
+        if (!COMPANY_ID) throw new Error("No workspace ID.");
 
-        // FETCH ONCE
         const res = await fetchApi("load"); 
 
         if (res.error) {
@@ -301,7 +297,6 @@ async function initializeApp() {
         }
 
         if (res.ok) {
-            // STATE BINDING
             IS_ADMIN = (res.role === "admin");
             TABLE_CONFIG.columns = res.columns || [];
             TABLE_CONFIG.branches = res.branches || {};
@@ -314,7 +309,6 @@ async function initializeApp() {
                     { name: CURRENT_BRANCH_NAME, coords: [48.3794, 31.1656] };
             }
 
-            // UI TOGGLES
             document.getElementById('loginPanel').style.display = 'none';
             document.getElementById('setupPanel').style.display = 'none';
             ['mainDashboardCard', 'mapCard', 'chartCard', 'tableCard'].forEach(id => document.getElementById(id).style.display = 'block');
@@ -328,7 +322,6 @@ async function initializeApp() {
                 document.getElementById('tokenDashboardCard').style.display = 'block';
             }
 
-            // RENDER LOGIC
             applyLocalization(); 
             buildTableStructure();
             renderColumnPills();
@@ -365,16 +358,16 @@ async function initializeApp() {
 
             updateMapFromTable();
             
-            // STATUS UPDATE FIX
             const t = LOCALES[currentLang] || LOCALES['en'];
             document.getElementById('saveStatus').innerHTML = IS_ADMIN ? `✅ ${t.adminSession}` : `✅ ${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
 
             if (!IS_ADMIN && CURRENT_BRANCH_OBJ && CURRENT_BRANCH_OBJ.coords && map) {
                 map.setView(CURRENT_BRANCH_OBJ.coords, 11);
             }
+        } else {
+            throw new Error("Invalid API format.");
         }
     } catch (err) {
-        console.error('Initialization error:', err);
         document.getElementById('saveStatus').innerHTML = '❌ System Error: ' + err.message;
     }
 }
@@ -409,7 +402,6 @@ async function checkEnteredPassword() {
 
 async function saveInitialPassword() {
     const token = document.getElementById('setupMasterToken').value.trim();
-    const t = LOCALES[currentLang] || LOCALES['en'];
     if (!token || token.length < SECURITY_CONFIG.MIN_PASSWORD_LENGTH) {
         UIUtils.showToast(`Password must be at least ${SECURITY_CONFIG.MIN_PASSWORD_LENGTH} characters.`);
         return;
@@ -471,7 +463,6 @@ function applyLocalization() {
     document.getElementById('btnSubmitLogin').innerText = t.loginBtn;
     document.getElementById('langDropdown').value = currentLang;
 
-    // THE CORE BUG FIX: RELY ON IS_ADMIN INSTEAD OF USER_TOKEN STRING 
     const titleEl = document.getElementById('pageTitle');
     if (IS_ADMIN) {
         titleEl.innerHTML = t.adminSession;
@@ -549,7 +540,7 @@ async function addNewColumn() {
     document.getElementById('saveStatus').innerText = "🔄 Processing column...";
     const id = (titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10) || 'col') + '_' + SecurityUtils.generateSecureToken().substring(0, 6);
     
-    const titleObject = {}; titleObject[currentLang] = titleValue; // Keep it simple without external APIs risking hang
+    const titleObject = {}; titleObject[currentLang] = titleValue;
     const weatherIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
     TABLE_CONFIG.columns.splice(weatherIdx !== -1 ? weatherIdx : TABLE_CONFIG.columns.length - 1, 0, { id, title: titleObject, width: "12%", type: document.getElementById('newColType').value });
     titleInput.value = '';
@@ -646,7 +637,6 @@ function buildTableStructure() {
     });
     thead.innerHTML = headHtml + '</tr>';
     
-    // BUGFIX: Prevent negative colspans
     const emptyCols = Math.max(1, TABLE_CONFIG.columns.length - 3);
     tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${(LOCALES[currentLang] || LOCALES['en']).totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${emptyCols}"></td>`;
 }
@@ -763,8 +753,8 @@ function updateAnalytics() {
             data: {
                 labels: sortedDates,
                 datasets: [
-                    { type: 'line', label: 'Average Value', data: avgData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
-                    { type: 'bar', label: 'Total Sum', data: sumData, backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 1 }
+                    { type: 'line', label: 'Average', data: avgData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
+                    { type: 'bar', label: 'Total', data: sumData, backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 1 }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
@@ -777,7 +767,7 @@ function updateAnalytics() {
 }
 
 async function saveTable(showVisualStatus = false) {
-    if (!APP_CONFIG.EDGE_FUNCTION_URL || (!IS_ADMIN && !CURRENT_BRANCH_NAME)) return; // Protection
+    if (!COMPANY_ID || (!IS_ADMIN && !CURRENT_BRANCH_NAME)) return;
     const t = LOCALES[currentLang] || LOCALES['en'];
     if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
 
@@ -826,7 +816,7 @@ async function clearChartHistory() {
 
 function initMap() {
     map = L.map('map').setView([30, 0], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
     map.on('click', function(e) {
         const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
         const branchCoordsInput = document.getElementById('newBranchCoords');
@@ -849,7 +839,6 @@ window.onload = async () => {
     initMap();
     await initializeApp();
 
-    // Auto-save strictly checks initialization success
     setInterval(() => {
         if (COMPANY_ID && (IS_ADMIN || CURRENT_BRANCH_NAME)) {
             saveTable(false);
