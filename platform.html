@@ -447,7 +447,6 @@
         
         // Массив для временного накопления истории "на лету" из живых ячеек таблицы
         let localHistoryFromScreen = [];
-        const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
 
         rows.forEach(row => {
             const rowId = row.getAttribute('data-id');
@@ -460,12 +459,10 @@
 
             let amountVal = row.querySelector(`.cell-amount`)?.innerText.trim() || "";
 
-            // Вытягиваем данные для графика из живых ячеек прямо сейчас
-            if (dateCol && amountVal) {
-                const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
-                if (dateStr) {
-                    localHistoryFromScreen.push({ rowId, branch, date: dateStr, value: amountVal });
-                }
+            // Вытягиваем данные напрямую по классам ячеек (100% независимость от бэкенд-структур)
+            const dateStr = row.querySelector(`.cell-date`)?.innerText.trim() || "";
+            if (dateStr && amountVal) {
+                localHistoryFromScreen.push({ rowId, branch, date: dateStr, value: amountVal });
             }
 
             if (!itemName && !coordsStr) {
@@ -568,7 +565,7 @@
             if (targetCell) {
                 const cellIdx = targetCell.cellIndex;
                 const targetColConfig = TABLE_CONFIG.columns[cellIdx];
-                if (targetColConfig && targetColConfig.type !== 'date' && targetColConfig.type !== 'time') {
+                if (targetColConfig && targetColConfig.id !== 'date' && targetColConfig.id !== 'time') {
                     const dt = getCurrentDateTime();
                     const dCell = row.querySelector('.cell-date');
                     const tCell = row.querySelector('.cell-time');
@@ -578,8 +575,7 @@
             }
 
             // Накапливаем изменения "на лету" в виртуальную историю для мгновенного обновления Chart.js
-            const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
-            const dateStr = dateCol ? (row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "") : "";
+            const dateStr = row.querySelector(`.cell-date`)?.innerText.trim() || "";
             const valStr = row.querySelector(`.cell-amount`)?.innerText.trim() || "";
             if (dateStr && valStr) {
                 const exactMatchIndex = globalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
@@ -929,9 +925,6 @@
     // --- АНАЛИТИКА (ГРАФИК СВЯЗАН НАПРЯМУЮ С CELL-AMOUNT) ---
     function updateAnalytics() {
         const numColId = "amount";
-        const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
-        if (!dateCol) return;
-
         const t = LOCALES[currentLang] || LOCALES['en'];
         const numColConfig = TABLE_CONFIG.columns.find(c => c.id === numColId);
         const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
@@ -1024,24 +1017,22 @@
 
         let localHistory = [...globalHistory];
         const numColId = "amount";
-        const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
 
-        if (dateCol) {
-            document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-                const rowId = row.getAttribute('data-id') || ""; 
-                const branch = row.getAttribute('data-branch') || "";
-                const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
-                const valStr = row.querySelector(`.cell-${numColId}`)?.innerText.trim() || "";
-                if (dateStr && valStr) {
-                    const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
-                    const historyItem = { rowId, branch, date: dateStr, value: valStr };
-                    if (exactMatchIndex !== -1) localHistory[exactMatchIndex] = historyItem; 
-                    else localHistory.push(historyItem);
-                }
-            });
-        }
+        document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
+            const rowId = row.getAttribute('data-id') || ""; 
+            const branch = row.getAttribute('data-branch') || "";
+            
+            // Фиксированная синхронизация истории по классам ячеек перед отправкой на сервер
+            const dateStr = row.querySelector(`.cell-date`)?.innerText.trim() || "";
+            const valStr = row.querySelector(`.cell-${numColId}`)?.innerText.trim() || "";
+            if (dateStr && valStr) {
+                const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
+                const historyItem = { rowId, branch, date: dateStr, value: valStr };
+                if (exactMatchIndex !== -1) localHistory[exactMatchIndex] = historyItem; 
+                else localHistory.push(historyItem);
+            }
+        });
 
-        // Обновляем виртуальный глобальный массив перед отправкой, чтобы график сразу синхронизировался
         globalHistory = localHistory;
 
         try {
