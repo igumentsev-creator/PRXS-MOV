@@ -242,12 +242,12 @@
         fr: {
             denied: "❌ ACCÈS REFUSÉ", adminSession: "👑 Panneau d'administration", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur: ", totalCount: "Total lignes:", confirmDelCol: "Supprimer la colonne?", confirmDelRow: "Supprimer la ligne?", confirmClearHis: "Effacer l'historique?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Colonnes:", lblBranchManager: "🏢 Branches:", btnSave: "💾 Enregistrer", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique", btnAddCol: "➕ Colonne", btnAddBranch: "➕ Branche", colPlaceholder: "Nom", branchPlaceholder: "Branche", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ligne", copyLinkBtn: "🔗 Copier", dashTitle: "🔑 Jetons", thBranch: "Branche", thCoords: "Coords", thToken: "Jeton", thActions: "Actions", confirmDelBranch: "Supprimer?",
             chartTitle: "Dynamique", col_id: "№", col_item_name: "Nom", col_coords: "Coords", col_date: "Date", col_time: "Heure", col_amount: "Valeur", col_weather: "Météo", col_action: "Action",
-            wWind: "Vent", wSpeed: "m/s", wStability: "Stabilité", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+            wWind: "Vent", wSpeed: "m/s", wStability: "Stabilità", wInversion: "Inversion", wIsothermy: "Isotermia", wConvection: "Convection",
             setupTitle: "🔑 Configuration", setupDesc: "Créez votre mot de passe.", setupPlaceholder: "Mot de passe", setupBtn: "🚀 Enregistrer",
             loginTitle: "🔒 Connexion", loginDesc: "Espace sécurisé.", loginPlaceholder: "Mot de passe / jeton", loginBtn: "🔓 Se connecter", loginIncorrect: "❌ Incorrect !"
         },
         ja: {
-            denied: "❌ アクセスが拒否されました", adminSession: "👑 管理者パネル", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ エラー: ", totalCount: "総行数:", confirmDelCol: "列を削除しますか？", confirmDelRow: "行を削除しますか？", confirmClearHis: "履歴をクリアしますか？", missingCoords: "❌ 座標なし", apiError: "❌ エラー", invalidFormat: "⚠️ 無効な形式", loading: "🔄 読み込み中...", sync: "同期済み", readyEmpty: "準備完了", lblColManager: "📋 列管理:", lblBranchManager: "🏢 拠点管理:", btnSave: "💾 保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 履歴クリア", btnAddCol: "➕ 列追加", btnAddBranch: "➕ 拠点追加", colPlaceholder: "列名", branchPlaceholder: "拠点名", coordsPlaceholder: "座標", addBtnRow: "➕ 行追加", copyLinkBtn: "🔗 コピー", dashTitle: "🔑 セキュリティトークン", thBranch: "拠点", thCoords: "座標", thToken: "トークン", thActions: "操作", confirmDelBranch: "削除しますか？",
+            denied: "❌ アクセスが拒否されました", adminSession: "👑 管理者パネル", secureSession: "🔒 セキュアセッション", saved: "✅ 保存完了: ", saveError: "❌ エラー: ", totalCount: "総行数:", confirmDelCol: "列を削除しますка？", confirmDelRow: "行を削除しますか？", confirmClearHis: "履歴をクリアしますか？", missingCoords: "❌ 座標なし", apiError: "❌ エラー", invalidFormat: "⚠️ 無効な形式", loading: "🔄 読み込み中...", sync: "同期済み", readyEmpty: "準備完了", lblColManager: "📋 列管理:", lblBranchManager: "🏢 拠点管理:", btnSave: "💾 保存", btnExport: "📥 JSONエクスポート", btnClearHis: "🧹 履歴クリア", btnAddCol: "➕ 列追加", btnAddBranch: "➕ 拠点追加", colPlaceholder: "列名", branchPlaceholder: "拠点名", coordsPlaceholder: "座標", addBtnRow: "➕ 行追加", copyLinkBtn: "🔗 コピー", dashTitle: "🔑 セキュリティトークン", thBranch: "拠点", thCoords: "座標", thToken: "トークン", thActions: "操作", confirmDelBranch: "削除しますか？",
             chartTitle: "パフォーマンス動向", col_id: "№", col_item_name: "項目名", col_coords: "座標", col_date: "日付", col_time: "時間", col_amount: "数値", col_weather: "天気", col_action: "操作",
             wWind: "風", wSpeed: "m/s", wStability: "安定度", wInversion: "逆転層", wIsothermy: "等温", wConvection: "対流",
             setupTitle: "🔑 パスワード設定", setupDesc: "パスワードを設定してください。", setupPlaceholder: "パスワード", setupBtn: "🚀 保存してログイン",
@@ -445,6 +445,10 @@
         if (!map) return;
         const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
         
+        // Массив для временного накопления истории "на лету" из живых ячеек таблицы
+        let localHistoryFromScreen = [];
+        const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
+
         rows.forEach(row => {
             const rowId = row.getAttribute('data-id');
             const branch = row.getAttribute('data-branch');
@@ -455,6 +459,14 @@
             let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
 
             let amountVal = row.querySelector(`.cell-amount`)?.innerText.trim() || "";
+
+            // Вытягиваем данные для графика из живых ячеек прямо сейчас
+            if (dateCol && amountVal) {
+                const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
+                if (dateStr) {
+                    localHistoryFromScreen.push({ rowId, branch, date: dateStr, value: amountVal });
+                }
+            }
 
             if (!itemName && !coordsStr) {
                 if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
@@ -490,6 +502,16 @@
                 activeMarkers[rowId] = m;
             }
         });
+
+        // Объединяем существующую историю из БД со считанными данными с экрана
+        if (localHistoryFromScreen.length > 0) {
+            localHistoryFromScreen.forEach(screenItem => {
+                const idx = globalHistory.findIndex(h => h.rowId === screenItem.rowId && h.date === screenItem.date);
+                if (idx !== -1) globalHistory[idx] = screenItem;
+                else globalHistory.push(screenItem);
+            });
+        }
+
         updateAnalytics();
     }
 
