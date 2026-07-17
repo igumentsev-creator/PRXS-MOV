@@ -235,7 +235,7 @@
         ua: {
             denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей region та анулювати його посилання?",
             chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Показники", col_weather: "Погодні умови", col_action: "Дія",
-            wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
+            wWind: "Вітер", wSpeed: "m/s", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
             setupTitle: "🔑 Створення пароля администратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
             loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
         },
@@ -425,14 +425,13 @@
         return null;
     }
 
-    // --- КАРТА (ИСПРАВЛЕНО КОПИРОВАНИЕ ПРИ КЛИКЕ) ---
+    // --- КАРТА ---
     function initMap() {
         map = L.map('map').setView([48.3794, 31.1656], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Клик по карте теперь ОДНОЗНАЧНО копирует координаты в буфер обмена
         map.on('click', function(e) {
             const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
             navigator.clipboard.writeText(coordsStr).then(() => {
@@ -445,8 +444,11 @@
         if (!map) return;
         const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
         
-        // Массив для временного накопления истории "на лету" из живых ячеек таблицы
         let localHistoryFromScreen = [];
+
+        // Динамически находим текущие индексы колонок даты и показателей
+        const dateColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
+        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount');
 
         rows.forEach(row => {
             const rowId = row.getAttribute('data-id');
@@ -457,12 +459,17 @@
             let itemName = itemCell ? itemCell.innerText.trim() : "";
             let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
 
-            let amountVal = row.querySelector(`.cell-amount`)?.innerText.trim() || "";
+            // --- ЭКСПЕРТНЫЙ ДИНАМИЧЕСКИЙ ПОИСК ЯЧЕЕК ---
+            let dateStr = "";
+            let amountVal = "";
 
-            // Вытягиваем данные напрямую по классам ячеек (100% независимость от бэкенд-структур)
-            const dateStr = row.querySelector(`.cell-date`)?.innerText.trim() || "";
-            
-            // ИСПРАВЛЕННЫЙ УЗЕЛ: Заносим в историю в любом случае, даже если количество еще пустое (заменяем пустоту на "0")
+            if (dateColIdx !== -1 && row.cells[dateColIdx]) {
+                dateStr = row.cells[dateColIdx].innerText.trim();
+            }
+            if (amountColIdx !== -1 && row.cells[amountColIdx]) {
+                amountVal = row.cells[amountColIdx].innerText.trim();
+            }
+
             if (dateStr) {
                 let cleanValue = amountVal.replace(',', '.').trim();
                 localHistoryFromScreen.push({ 
@@ -508,7 +515,6 @@
             }
         });
 
-        // Объединяем существующую историю из БД со считанными данными с экрана
         if (localHistoryFromScreen.length > 0) {
             localHistoryFromScreen.forEach(screenItem => {
                 const idx = globalHistory.findIndex(h => h.rowId === screenItem.rowId && h.date === screenItem.date);
@@ -567,7 +573,7 @@
         });
         row.innerHTML = rowHtml;
 
-        // ОБРАБОТЧИК ВВОДА (ГРАФИК СЧИТЫВАЕТ ДАННЫЕ СРАЗУ НА ЛЕТУ)
+        // ОБРАБОТЧИК ВВОДА В РЕАЛЬНОМ ВРЕМЕНИ
         row.addEventListener('input', (e) => {
             const targetCell = e.target.closest('td') || e.target.closest('.coords-container')?.parentNode;
             if (targetCell) {
@@ -575,16 +581,20 @@
                 const targetColConfig = TABLE_CONFIG.columns[cellIdx];
                 if (targetColConfig && targetColConfig.id !== 'date' && targetColConfig.id !== 'time') {
                     const dt = getCurrentDateTime();
-                    const dCell = row.querySelector('.cell-date');
-                    const tCell = row.querySelector('.cell-time');
-                    if (dCell) dCell.innerText = dt.date;
-                    if (tCell) tCell.innerText = dt.time;
+                    const dColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
+                    const tColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'time' || c.id === 'time');
+                    if (dColIdx !== -1 && row.cells[dColIdx]) row.cells[dColIdx].innerText = dt.date;
+                    if (tColIdx !== -1 && row.cells[tColIdx]) row.cells[tColIdx].innerText = dt.time;
                 }
             }
 
-            // Накапливаем изменения "на лету" в виртуальную историю для мгновенного обновления Chart.js
-            const dateStr = row.querySelector(`.cell-date`)?.innerText.trim() || "";
-            const valStr = row.querySelector(`.cell-amount`)?.innerText.trim() || "";
+            // Динамически ищем колонки даты и показателей
+            const dIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
+            const aIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount');
+            
+            const dateStr = (dIdx !== -1 && row.cells[dIdx]) ? row.cells[dIdx].innerText.trim() : "";
+            const valStr = (aIdx !== -1 && row.cells[aIdx]) ? row.cells[aIdx].innerText.trim() : "";
+
             if (dateStr) {
                 let cleanValue = valStr.replace(',', '.').trim();
                 const exactMatchIndex = globalHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
@@ -599,7 +609,6 @@
             }
 
             updateMapFromTable();
-            // Вызываем принудительную перерисовку графиков "на лету" до нажатия кнопки Save
             updateAnalytics();
         });
         return row;
@@ -614,7 +623,7 @@
             if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
             row.remove();
             
-            // Удаляем запись из истории графика, чтобы точка мгновенно стерлась
+            // Удаляем запись из истории графика
             globalHistory = globalHistory.filter(h => h.rowId !== rowId);
             
             reindexTable();
@@ -859,7 +868,7 @@
         });
     }
 
-    // --- МЕНЕДЖЕР ФИЛИАЛОВ (ДОБАВЛЕНА КНОПКА КОПИРОВАНИЯ КООРДИНАТ) ---
+    // --- МЕНЕДЖЕР ФИЛИАЛОВ ---
     function renderTokenDashboard() {
         if (!IS_ADMIN) return;
         const tbody = document.getElementById('tokenDashboardBody');
@@ -885,7 +894,6 @@
         });
     }
 
-    // Утилита быстрого копирования текста в буфер
     function copyToClipboard(text) {
         if(!text) return;
         navigator.clipboard.writeText(text).then(() => {
@@ -936,7 +944,7 @@
         });
     }
 
-    // --- АНАЛИТИКА (ГРАФИК СВЯЗАН НАПРЯМУЮ С CELL-AMOUNT) ---
+    // --- АНАЛИТИКА ---
     function updateAnalytics() {
         const numColId = "amount";
         const t = LOCALES[currentLang] || LOCALES['en'];
@@ -1030,15 +1038,18 @@
         });
 
         let localHistory = [...globalHistory];
-        const numColId = "amount";
+
+        // Динамически находим индексы перед сохранением в БД
+        const dateColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
+        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount');
 
         document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
             const rowId = row.getAttribute('data-id') || ""; 
             const branch = row.getAttribute('data-branch') || "";
             
-            // Фиксированная синхронизация истории по классам ячеек перед отправкой на сервер
-            const dateStr = row.querySelector(`.cell-date`)?.innerText.trim() || "";
-            const valStr = row.querySelector(`.cell-${numColId}`)?.innerText.trim() || "";
+            let dateStr = (dateColIdx !== -1 && row.cells[dateColIdx]) ? row.cells[dateColIdx].innerText.trim() : "";
+            let valStr = (amountColIdx !== -1 && row.cells[amountColIdx]) ? row.cells[amountColIdx].innerText.trim() : "";
+            
             if (dateStr) {
                 let cleanValue = valStr.replace(',', '.').trim();
                 const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
