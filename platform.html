@@ -30,6 +30,7 @@
         <h2>🔄 Подключение к системе...</h2>
         <p id="systemStatus">Проверка рабочего пространства</p>
     </div>
+    
     <div id="setupPanel" class="card auth-screen hidden">
         <h2>🔑 Создание пространства</h2>
         <p>Придумайте надежный пароль администратора (минимум 6 символов).</p>
@@ -37,6 +38,7 @@
         <input type="password" id="setupInput" placeholder="Новый пароль" minlength="6">
         <button id="btnSetup" class="btn-main">🚀 Создать и войти</button>
     </div>
+    
     <div id="loginPanel" class="card auth-screen hidden">
         <h2>🔒 Вход в систему</h2>
         <p>Введите пароль администратора или токен филиала.</p>
@@ -44,6 +46,7 @@
         <input type="password" id="loginInput" placeholder="Токен доступа">
         <button id="btnLogin" class="btn-main">🔓 Войти</button>
     </div>
+    
     <div id="dashboardPanel" class="container hidden">
         <div class="card">
             <div class="header">
@@ -56,6 +59,7 @@
         </div>
     </div>
 </div>
+
 <script>
     const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
     const urlParams = new URLSearchParams(window.location.search);
@@ -69,13 +73,10 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action, id: WORKSPACE_ID, secret: USER_TOKEN, ...extraData })
             });
-            if (!response.ok) {
-                const errText = await response.text();
-                return { error: `Ошибка сервера ${response.status}: ${errText}` };
-            }
+            // Теперь мы просто читаем JSON ответ сервера, даже если он вернул 404 или 401
             return await response.json();
         } catch (error) {
-            return { error: "Сбой сети (CORS или сервер недоступен): " + error.message };
+            return { error: "Сбой сети или API недоступно: " + error.message };
         }
     }
 
@@ -95,15 +96,7 @@
         
         const res = await apiCall("load");
 
-        if (res.error && (res.error.includes("Сбой сети") || res.error.includes("Ошибка сервера"))) {
-            document.getElementById('systemStatus').innerHTML = `
-                <span style="color: #dc2626; font-weight: bold;">❌ Ошибка подключения к Supabase</span><br><br>
-                ${res.error}<br><br>
-                <small style="color: #64748b;">Подсказка: Если это ошибка 401 или CORS, убедитесь, что вы развернули функцию с флагом <b>--no-verify-jwt</b></small>
-            `;
-            return;
-        }
-
+        // Обработка логики на основе ответа сервера
         if (res.error === "Workspace not found") {
             showScreen('setupPanel');
         } else if (res.error === "Invalid credentials" || res.error === "Missing workspace id") {
@@ -112,7 +105,7 @@
             document.getElementById('roleBadge').innerText = res.role === 'admin' ? '👑 Администратор' : `🏢 Филиал: ${res.branchName}`;
             showScreen('dashboardPanel');
         } else {
-            showScreen('loginPanel');
+            document.getElementById('systemStatus').innerText = "❌ Ошибка: " + (res.error || "Неизвестная ошибка");
         }
     }
 
