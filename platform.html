@@ -10,9 +10,7 @@
                    style-src 'self' 'unsafe-inline' https://unpkg.com; 
                    img-src 'self' data: https://*.tile.openstreetmap.org; 
                    connect-src 'self' https://api.open-meteo.com https://translate.googleapis.com https://api.mymemory.translated.net https://ouslqtffwgbtqqslwiki.supabase.co;">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-          crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
@@ -85,9 +83,8 @@
 <body>
 
 <div class="container">
-    <!-- Screen: Admin Password Creation (Setup) -->
     <div class="card setup-screen" id="setupPanel">
-        <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Создание пароля администратора</h2>
+        <h2 id="lblSetupTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Створення пароля адміністратора</h2>
         <p id="lblSetupDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Добро пожаловать! Пожалуйста, придумайте ваш личный секретный пароль (минимум 6 символов).</p>
         <div>
             <input type="password" id="setupMasterToken" placeholder="Введите новый пароль" minlength="6" autocomplete="new-password"><br>
@@ -96,7 +93,6 @@
         </div>
     </div>
 
-    <!-- Screen: Authorization (Login) -->
     <div class="card login-screen" id="loginPanel">
         <h2 id="lblLoginTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔒 Вход в рабочее пространство</h2>
         <p id="lblLoginDesc" style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Это пространство защищено паролем. Пожалуйста, введите токен доступа.</p>
@@ -107,8 +103,7 @@
         </div>
     </div>
 
-    <!-- Screen: Dashboard Main Card -->
-    <div class="card" id="mainDashboardCard">
+    <div class="card" id="mainDashboardCard" style="display: none;">
         <div class="header-main">
             <h1 id="pageTitle">Workspace Data Collection</h1>
             <div class="lang-select-wrapper">
@@ -156,7 +151,6 @@
         <div class="status" id="saveStatus">Checking security status...</div>
     </div>
 
-    <!-- Screen: Security Token Dashboard (Only for Admin) -->
     <div class="card" id="tokenDashboardCard" style="display: none;">
         <h3 id="lblTokenDashboardTitle" style="color: #1e3a8a; margin-bottom: 10px;">🔑 Security Tokens & Regional Access Links Generator</h3>
         <div style="overflow-x: auto;">
@@ -174,16 +168,16 @@
         </div>
     </div>
 
-    <div class="card" id="mapCard"><div id="map"></div></div>
+    <div class="card" id="mapCard" style="display: none;"><div id="map"></div></div>
 
-    <div class="card" id="chartCard">
+    <div class="card" id="chartCard" style="display: none;">
         <h2 id="chartTitle" style="text-align: center; color: #1e3a8a; margin-bottom: 15px; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Performance Dynamics</h2>
         <div style="position: relative; height: 320px; width: 100%;">
             <canvas id="analyticsChart"></canvas>
         </div>
     </div>
 
-    <div class="card" id="tableCard">
+    <div class="card" id="tableCard" style="display: none;">
         <div class="table-wrapper">
             <table id="dynamicTable">
                 <colgroup id="tableColgroup"></colgroup>
@@ -197,58 +191,34 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" 
-        integrity="sha256-4MtUBJgBePvZ9rfUyFwGgZnQrH0LVK3iA3gENQnP5g=" 
-        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <script>
 // =====================================================================
-// УТИЛИТЫ БЕЗОПАСНОСТИ
+// UTILS
 // =====================================================================
 const SecurityUtils = {
-    sanitizeInput(input) {
-        if (!input) return '';
-        return input.replace(/[<>"'&]/g, '');
-    },
-
-    sanitizeHTML(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    },
-
+    sanitizeInput(input) { return input ? input.replace(/[<>"'&]/g, '') : ''; },
+    sanitizeHTML(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; },
     generateSecureToken() {
-        const array = new Uint32Array(4);
-        crypto.getRandomValues(array);
+        const array = new Uint32Array(4); crypto.getRandomValues(array);
         return Array.from(array).map(x => x.toString(36)).join('').substring(0, 32);
     },
-
     checkPasswordStrength(password) {
         let score = 0;
-        if (password.length >= 6) score++;
-        if (password.length >= 10) score++;
-        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-        if (/\d/.test(password)) score++;
-        
+        if (password.length >= 6) score++; if (password.length >= 10) score++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++; if (/\d/.test(password)) score++;
         if (score <= 1) return { strength: 'weak', width: '33%', color: '#ef4444' };
         if (score <= 2) return { strength: 'medium', width: '66%', color: '#f59e0b' };
         return { strength: 'strong', width: '100%', color: '#10b981' };
     },
-
     validateCoordinates(str) {
         if (!str) return null;
         let cleanStr = str.toString().replace(/[()]/g, '').replace(/,/g, ' ').trim();
         const arr = cleanStr.split(/\s+/);
         if (arr.length >= 2) {
-            const val1 = parseFloat(arr[0]);
-            const val2 = parseFloat(arr[1]);
-            if (!isNaN(val1) && !isNaN(val2)) {
-                if (val1 >= -90 && val1 <= 90 && val2 >= -180 && val2 <= 180) {
-                    return [val1, val2];
-                }
-            }
+            const val1 = parseFloat(arr[0]), val2 = parseFloat(arr[1]);
+            if (!isNaN(val1) && !isNaN(val2) && val1 >= -90 && val1 <= 90 && val2 >= -180 && val2 <= 180) return [val1, val2];
         }
         return null;
     }
@@ -256,79 +226,38 @@ const SecurityUtils = {
 
 const UIUtils = {
     showToast(message, duration = 3000) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
+        const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = message;
         document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.3s';
-            setTimeout(() => toast.remove(), 300);
-        }, duration);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, duration);
     },
-
-    showError(elementId, message) {
-        const el = document.getElementById(elementId);
-        if (el) {
-            el.innerText = message;
-            el.style.display = 'block';
-        }
-    },
-
-    hideError(elementId) {
-        const el = document.getElementById(elementId);
-        if (el) el.style.display = 'none';
-    },
-
-    setLoading(buttonId, isLoading) {
-        const btn = document.getElementById(buttonId);
-        if (btn) {
-            btn.disabled = isLoading;
-            btn.style.opacity = isLoading ? '0.7' : '1';
-        }
-    }
+    showError(elementId, message) { const el = document.getElementById(elementId); if (el) { el.innerText = message; el.style.display = 'block'; } },
+    hideError(elementId) { const el = document.getElementById(elementId); if (el) el.style.display = 'none'; },
+    setLoading(buttonId, isLoading) { const btn = document.getElementById(buttonId); if (btn) { btn.disabled = isLoading; btn.style.opacity = isLoading ? '0.7' : '1'; } }
 };
 
 // =====================================================================
-// КОНФИГУРАЦИЯ ПОДКЛЮЧЕНИЯ К EDGE FUNCTION
+// CONFIG
 // =====================================================================
-const APP_CONFIG = {
-    EDGE_FUNCTION_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api",
-    DEFAULT_WORKSPACE_ID: "default_workspace",
-    DEFAULT_LANG: "en"
-};
+const APP_CONFIG = { EDGE_FUNCTION_URL: "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api", DEFAULT_WORKSPACE_ID: "default_workspace", DEFAULT_LANG: "en" };
+const SECURITY_CONFIG = { MAX_LOGIN_ATTEMPTS: 5, LOCKOUT_DURATION: 15 * 60 * 1000, MIN_PASSWORD_LENGTH: 6 };
 
-const SECURITY_CONFIG = {
-    MAX_LOGIN_ATTEMPTS: 5,
-    LOCKOUT_DURATION: 15 * 60 * 1000, 
-    MIN_PASSWORD_LENGTH: 6
-};
-
-// =====================================================================
-// ЛОКАЛИЗАЦИЯ
-// =====================================================================
 const LOCALES = {
     en: {
-        denied: "❌ ACCESS DENIED: Invalid or missing token in URL.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
+        denied: "❌ ACCESS DENIED: Invalid or missing token.", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column? Data will be lost.", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Regional Access Links Generator", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token (UUID)", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke its link? Security token will be blacklisted.",
         chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item / Target Name", col_coords: "Coordinates (Lat, Lng)", col_date: "Date", col_time: "Time", col_amount: "Amount / Value", col_weather: "Weather Conditions", col_action: "Action",
         wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection",
         setupTitle: "🔑 Creation of Administrator Password", setupDesc: "Welcome! Please create a strong password (min 6 characters, letters and numbers).", setupPlaceholder: "Enter new password", setupBtn: "🚀 Save password & login",
-        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or security token!", loginLocked: "🔒 Too many attempts. Please wait {minutes} minutes.",
-        passwordWeak: "Weak password", passwordMedium: "Medium password", passwordStrong: "Strong password"
+        loginTitle: "🔒 Workspace Login", loginDesc: "This workspace is protected. Please enter administrator password or regional branch security token.", loginPlaceholder: "Enter password / token", loginBtn: "🔓 Login", loginIncorrect: "❌ Incorrect password or token!", loginLocked: "🔒 Too many attempts. Please wait {minutes} minutes."
     },
     ua: {
-        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора (Всі Філії)", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просто workspaces / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання? Токен безпеки буде заблоковано.",
+        denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен.", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів:", btnSave: "💾 Зберегти Дані", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання?",
         chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
         wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
-        setupTitle: "🔑 Створення пароля администратора", setupDesc: "Ласкаво просимо! Створіть надійний пароль (мінімум 6 символів, літери та цифри).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
-        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!", loginLocked: "🔒 Забагато спроб. Зачекайте {minutes} хвилин.",
-        passwordWeak: "Слабкий пароль", passwordMedium: "Середній пароль", passwordStrong: "Надійний пароль"
+        setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Створіть надійний пароль (мінімум 6 символів, літери та цифри).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти та увійти",
+        loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!", loginLocked: "🔒 Забагато спроб. Зачекайте {minutes} хвилин."
     }
 };
 
-// =====================================================================
-// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
-// =====================================================================
 let currentLang = localStorage.getItem('lang') || APP_CONFIG.DEFAULT_LANG;
 const urlParams = new URLSearchParams(window.location.search);
 const COMPANY_ID = SecurityUtils.sanitizeInput(urlParams.get('id') || APP_CONFIG.DEFAULT_WORKSPACE_ID);
@@ -337,13 +266,7 @@ const USER_TOKEN = SecurityUtils.sanitizeInput(urlParams.get('token') || '');
 let IS_ADMIN = false;
 let CURRENT_BRANCH_OBJ = null;
 let CURRENT_BRANCH_NAME = null;
-
-let TABLE_CONFIG = {
-    stateId: COMPANY_ID,
-    branches: {},
-    columns: []
-};
-
+let TABLE_CONFIG = { stateId: COMPANY_ID, branches: {}, columns: [] };
 let map, activeMarkers = {};
 let analyticsChart = null;
 let globalHistory = [];
@@ -351,94 +274,114 @@ let deletedRowIds = [];
 let loginAttempts = 0;
 let firstAttemptTime = 0;
 
-// Функция для обмена данными с Edge-функцией[cite: 3]
 async function fetchApi(action, payload = null) {
-    const body = {
-        action,
-        id: TABLE_CONFIG.stateId,
-        secret: USER_TOKEN || payload?.secret 
-    };
-    if (payload && action === "save") {
-        body.payload = payload;
-    }
-    const response = await fetch(APP_CONFIG.EDGE_FUNCTION_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    });
+    const body = { action, id: TABLE_CONFIG.stateId, secret: USER_TOKEN || payload?.secret };
+    if (payload && action === "save") body.payload = payload;
+    const response = await fetch(APP_CONFIG.EDGE_FUNCTION_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     return await response.json();
 }
 
 // =====================================================================
-// АУТЕНТИФИКАЦИЯ
+// CORE ARCHITECTURE: SINGLE INITIALIZATION FLOW
 // =====================================================================
-async function checkDatabaseConfig() {
-    if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
-        document.getElementById('saveStatus').innerHTML = "⚠️ Error: No workspace ID in URL.";
-        hideAllDashboardCards();
-        return false;
-    }
-
+async function initializeApp() {
     try {
-        const res = await fetchApi("load"); // Проверяем авторизацию через Edge-функцию[cite: 3]
+        if (!urlParams.has('id') && APP_CONFIG.DEFAULT_WORKSPACE_ID === '') {
+            throw new Error("No workspace ID in URL.");
+        }
+
+        // FETCH ONCE
+        const res = await fetchApi("load"); 
 
         if (res.error) {
-            if (res.error === "Workspace not found") { // Обрабатываем первичную настройку[cite: 3]
-                document.getElementById('setupPanel').style.display = 'block';
-                document.getElementById('loginPanel').style.display = 'none';
-            } else {
-                document.getElementById('loginPanel').style.display = 'block';
-                document.getElementById('setupPanel').style.display = 'none';
-            }
-            hideAllDashboardCards();
-            return false;
+            document.getElementById('setupPanel').style.display = res.error === "Workspace not found" ? 'block' : 'none';
+            document.getElementById('loginPanel').style.display = res.error !== "Workspace not found" ? 'block' : 'none';
+            document.getElementById('saveStatus').innerText = "🔒 Authorization required.";
+            return;
         }
 
         if (res.ok) {
-            IS_ADMIN = (res.role === "admin"); // Считываем роль[cite: 3]
-            TABLE_CONFIG.columns = res.columns; // Подтягиваем конфигурацию колонок[cite: 3]
-            TABLE_CONFIG.branches = res.branches || {}; // Подтягиваем список филиалов[cite: 3]
-            globalHistory = res.history || []; // Подтягиваем историю графика[cite: 3]
+            // STATE BINDING
+            IS_ADMIN = (res.role === "admin");
+            TABLE_CONFIG.columns = res.columns || [];
+            TABLE_CONFIG.branches = res.branches || {};
+            globalHistory = res.history || [];
 
             if (!IS_ADMIN) {
-                CURRENT_BRANCH_NAME = res.branchName; // Название филиала для сотрудника[cite: 3]
-                // ИСПРАВЛЕНИЕ: Формируем объект-заглушку, если branches нет в ответе филиала[cite: 3]
+                CURRENT_BRANCH_NAME = res.branchName;
                 CURRENT_BRANCH_OBJ = (TABLE_CONFIG.branches && Object.keys(TABLE_CONFIG.branches).length > 0) ? 
                     Object.values(TABLE_CONFIG.branches).find(b => b.name === CURRENT_BRANCH_NAME) : 
-                    { name: CURRENT_BRANCH_NAME, coords: [48.3794, 31.1656] }; // Центр Украины по умолчанию
+                    { name: CURRENT_BRANCH_NAME, coords: [48.3794, 31.1656] };
             }
 
+            // UI TOGGLES
             document.getElementById('loginPanel').style.display = 'none';
             document.getElementById('setupPanel').style.display = 'none';
-            showAllDashboardCards();
-            return true;
+            ['mainDashboardCard', 'mapCard', 'chartCard', 'tableCard'].forEach(id => document.getElementById(id).style.display = 'block');
+
+            if (!IS_ADMIN) {
+                document.getElementById('columnManagerPanel').style.display = 'none';
+                document.getElementById('branchManagerPanel').style.display = 'none';
+                const clearBtn = document.getElementById('clearHistoryBtn');
+                if (clearBtn) clearBtn.style.display = 'none';
+            } else {
+                document.getElementById('tokenDashboardCard').style.display = 'block';
+            }
+
+            // RENDER LOGIC
+            applyLocalization(); 
+            buildTableStructure();
+            renderColumnPills();
+            renderTokenDashboard();
+
+            const tableData = res.table || [];
+            if (tableData.length === 0) {
+                rebuildTableWithData([]); 
+            } else {
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = '';
+                const t = LOCALES[currentLang] || LOCALES['en'];
+                
+                tableData.forEach(rowData => {
+                    let rowBranch = rowData.branch;
+                    if (!IS_ADMIN && rowBranch !== CURRENT_BRANCH_NAME) return;
+
+                    let row;
+                    if (rowData.isHeader) {
+                        row = document.createElement('tr');
+                        row.classList.add('region-header-row');
+                        row.setAttribute('data-branch', rowBranch);
+                        
+                        const targetToken = Object.keys(TABLE_CONFIG.branches).find(k => TABLE_CONFIG.branches[k].name === rowBranch) || '';
+                        let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(targetToken)}')">${t.copyLinkBtn}</button>` : '';
+                        row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${SecurityUtils.sanitizeHTML(rowBranch)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${SecurityUtils.sanitizeHTML(rowBranch)}', this)">${t.addBtnRow}</button></td>`;
+                    } else {
+                        row = createDataRow(rowBranch, rowData, '', false);
+                    }
+                    tbody.appendChild(row);
+                });
+                reindexTable();
+            }
+
+            updateMapFromTable();
+            
+            // STATUS UPDATE FIX
+            const t = LOCALES[currentLang] || LOCALES['en'];
+            document.getElementById('saveStatus').innerHTML = IS_ADMIN ? `✅ ${t.adminSession}` : `✅ ${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
+
+            if (!IS_ADMIN && CURRENT_BRANCH_OBJ && CURRENT_BRANCH_OBJ.coords && map) {
+                map.setView(CURRENT_BRANCH_OBJ.coords, 11);
+            }
         }
-    } catch (e) {
-        console.error('Database check failed:', e);
-        document.getElementById('saveStatus').innerHTML = "❌ Connection error. Please check Edge Function URL.";
-        hideAllDashboardCards();
-        return false;
+    } catch (err) {
+        console.error('Initialization error:', err);
+        document.getElementById('saveStatus').innerHTML = '❌ System Error: ' + err.message;
     }
-}
-
-function hideAllDashboardCards() {
-    ['mainDashboardCard', 'tokenDashboardCard', 'mapCard', 'chartCard', 'tableCard'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-}
-
-function showAllDashboardCards() {
-    ['mainDashboardCard', 'mapCard', 'chartCard', 'tableCard'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'block';
-    });
 }
 
 async function checkEnteredPassword() {
     const t = LOCALES[currentLang] || LOCALES['en'];
     const enteredPass = document.getElementById('loginTokenInput').value.trim();
-
     if (!enteredPass) return;
 
     if (loginAttempts >= SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS) {
@@ -452,122 +395,72 @@ async function checkEnteredPassword() {
     }
 
     UIUtils.setLoading('btnSubmitLogin', true);
-    
     try {
-        const res = await fetchApi("login", { secret: enteredPass }); // Проверка логина на сервере[cite: 3]
-
-        if (res.ok) {
-            loginAttempts = 0;
-            window.location.search = `?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(enteredPass)}`;
-        } else {
+        const res = await fetchApi("login", { secret: enteredPass });
+        if (res.ok) { window.location.search = `?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(enteredPass)}`; } 
+        else {
             if (loginAttempts === 0) firstAttemptTime = Date.now();
             loginAttempts++;
             UIUtils.showError('loginError', t.loginIncorrect);
         }
-    } catch (e) {
-        UIUtils.showError('loginError', 'Error processing login');
-    } finally {
-        UIUtils.setLoading('btnSubmitLogin', false);
-    }
+    } catch (e) { UIUtils.showError('loginError', 'Error processing login'); } 
+    finally { UIUtils.setLoading('btnSubmitLogin', false); }
 }
 
 async function saveInitialPassword() {
     const token = document.getElementById('setupMasterToken').value.trim();
     const t = LOCALES[currentLang] || LOCALES['en'];
-
-    if (!token) {
-        UIUtils.showToast("Please enter a password.");
-        return;
-    }
-
-    if (token.length < SECURITY_CONFIG.MIN_PASSWORD_LENGTH) {
+    if (!token || token.length < SECURITY_CONFIG.MIN_PASSWORD_LENGTH) {
         UIUtils.showToast(`Password must be at least ${SECURITY_CONFIG.MIN_PASSWORD_LENGTH} characters.`);
         return;
     }
-
     UIUtils.setLoading('btnSaveSetup', true);
-
     try {
-        const res = await fetchApi("setup", { secret: token }); // Первичное сохранение мастер-пароля[cite: 3]
-
-        if (res.ok) {
-            window.location.search = `?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(token)}`;
-        } else {
-            UIUtils.showToast(res.error || "Error saving. Please try again.");
-        }
-    } catch (err) {
-        console.error('Save initial password error:', err);
-        UIUtils.showToast("Error: " + err.message);
-    } finally {
-        UIUtils.setLoading('btnSaveSetup', false);
-    }
+        const res = await fetchApi("setup", { secret: token });
+        if (res.ok) { window.location.search = `?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(token)}`; } 
+        else { UIUtils.showToast(res.error || "Error saving."); }
+    } catch (err) { UIUtils.showToast("Error: " + err.message); } 
+    finally { UIUtils.setLoading('btnSaveSetup', false); }
 }
 
 document.getElementById('setupMasterToken')?.addEventListener('input', function(e) {
     const strength = SecurityUtils.checkPasswordStrength(e.target.value);
     const bar = document.getElementById('passwordStrengthBar');
-    if (bar) {
-        bar.style.width = strength.width;
-        bar.style.background = strength.color;
-    }
+    if (bar) { bar.style.width = strength.width; bar.style.background = strength.color; }
 });
 
 // =====================================================================
-// ЛОКАЛИЗАЦИЯ
+// LOCALIZATION & LOGIC
 // =====================================================================
 function getColumnTitle(col, lang) {
     if (!col) return '';
-    if (typeof col.title === 'object' && col.title !== null) {
-        return col.title[lang] || col.title['en'] || Object.values(col.title)[0] || col.id;
-    }
+    if (typeof col.title === 'object' && col.title !== null) return col.title[lang] || col.title['en'] || Object.values(col.title)[0] || col.id;
     const t = LOCALES[lang];
     if (t && t['col_' + col.id]) return t['col_' + col.id];
     return col.title;
 }
 
 function changeLanguage(langCode) {
-    currentLang = langCode;
-    localStorage.setItem('lang', currentLang);
+    currentLang = langCode; localStorage.setItem('lang', currentLang);
     const currentRows = backupTableData();
-    applyLocalization();
-    buildTableStructure();
-    renderColumnPills();
-    rebuildTableWithData(currentRows);
-    renderTokenDashboard();
+    applyLocalization(); buildTableStructure(); renderColumnPills(); rebuildTableWithData(currentRows); renderTokenDashboard();
 }
 
 function applyLocalization() {
     const t = LOCALES[currentLang] || LOCALES['en'];
-    
     const elements = {
-        'btnSave': t.btnSave,
-        'btnExport': t.btnExport,
-        'clearHistoryBtn': t.btnClearHis,
-        'lblColManager': t.lblColManager,
-        'lblBranchManager': t.lblBranchManager,
-        'btnAddCol': t.btnAddCol,
-        'btnAddBranch': t.btnAddBranch,
-        'lblSetupTitle': t.setupTitle,
-        'lblSetupDesc': t.setupDesc,
-        'lblLoginTitle': t.loginTitle,
-        'lblLoginDesc': t.loginDesc
+        'btnSave': t.btnSave, 'btnExport': t.btnExport, 'clearHistoryBtn': t.btnClearHis,
+        'lblColManager': t.lblColManager, 'lblBranchManager': t.lblBranchManager,
+        'btnAddCol': t.btnAddCol, 'btnAddBranch': t.btnAddBranch,
+        'lblSetupTitle': t.setupTitle, 'lblSetupDesc': t.setupDesc,
+        'lblLoginTitle': t.loginTitle, 'lblLoginDesc': t.loginDesc
     };
-
-    Object.entries(elements).forEach(([id, text]) => {
+    Object.entries(elements).forEach(([id, text]) => { const el = document.getElementById(id); if (el) el.innerText = text; });
+    
+    ['lblTokenDashboardTitle', 'thDashBranch', 'thDashCoords', 'thDashToken', 'thDashActions'].forEach((id, i) => {
         const el = document.getElementById(id);
-        if (el) el.innerText = text;
+        if(el) el.innerText = [t.dashTitle, t.thBranch, t.thCoords, t.thToken, t.thActions][i];
     });
-
-    const tokenDashTitle = document.getElementById('lblTokenDashboardTitle');
-    if (tokenDashTitle) tokenDashTitle.innerText = t.dashTitle;
-    const thDashBranch = document.getElementById('thDashBranch');
-    if (thDashBranch) thDashBranch.innerText = t.thBranch;
-    const thDashCoords = document.getElementById('thDashCoords');
-    if (thDashCoords) thDashCoords.innerText = t.thCoords;
-    const thDashToken = document.getElementById('thDashToken');
-    if (thDashToken) thDashToken.innerText = t.thToken;
-    const thDashActions = document.getElementById('thDashActions');
-    if (thDashActions) thDashActions.innerText = t.thActions;
 
     document.getElementById('newColTitle').placeholder = t.colPlaceholder;
     document.getElementById('newBranchName').placeholder = t.branchPlaceholder;
@@ -578,922 +471,394 @@ function applyLocalization() {
     document.getElementById('btnSubmitLogin').innerText = t.loginBtn;
     document.getElementById('langDropdown').value = currentLang;
 
-    if (!IS_ADMIN && !CURRENT_BRANCH_NAME) {
-        document.getElementById('pageTitle').innerHTML = t.denied;
+    // THE CORE BUG FIX: RELY ON IS_ADMIN INSTEAD OF USER_TOKEN STRING 
+    const titleEl = document.getElementById('pageTitle');
+    if (IS_ADMIN) {
+        titleEl.innerHTML = t.adminSession;
+    } else if (CURRENT_BRANCH_NAME) {
+        titleEl.innerHTML = `${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
     } else {
-        document.getElementById('pageTitle').innerHTML = IS_ADMIN ? 
-            t.adminSession : 
-            `${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
+        titleEl.innerHTML = t.denied;
     }
 
     const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
     if (numCol) {
-        const localizedNumTitle = getColumnTitle(numCol, currentLang);
-        document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
+        document.getElementById('chartTitle').innerText = `${getColumnTitle(numCol, currentLang)} - ${t.chartTitle}`;
     }
 }
 
 // =====================================================================
-// РАБОТА С ТАБЛИЦЕЙ
+// TABLE DATA MANAGEMENT
 // =====================================================================
 function getCurrentDateTime() {
     const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const time = now.toTimeString().split(' ')[0].substring(0, 5);
-    return { date: `${day}.${month}.${year}`, time: time };
+    return { 
+        date: `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`, 
+        time: now.toTimeString().split(' ')[0].substring(0, 5) 
+    };
 }
-
-function parseCoordinates(str) {
-    return SecurityUtils.validateCoordinates(str);
-}
-
-function getWindDirection(deg) {
-    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    const index = Math.round(deg / 45) % 8;
-    return directions[index];
-}
+function parseCoordinates(str) { return SecurityUtils.validateCoordinates(str); }
 
 async function fetchWeatherData(lat, lng) {
     try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto`;
-        
-        const res = await fetch(url);
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timezone=auto`);
         if (!res.ok) return null;
-        
         const json = await res.json();
         if (!json || !json.current) return null;
-
-        const temp = json.current.temperature_2m;
-        const windSpeed = json.current.wind_speed_10m;
-        const windDeg = json.current.wind_direction_10m;
-        const windDir = getWindDirection(windDeg);
-        
         const t = LOCALES[currentLang] || LOCALES['en'];
         let stability = t.wIsothermy;
-        if (windSpeed < 2) stability = t.wInversion;
-        else if (windSpeed > 4) stability = t.wConvection;
-        
-        return `${t.wWind}: ${windDir}, ${windSpeed} ${t.wSpeed}; ${t.wStability}: ${stability}; t: ${temp}°C`;
-    } catch (e) {
-        console.error('Weather fetch error:', e);
-        return null;
-    }
+        if (json.current.wind_speed_10m < 2) stability = t.wInversion; else if (json.current.wind_speed_10m > 4) stability = t.wConvection;
+        return `${t.wWind}: ${['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(json.current.wind_direction_10m / 45) % 8]}, ${json.current.wind_speed_10m} ${t.wSpeed}; ${t.wStability}: ${stability}; t: ${json.current.temperature_2m}°C`;
+    } catch (e) { return null; }
 }
 
 async function triggerWeatherUpdate(btn) {
     const t = LOCALES[currentLang] || LOCALES['en'];
-    const row = btn.closest('tr');
-    if (!row) return;
-    
+    const row = btn.closest('tr'); if (!row) return;
     const coordsCell = row.querySelector('.coords-input');
     const weatherColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
     if (weatherColIdx === -1 || !coordsCell) return;
-
     const weatherCell = row.cells[weatherColIdx];
     const coordsStr = coordsCell.innerText.trim();
-    
-    if (!coordsStr) {
-        weatherCell.innerText = t.missingCoords;
-        return;
-    }
-
+    if (!coordsStr) { weatherCell.innerText = t.missingCoords; return; }
     const parsed = parseCoordinates(coordsStr);
     if (parsed) {
         weatherCell.innerText = t.loading;
         const text = await fetchWeatherData(parsed[0], parsed[1]);
         weatherCell.innerText = text ? SecurityUtils.sanitizeHTML(text) : t.apiError;
         saveTable(false);
-    } else {
-        weatherCell.innerText = t.invalidFormat;
-    }
+    } else { weatherCell.innerText = t.invalidFormat; }
 }
 
 function renderColumnPills() {
     if (!IS_ADMIN) return;
-    const container = document.getElementById('activeColumnsPills');
-    container.innerHTML = '';
-    
+    const container = document.getElementById('activeColumnsPills'); container.innerHTML = '';
     TABLE_CONFIG.columns.forEach(col => {
-        if (['index', 'action', 'item_name', 'weather'].includes(col.type) || 
-            ['id', 'item_name', 'weather'].includes(col.id)) return;
-            
-        const pill = document.createElement('div');
-        pill.className = 'pill';
-        const displayTitle = SecurityUtils.sanitizeHTML(getColumnTitle(col, currentLang));
-        pill.innerHTML = `${displayTitle} (${col.type}) <span onclick="removeColumn('${col.id}')">✕</span>`;
+        if (['index', 'action', 'item_name', 'weather'].includes(col.type) || ['id', 'item_name', 'weather'].includes(col.id)) return;
+        const pill = document.createElement('div'); pill.className = 'pill';
+        pill.innerHTML = `${SecurityUtils.sanitizeHTML(getColumnTitle(col, currentLang))} (${col.type}) <span onclick="removeColumn('${col.id}')">✕</span>`;
         container.appendChild(pill);
     });
 }
 
-async function translateText(text, sourceLang, targetLang) {
-    if (sourceLang.toLowerCase() === targetLang.toLowerCase()) return text;
-    
-    try {
-        const getValidCode = (lang) => {
-            if (lang === 'ua') return 'uk';
-            if (lang === 'zh') return 'zh-CN';
-            return lang;
-        };
-
-        const src = getValidCode(sourceLang);
-        const tgt = getValidCode(targetLang);
-
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=${tgt}&dt=t&q=${encodeURIComponent(text)}`;
-        const res = await fetch(url);
-
-        if (res.ok) {
-            const data = await res.json();
-            if (data && data[0] && data[0][0] && data[0][0][0]) {
-                return SecurityUtils.sanitizeHTML(data[0][0][0]);
-            }
-        }
-
-        const fbUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
-        const fbRes = await fetch(fbUrl);
-        
-        if (fbRes.ok) {
-            const fbData = await fbRes.json();
-            if (fbData.responseData && fbData.responseData.translatedText) {
-                return SecurityUtils.sanitizeHTML(fbData.responseData.translatedText);
-            }
-        }
-
-        return text;
-    } catch (e) {
-        console.error('Translation error:', e);
-        return text;
-    }
-}
-
 async function addNewColumn() {
     if (!IS_ADMIN) return;
-    
     const titleInput = document.getElementById('newColTitle');
     const titleValue = SecurityUtils.sanitizeInput(titleInput.value.trim());
-    const type = document.getElementById('newColType').value;
-    
     if (!titleValue) return;
-
-    const statusEl = document.getElementById('saveStatus');
-    statusEl.innerText = "🔄 Translating column structure...";
+    document.getElementById('saveStatus').innerText = "🔄 Processing column...";
+    const id = (titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10) || 'col') + '_' + SecurityUtils.generateSecureToken().substring(0, 6);
     
-    const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
-    const id = (cleanPrefix || 'col') + '_' + SecurityUtils.generateSecureToken().substring(0, 6);
-
-    const titleObject = {};
-    const langs = Object.keys(LOCALES);
-    const mainLangs = langs.filter(l => ['en', 'ua', 'fr', 'es', 'de'].includes(l));
-    
-    for (const langKey of mainLangs) {
-        if (currentLang.toLowerCase() === langKey.toLowerCase()) {
-            titleObject[langKey] = titleValue;
-        } else {
-            titleObject[langKey] = await translateText(titleValue, currentLang, langKey);
-            await new Promise(r => setTimeout(r, 200));
-        }
-    }
-
+    const titleObject = {}; titleObject[currentLang] = titleValue; // Keep it simple without external APIs risking hang
     const weatherIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'weather');
-    const insertAt = weatherIdx !== -1 ? weatherIdx : TABLE_CONFIG.columns.length - 1;
-    
-    TABLE_CONFIG.columns.splice(insertAt, 0, {
-        id,
-        title: titleObject,
-        width: "12%",
-        type
-    });
-
+    TABLE_CONFIG.columns.splice(weatherIdx !== -1 ? weatherIdx : TABLE_CONFIG.columns.length - 1, 0, { id, title: titleObject, width: "12%", type: document.getElementById('newColType').value });
     titleInput.value = '';
-
-    const currentRows = backupTableData();
-    buildTableStructure();
-    renderColumnPills();
-    rebuildTableWithData(currentRows);
-    await saveTable(true);
+    const currentRows = backupTableData(); buildTableStructure(); renderColumnPills(); rebuildTableWithData(currentRows); await saveTable(true);
 }
 
 function removeColumn(id) {
     if (!IS_ADMIN) return;
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    
-    if (confirm(t.confirmDelCol)) {
+    if (confirm((LOCALES[currentLang] || LOCALES['en']).confirmDelCol)) {
         TABLE_CONFIG.columns = TABLE_CONFIG.columns.filter(c => c.id !== id);
-        const currentRows = backupTableData();
-        buildTableStructure();
-        renderColumnPills();
-        rebuildTableWithData(currentRows);
-        saveTable(true);
+        const currentRows = backupTableData(); buildTableStructure(); renderColumnPills(); rebuildTableWithData(currentRows); saveTable(true);
     }
 }
 
 function renderTokenDashboard() {
-    if (!IS_ADMIN) {
-        document.getElementById('tokenDashboardCard').style.display = 'none';
-        return;
-    }
-    
-    document.getElementById('tokenDashboardCard').style.display = 'block';
-    const tbody = document.getElementById('tokenDashboardBody');
-    tbody.innerHTML = '';
-    const t = LOCALES[currentLang] || LOCALES['en'];
-
+    if (!IS_ADMIN) return;
+    const tbody = document.getElementById('tokenDashboardBody'); tbody.innerHTML = '';
     Object.entries(TABLE_CONFIG.branches).forEach(([token, branchObj]) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">
-                🏢 ${SecurityUtils.sanitizeHTML(branchObj.name)}
-            </td>
+            <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${SecurityUtils.sanitizeHTML(branchObj.name)}</td>
             <td>${branchObj.coords ? SecurityUtils.sanitizeHTML(branchObj.coords.join(', ')) : ''}</td>
             <td><span class="token-code">${SecurityUtils.sanitizeHTML(token)}</span></td>
             <td>
-                <button class="btn-action copy-link-btn" style="width: auto; padding: 4px 10px; float: none; display: inline-block; margin-right: 5px;" 
-                        onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(token)}')">
-                    ${t.copyLinkBtn}
-                </button>
-                <button class="btn-action del-row-btn" style="width: auto; padding: 4px 10px; display: inline-block;" 
-                        onclick="deleteBranch('${SecurityUtils.sanitizeHTML(token)}')">
-                    ❌
-                </button>
-            </td>
-        `;
+                <button class="btn-action copy-link-btn" style="width: auto; padding: 4px 10px; display: inline-block; margin-right: 5px;" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(token)}')">${(LOCALES[currentLang] || LOCALES['en']).copyLinkBtn}</button>
+                <button class="btn-action del-row-btn" style="width: auto; padding: 4px 10px; display: inline-block;" onclick="deleteBranch('${SecurityUtils.sanitizeHTML(token)}')">❌</button>
+            </td>`;
         tbody.appendChild(tr);
     });
 }
 
 async function addNewBranch() {
     if (!IS_ADMIN) return;
-    
-    const nameInput = document.getElementById('newBranchName');
-    const coordsInput = document.getElementById('newBranchCoords');
-    const name = SecurityUtils.sanitizeInput(nameInput.value.trim());
-    const coordsStr = coordsInput.value.trim();
-    
+    const name = SecurityUtils.sanitizeInput(document.getElementById('newBranchName').value.trim());
+    const coordsStr = document.getElementById('newBranchCoords').value.trim();
     if (!name || !coordsStr) return;
-
     const coords = parseCoordinates(coordsStr);
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    
-    if (!coords) {
-        UIUtils.showToast(t.invalidFormat);
-        return;
-    }
-
-    const newToken = 'usr_' + SecurityUtils.generateSecureToken().substring(0, 10);
-    
-    TABLE_CONFIG.branches[newToken] = {
-        name,
-        coords
-    };
-
-    nameInput.value = '';
-    coordsInput.value = '';
-
-    const currentRows = backupTableData();
-    rebuildTableWithData(currentRows);
-    renderTokenDashboard();
-    saveTable(true);
+    if (!coords) { UIUtils.showToast((LOCALES[currentLang] || LOCALES['en']).invalidFormat); return; }
+    TABLE_CONFIG.branches['usr_' + SecurityUtils.generateSecureToken().substring(0, 10)] = { name, coords };
+    document.getElementById('newBranchName').value = ''; document.getElementById('newBranchCoords').value = '';
+    const currentRows = backupTableData(); rebuildTableWithData(currentRows); renderTokenDashboard(); saveTable(true);
 }
 
 function deleteBranch(token) {
-    if (!IS_ADMIN) return;
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    const branchName = TABLE_CONFIG.branches[token]?.name;
-    
-    if (confirm(t.confirmDelBranch)) {
-        delete TABLE_CONFIG.branches[token];
-        let currentRows = backupTableData();
-        currentRows = currentRows.filter(r => r.branch !== branchName);
-        rebuildTableWithData(currentRows);
-        renderTokenDashboard();
-        saveTable(true);
-    }
+    if (!IS_ADMIN || !confirm((LOCALES[currentLang] || LOCALES['en']).confirmDelBranch)) return;
+    const branchName = TABLE_CONFIG.branches[token]?.name; delete TABLE_CONFIG.branches[token];
+    rebuildTableWithData(backupTableData().filter(r => r.branch !== branchName)); renderTokenDashboard(); saveTable(true);
 }
 
 function copyBranchLink(token) {
-    const currentUrl = window.location.href.split('?')[0];
-    const fullLink = `${currentUrl}?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(token)}`;
-    
-    navigator.clipboard.writeText(fullLink).then(() => {
-        UIUtils.showToast("Link copied to clipboard!");
-    }).catch(() => {
-        const windowLocation = fullLink;
-        const textArea = document.createElement('textarea');
-        textArea.value = windowLocation;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        UIUtils.showToast("Link copied to clipboard!");
-    });
+    const fullLink = `${window.location.href.split('?')[0]}?id=${encodeURIComponent(COMPANY_ID)}&token=${encodeURIComponent(token)}`;
+    navigator.clipboard.writeText(fullLink).then(() => UIUtils.showToast("Link copied!")).catch(() => UIUtils.showToast("Failed to copy link"));
 }
 
 function backupTableData() {
     const backup = [];
     document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-        const branch = row.getAttribute('data-branch');
-        const rowId = row.getAttribute('data-id');
         const cellsData = {};
-        
-        TABLE_CONFIG.columns.forEach((col) => {
+        TABLE_CONFIG.columns.forEach(col => {
             if (col.type === 'index' || col.type === 'action') return;
-            
-            const cell = row.querySelector(`.cell-${col.id}`) || 
-                        (col.type === 'coordinates' ? row.querySelector('.coords-container') : null);
-            
-            if (cell) {
-                let value = col.type === 'coordinates' ? 
-                    (row.querySelector('.coords-input')?.innerText.trim() || "") : 
-                    cell.innerText.trim();
-                
-                cellsData[col.id] = SecurityUtils.sanitizeHTML(value);
-            }
+            const cell = row.querySelector(`.cell-${col.id}`) || (col.type === 'coordinates' ? row.querySelector('.coords-container') : null);
+            if (cell) cellsData[col.id] = SecurityUtils.sanitizeHTML(col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : cell.innerText.trim());
         });
-        
-        backup.push({ id: rowId, branch, data: cellsData });
+        backup.push({ id: row.getAttribute('data-id'), branch: row.getAttribute('data-branch'), data: cellsData });
     });
     return backup;
 }
 
 function rebuildTableWithData(backedData) {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-    
-    // Подготовка списка филиалов для рендеринга
-    const targetBranches = IS_ADMIN ? 
-        Object.entries(TABLE_CONFIG.branches) : 
-        [[USER_TOKEN, CURRENT_BRANCH_OBJ || { name: CURRENT_BRANCH_NAME }]];
-    
+    const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+    const targetBranches = IS_ADMIN ? Object.entries(TABLE_CONFIG.branches) : [[USER_TOKEN, CURRENT_BRANCH_OBJ || { name: CURRENT_BRANCH_NAME }]];
     const t = LOCALES[currentLang] || LOCALES['en'];
 
     targetBranches.forEach(([token, branchObj]) => {
-        if (!branchObj) return;
-        const headRow = document.createElement('tr');
-        headRow.classList.add('region-header-row');
-        headRow.setAttribute('data-branch', branchObj.name);
-        
-        let adminButtons = IS_ADMIN ? 
-            `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(token)}')">${t.copyLinkBtn}</button>` : 
-            '';
-        
+        if (!branchObj || !branchObj.name) return;
+        const headRow = document.createElement('tr'); headRow.classList.add('region-header-row'); headRow.setAttribute('data-branch', branchObj.name);
+        let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(token)}')">${t.copyLinkBtn}</button>` : '';
         headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${SecurityUtils.sanitizeHTML(branchObj.name)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${SecurityUtils.sanitizeHTML(branchObj.name)}', this)">${t.addBtnRow}</button></td>`;
         tbody.appendChild(headRow);
 
-        const branchItems = backedData.filter(d => d.branch === branchObj.name);
-        
-        if (branchItems.length === 0) {
-            const baseCoordsStr = branchObj.coords ? branchObj.coords.join(', ') : '48.3794, 31.1656';
-            tbody.appendChild(createDataRow(branchObj.name, null, baseCoordsStr, true));
-        } else {
-            branchItems.forEach(item => {
-                tbody.appendChild(createDataRow(branchObj.name, item, '', false));
-            });
-        }
+        const branchItems = (backedData && Array.isArray(backedData)) ? backedData.filter(d => d.branch === branchObj.name) : [];
+        if (branchItems.length === 0) tbody.appendChild(createDataRow(branchObj.name, null, branchObj.coords ? branchObj.coords.join(', ') : '48.3794, 31.1656', true));
+        else branchItems.forEach(item => tbody.appendChild(createDataRow(branchObj.name, item, '', false)));
     });
-    
-    reindexTable();
-    updateMapFromTable();
+    reindexTable(); updateMapFromTable();
 }
 
 function buildTableStructure() {
-    const colgroup = document.getElementById('tableColgroup');
-    const thead = document.getElementById('tableHead');
-    const tfoot = document.getElementById('tableFoot');
-    
-    colgroup.innerHTML = '';
-    let headHtml = '<tr>';
-    const t = LOCALES[currentLang] || LOCALES['en'];
-
+    const colgroup = document.getElementById('tableColgroup'); const thead = document.getElementById('tableHead'); const tfoot = document.getElementById('tableFoot');
+    colgroup.innerHTML = ''; let headHtml = '<tr>';
     TABLE_CONFIG.columns.forEach(col => {
         colgroup.innerHTML += `<col style="width: ${col.width}">`;
-        const displayTitle = SecurityUtils.sanitizeHTML(getColumnTitle(col, currentLang));
-        headHtml += `<th>${displayTitle}</th>`;
+        headHtml += `<th>${SecurityUtils.sanitizeHTML(getColumnTitle(col, currentLang))}</th>`;
     });
+    thead.innerHTML = headHtml + '</tr>';
     
-    headHtml += '</tr>';
-    thead.innerHTML = headHtml;
-    tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${t.totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${TABLE_CONFIG.columns.length - 3}"></td>`;
+    // BUGFIX: Prevent negative colspans
+    const emptyCols = Math.max(1, TABLE_CONFIG.columns.length - 3);
+    tfoot.innerHTML = `<td colspan="2" style="text-align: left; padding-left: 15px;">${(LOCALES[currentLang] || LOCALES['en']).totalCount}</td><td id="totalRowsCount" style="text-align: left; font-size: 14px; font-weight: bold; color: #1e40af;">0</td><td colspan="${emptyCols}"></td>`;
 }
 
 function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstInit = false) {
     const row = document.createElement('tr');
-    row.setAttribute('data-branch', branchName);
+    row.setAttribute('data-branch', branchName); row.setAttribute('data-id', rawItem?.id || 'row_' + SecurityUtils.generateSecureToken().substring(0, 8));
     
-    const rowId = rawItem?.id || 'row_' + SecurityUtils.generateSecureToken().substring(0, 8);
-    row.setAttribute('data-id', rowId);
-
     let rowHtml = '';
-    TABLE_CONFIG.columns.forEach((col) => {
-        let val = '';
-        if (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) {
-            val = SecurityUtils.sanitizeHTML(rawItem.data[col.id]);
-        }
-        if (col.id === 'item_name' && isFirstInit && (!val || val.trim() === '')) {
-            val = SecurityUtils.sanitizeHTML(branchName);
-        }
-        if (col.type === 'coordinates' && isFirstInit && (!val || val.trim() === '') && defaultCoords) {
-            val = SecurityUtils.sanitizeHTML(defaultCoords);
-        }
+    TABLE_CONFIG.columns.forEach(col => {
+        let val = (rawItem && rawItem.data && rawItem.data[col.id] !== undefined) ? SecurityUtils.sanitizeHTML(rawItem.data[col.id]) : '';
+        if (col.id === 'item_name' && isFirstInit && !val) val = SecurityUtils.sanitizeHTML(branchName);
+        if (col.type === 'coordinates' && isFirstInit && !val && defaultCoords) val = SecurityUtils.sanitizeHTML(defaultCoords);
 
-        if (col.type === 'index') {
-            rowHtml += `<td class="readonly index-cell"></td>`;
-        } else if (col.type === 'action') {
-            rowHtml += `<td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>`;
-        } else if (col.type === 'coordinates') {
-            rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${val}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)" title="Fetch weather">⛅</button></div></td>`;
-        } else {
-            rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`;
-        }
+        if (col.type === 'index') rowHtml += `<td class="readonly index-cell"></td>`;
+        else if (col.type === 'action') rowHtml += `<td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>`;
+        else if (col.type === 'coordinates') rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${val}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)">⛅</button></div></td>`;
+        else rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`;
     });
-    
     row.innerHTML = rowHtml;
 
     row.addEventListener('input', (e) => {
         const targetCell = e.target.closest('td') || e.target.closest('.coords-container')?.parentNode;
         if (targetCell) {
-            const cellIdx = targetCell.cellIndex;
-            const targetColConfig = TABLE_CONFIG.columns[cellIdx];
-            
+            const targetColConfig = TABLE_CONFIG.columns[targetCell.cellIndex];
             if (targetColConfig && targetColConfig.type !== 'date' && targetColConfig.type !== 'time') {
                 const dt = getCurrentDateTime();
-                const dCell = row.querySelector('.cell-date');
-                const tCell = row.querySelector('.cell-time');
-                if (dCell) dCell.innerText = dt.date;
-                if (tCell) tCell.innerText = dt.time;
-            }
-            
-            if (e.target.contentEditable === 'true') {
-                const sanitized = SecurityUtils.sanitizeHTML(e.target.innerText);
-                if (sanitized !== e.target.innerText) {
-                    e.target.innerText = sanitized;
-                }
+                const dCell = row.querySelector('.cell-date'); if(dCell) dCell.innerText = dt.date;
+                const tCell = row.querySelector('.cell-time'); if(tCell) tCell.innerText = dt.time;
             }
         }
-        updateMapFromTable();
-        saveTable(false);
+        updateMapFromTable(); saveTable(false);
     });
-
     return row;
 }
 
 function removeRow(btn) {
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    if (confirm(t.confirmDelRow)) {
-        const row = btn.closest('tr');
-        const rowId = row.getAttribute('data-id');
-        deletedRowIds.push(rowId);
-        
-        if (activeMarkers[rowId]) {
-            map.removeLayer(activeMarkers[rowId]);
-            delete activeMarkers[rowId];
-        }
-        
-        row.remove();
-        reindexTable();
-        saveTable(true);
-        updateMapFromTable();
+    if (confirm((LOCALES[currentLang] || LOCALES['en']).confirmDelRow)) {
+        const row = btn.closest('tr'); const rowId = row.getAttribute('data-id'); deletedRowIds.push(rowId);
+        if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
+        row.remove(); reindexTable(); saveTable(true); updateMapFromTable();
     }
 }
 
 function reindexTable() {
-    let currentNumber = 1;
-    let totalCount = 0;
-    
-    document.querySelectorAll('#tableBody tr').forEach((row) => {
-        if (row.classList.contains('region-header-row')) {
-            currentNumber = 1;
-        } else {
-            const indexCell = row.querySelector('.index-cell');
-            if (indexCell) indexCell.innerText = currentNumber++;
-            totalCount++;
-        }
+    let currentNumber = 1, totalCount = 0;
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        if (row.classList.contains('region-header-row')) currentNumber = 1;
+        else { const iCell = row.querySelector('.index-cell'); if (iCell) iCell.innerText = currentNumber++; totalCount++; }
     });
-    
-    const totalEl = document.getElementById('totalRowsCount');
-    if (totalEl) totalEl.innerText = totalCount;
+    const totalEl = document.getElementById('totalRowsCount'); if (totalEl) totalEl.innerText = totalCount;
 }
 
 function addBranchRow(branchName, buttonElement) {
-    const headerRow = buttonElement.closest('tr');
     const newRow = createDataRow(branchName, null, '', false);
-    headerRow.after(newRow);
-    reindexTable();
-    saveTable(true);
-    
-    const firstEditable = newRow.querySelector('[contenteditable="true"]');
-    if (firstEditable) firstEditable.focus();
+    buttonElement.closest('tr').after(newRow); reindexTable(); saveTable(true);
+    const firstEditable = newRow.querySelector('[contenteditable="true"]'); if (firstEditable) firstEditable.focus();
 }
 
 // =====================================================================
-// КАРТА И АНАЛИТИКА
+// MAP & ANALYTICS
 // =====================================================================
 function updateMapFromTable() {
     if (!map) return;
-    const rows = document.querySelectorAll('#tableBody tr:not(.region-header-row)');
-
-    rows.forEach(row => {
-        const rowId = row.getAttribute('data-id');
-        const branch = row.getAttribute('data-branch');
-        const itemCell = row.querySelector('.cell-item_name');
-        const coordsInput = row.querySelector('.coords-input');
-        
-        let itemName = itemCell ? SecurityUtils.sanitizeHTML(itemCell.innerText.trim()) : "";
-        let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
-
+    document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
+        const rowId = row.getAttribute('data-id'), branch = row.getAttribute('data-branch');
+        const itemName = SecurityUtils.sanitizeHTML(row.querySelector('.cell-item_name')?.innerText.trim() || "");
+        const coordsStr = row.querySelector('.coords-input')?.innerText.trim() || "";
         const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
-        let amountVal = numCol ? 
-            SecurityUtils.sanitizeHTML(row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "") : 
-            "";
+        const amountVal = numCol ? SecurityUtils.sanitizeHTML(row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "") : "";
 
-        if (!itemName && !coordsStr) {
-            if (activeMarkers[rowId]) {
-                map.removeLayer(activeMarkers[rowId]);
-                delete activeMarkers[rowId];
-            }
-            return;
-        }
+        if (!itemName && !coordsStr) { if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; } return; }
 
         let finalCoords = parseCoordinates(coordsStr);
         if (!finalCoords) {
-            if (!row.dataset.lat || !row.dataset.lng) {
-                const found = (TABLE_CONFIG.branches && Object.keys(TABLE_CONFIG.branches).length > 0) ? 
-                    Object.values(TABLE_CONFIG.branches).find(b => b.name === branch) : null;
+            if (!row.dataset.lat) {
+                const found = (TABLE_CONFIG.branches && Object.keys(TABLE_CONFIG.branches).length > 0) ? Object.values(TABLE_CONFIG.branches).find(b => b.name === branch) : null;
                 const baseCoords = found ? found.coords : [48.3794, 31.1656];
-                row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6);
-                row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
+                row.dataset.lat = (baseCoords[0] + (Math.random() - 0.5) * 0.05).toFixed(6); row.dataset.lng = (baseCoords[1] + (Math.random() - 0.5) * 0.05).toFixed(6);
             }
             finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
         }
 
-        let popupText = `<b>🏢 ${SecurityUtils.sanitizeHTML(branch)}</b><br>`;
-        if (itemName) popupText += `Item: ${itemName}<br>`;
-        if (amountVal) popupText += `Value: <b>${amountVal}</b>`;
-
-        if (activeMarkers[rowId]) {
-            activeMarkers[rowId].setLatLng(finalCoords);
-            activeMarkers[rowId].getPopup().setContent(popupText);
-        } else {
-            const m = L.circleMarker(finalCoords, {
-                radius: 10,
-                fillColor: '#2563eb',
-                color: '#fff',
-                weight: 2,
-                fillOpacity: 0.8
-            }).addTo(map);
-            m.bindPopup(popupText);
-            activeMarkers[rowId] = m;
+        let popupText = `<b>🏢 ${SecurityUtils.sanitizeHTML(branch)}</b><br>${itemName ? `Item: ${itemName}<br>` : ''}${amountVal ? `Value: <b>${amountVal}</b>` : ''}`;
+        if (activeMarkers[rowId]) { activeMarkers[rowId].setLatLng(finalCoords); activeMarkers[rowId].getPopup().setContent(popupText); } 
+        else {
+            const m = L.circleMarker(finalCoords, { radius: 10, fillColor: '#2563eb', color: '#fff', weight: 2, fillOpacity: 0.8 }).addTo(map);
+            m.bindPopup(popupText); activeMarkers[rowId] = m;
         }
     });
-    
     updateAnalytics();
 }
 
 function updateAnalytics() {
-    const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
-    const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
+    const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number'); const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
     if (!numCol || !dateCol) return;
-
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    const localizedNumTitle = getColumnTitle(numCol, currentLang);
-    const chartTitleEl = document.getElementById('chartTitle');
-    if (chartTitleEl) chartTitleEl.innerText = `${localizedNumTitle} - ${t.chartTitle}`;
-
     const dailyData = {};
     globalHistory.forEach(item => {
         if (!item.date || !item.value) return;
-        const val = parseFloat(item.value.toString().replace(',', '.'));
-        if (isNaN(val)) return;
-        
-        const parts = item.date.split(/[./-]/);
-        if (parts.length !== 3) return;
-        
-        const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-        if (isNaN(dateObj.getTime())) return;
-        
-        const checkDate = new Date(dateObj);
-        checkDate.setHours(0, 0, 0, 0);
-        
-        if (!dailyData[item.date]) {
-            dailyData[item.date] = { sum: 0, count: 0, dateObj: checkDate };
-        }
-        dailyData[item.date].sum += val;
-        dailyData[item.date].count += 1;
+        const val = parseFloat(item.value.toString().replace(',', '.')); if (isNaN(val)) return;
+        const parts = item.date.split(/[./-]/); if (parts.length !== 3) return;
+        const dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)); if (isNaN(dateObj.getTime())) return;
+        if (!dailyData[item.date]) dailyData[item.date] = { sum: 0, count: 0, dateObj: new Date(dateObj.setHours(0,0,0,0)) };
+        dailyData[item.date].sum += val; dailyData[item.date].count += 1;
     });
 
     const sortedDates = Object.keys(dailyData).sort((a, b) => dailyData[a].dateObj - dailyData[b].dateObj);
-    const labels = sortedDates;
     const avgData = sortedDates.map(d => (dailyData[d].sum / dailyData[d].count).toFixed(2));
     const sumData = sortedDates.map(d => dailyData[d].sum.toFixed(2));
 
-    if (sortedDates.length === 0) {
-        if (analyticsChart) {
-            analyticsChart.data.labels = [];
-            analyticsChart.data.datasets[0].data = [];
-            analyticsChart.data.datasets[1].data = [];
-            analyticsChart.update();
-        }
-        return;
-    }
-
-    if (!analyticsChart) {
-        const ctx = document.getElementById('analyticsChart').getContext('2d');
-        analyticsChart = new Chart(ctx, {
+    if (!analyticsChart && sortedDates.length > 0) {
+        analyticsChart = new Chart(document.getElementById('analyticsChart').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: sortedDates,
                 datasets: [
-                    {
-                        type: 'line',
-                        label: 'Average Value',
-                        data: avgData,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                        borderWidth: 2,
-                        tension: 0.2,
-                        fill: true
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Total Sum',
-                        data: sumData,
-                        backgroundColor: 'rgba(16, 185, 129, 0.4)',
-                        borderColor: '#10b981',
-                        borderWidth: 1
-                    }
+                    { type: 'line', label: 'Average Value', data: avgData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 2, tension: 0.2, fill: true },
+                    { type: 'bar', label: 'Total Sum', data: sumData, backgroundColor: 'rgba(16, 185, 129, 0.4)', borderColor: '#10b981', borderWidth: 1 }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
-    } else {
-        analyticsChart.data.labels = labels;
-        analyticsChart.data.datasets[0].data = avgData;
-        analyticsChart.data.datasets[1].data = sumData;
+    } else if (analyticsChart) {
+        analyticsChart.data.labels = sortedDates;
+        analyticsChart.data.datasets[0].data = avgData; analyticsChart.data.datasets[1].data = sumData;
         analyticsChart.update();
     }
 }
 
 async function saveTable(showVisualStatus = false) {
-    if (!APP_CONFIG.EDGE_FUNCTION_URL) return;
-    
+    if (!APP_CONFIG.EDGE_FUNCTION_URL || (!IS_ADMIN && !CURRENT_BRANCH_NAME)) return; // Protection
     const t = LOCALES[currentLang] || LOCALES['en'];
     if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
 
     const localRowsData = [];
     document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
         const branchName = SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || "");
-        
         if (row.classList.contains('region-header-row')) {
-            localRowsData.push({
-                isHeader: true,
-                branch: branchName,
-                id: row.getAttribute('data-id') || "",
-                cells: []
-            });
+            localRowsData.push({ isHeader: true, branch: branchName, id: row.getAttribute('data-id') || "", cells: [] });
         } else {
             const cellsData = {};
             TABLE_CONFIG.columns.forEach(col => {
                 if (col.type === 'index' || col.type === 'action') return;
-                let value = col.type === 'coordinates' ?
-                    (row.querySelector('.coords-input')?.innerText.trim() || "") :
-                    (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
+                let value = col.type === 'coordinates' ? (row.querySelector('.coords-input')?.innerText.trim() || "") : (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
                 cellsData[col.id] = SecurityUtils.sanitizeHTML(value);
             });
-            
-            localRowsData.push({
-                isHeader: false,
-                branch: branchName,
-                id: row.getAttribute('data-id') || "",
-                data: cellsData
-            });
+            localRowsData.push({ isHeader: false, branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
         }
     });
 
     let localHistory = [...globalHistory];
-    const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
-    const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
-
+    const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number'), dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
     if (numCol && dateCol) {
         document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
-            const rowId = row.getAttribute('data-id') || "";
-            const branch = SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || "");
-            const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
-            const valStr = row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "";
-            
+            const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "", valStr = row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "";
             if (dateStr && valStr) {
+                const rowId = row.getAttribute('data-id') || "";
+                const historyItem = { rowId, branch: SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || ""), date: SecurityUtils.sanitizeHTML(dateStr), value: SecurityUtils.sanitizeHTML(valStr) };
                 const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
-                const historyItem = {
-                    rowId,
-                    branch,
-                    date: SecurityUtils.sanitizeHTML(dateStr),
-                    value: SecurityUtils.sanitizeHTML(valStr)
-                };
-                
-                if (exactMatchIndex !== -1) {
-                    localHistory[exactMatchIndex] = historyItem;
-                } else {
-                    localHistory.push(historyItem);
-                }
+                if (exactMatchIndex !== -1) localHistory[exactMatchIndex] = historyItem; else localHistory.push(historyItem);
             }
         });
     }
 
     try {
-        const res = await fetchApi("save", {
-            table: localRowsData,
-            history: localHistory,
-            branches: TABLE_CONFIG.branches,
-            columns: TABLE_CONFIG.columns
-        });
-
+        const res = await fetchApi("save", { table: localRowsData, history: localHistory, branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns });
         if (res.error) throw new Error(res.error);
-
-        if (showVisualStatus) {
-            document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
-        }
-        
+        if (showVisualStatus) document.getElementById('saveStatus').innerText = t.saved + new Date().toLocaleTimeString();
         deletedRowIds = [];
-    } catch (err) {
-        document.getElementById('saveStatus').innerText = t.saveError + err.message;
-    }
-
+    } catch (err) { if(showVisualStatus) document.getElementById('saveStatus').innerText = t.saveError + err.message; }
     updateMapFromTable();
 }
 
-async function loadTable() {
-    const isReady = await checkDatabaseConfig();
-    if (!isReady) return;
-
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    
-    try {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-
-        const res = await fetchApi("load"); // Подгружаем актуальные данные[cite: 3]
-        if (res.error) throw new Error(res.error);
-
-        TABLE_CONFIG.columns = res.columns || [];
-        TABLE_CONFIG.branches = res.branches || {};
-        globalHistory = res.history || [];
-        const tableData = res.table || [];
-
-        buildTableStructure();
-        renderColumnPills();
-        applyLocalization();
-        renderTokenDashboard();
-
-        if (tableData.length === 0) {
-            rebuildTableWithData([]); // Строим пустую структуру филиала
-            updateMapFromTable();
-            return;
-        }
-
-        tableData.forEach(rowData => {
-            let rowBranch = rowData.branch;
-            if (!IS_ADMIN && rowBranch !== CURRENT_BRANCH_NAME) return;
-
-            let row;
-            if (rowData.isHeader) {
-                row = document.createElement('tr');
-                row.classList.add('region-header-row');
-                row.setAttribute('data-branch', rowBranch);
-                
-                const targetToken = Object.keys(TABLE_CONFIG.branches).find(k =>
-                    TABLE_CONFIG.branches[k].name === rowBranch
-                ) || '';
-                
-                let adminButtons = IS_ADMIN ?
-                    `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${SecurityUtils.sanitizeHTML(targetToken)}')">${t.copyLinkBtn}</button>` :
-                    '';
-                
-                row.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${SecurityUtils.sanitizeHTML(rowBranch)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${SecurityUtils.sanitizeHTML(rowBranch)}', this)">${t.addBtnRow}</button></td>`;
-            } else {
-                row = createDataRow(rowBranch, rowData, '', false);
-            }
-            
-            tbody.appendChild(row);
-        });
-
-        reindexTable();
-        updateMapFromTable();
-        
-        document.getElementById('saveStatus').innerHTML = IS_ADMIN ?
-            t.adminSession :
-            `${t.secureSession}: ${SecurityUtils.sanitizeHTML(CURRENT_BRANCH_NAME)}`;
-
-        if (!IS_ADMIN && CURRENT_BRANCH_OBJ && CURRENT_BRANCH_OBJ.coords) {
-            map.setView(CURRENT_BRANCH_OBJ.coords, 11);
-        }
-    } catch (err) {
-        console.error('Load table error:', err);
-        buildTableStructure();
-        renderColumnPills();
-        updateMapFromTable();
-        document.getElementById('saveStatus').innerHTML = 'Error: ' + err.message;
-    }
-}
-
 async function clearChartHistory() {
-    const t = LOCALES[currentLang] || LOCALES['en'];
-    if (confirm(t.confirmClearHis)) {
-        globalHistory = [];
-        await saveTable(true);
-    }
+    if (confirm((LOCALES[currentLang] || LOCALES['en']).confirmClearHis)) { globalHistory = []; await saveTable(true); }
 }
 
 function initMap() {
-    const defaultCenter = [30, 0];
-    const defaultZoom = 2;
-    
-    map = L.map('map').setView(defaultCenter, defaultZoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
+    map = L.map('map').setView([30, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
     map.on('click', function(e) {
         const coordsStr = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
-        
         const branchCoordsInput = document.getElementById('newBranchCoords');
-        if (branchCoordsInput && IS_ADMIN) {
-            branchCoordsInput.value = coordsStr;
-            UIUtils.showToast(`Coordinates pasted to Branch Manager:\n${coordsStr}`);
-            return;
-        }
-
-        navigator.clipboard.writeText(coordsStr).then(() => {
-            UIUtils.showToast(`Coordinates copied:\n${coordsStr}`);
-        }).catch(() => {
-            const textArea = document.createElement('textarea');
-            textArea.value = coordsStr;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            UIUtils.showToast(`Coordinates: ${coordsStr}`);
-        });
+        if (branchCoordsInput && IS_ADMIN) { branchCoordsInput.value = coordsStr; UIUtils.showToast(`Pasted:\n${coordsStr}`); return; }
+        navigator.clipboard.writeText(coordsStr).then(() => UIUtils.showToast(`Copied:\n${coordsStr}`)).catch(() => UIUtils.showToast(coordsStr));
     });
 }
 
 function exportTable() {
     const allRowsData = [];
     document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
-        allRowsData.push({
-            isHeader: row.classList.contains('region-header-row'),
-            branch: SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || ""),
-            id: row.getAttribute('data-id') || "",
-            cells: [...row.cells].map(cell => SecurityUtils.sanitizeHTML(cell.innerText))
-        });
+        allRowsData.push({ isHeader: row.classList.contains('region-header-row'), branch: SecurityUtils.sanitizeHTML(row.getAttribute('data-branch') || ""), id: row.getAttribute('data-id') || "", cells: [...row.cells].map(cell => SecurityUtils.sanitizeHTML(cell.innerText)) });
     });
-
-    const exportData = {
-        branches: TABLE_CONFIG.branches,
-        columns: TABLE_CONFIG.columns,
-        table: allRowsData,
-        history: globalHistory
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `export_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+    a.href = URL.createObjectURL(new Blob([JSON.stringify({ branches: TABLE_CONFIG.branches, columns: TABLE_CONFIG.columns, table: allRowsData, history: globalHistory }, null, 2)], { type: 'application/json' }));
+    a.download = `export_${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(a.href);
 }
 
-// =====================================================================
-// ИНИЦИАЛИЗАЦИЯ
-// =====================================================================
 window.onload = async () => {
     initMap();
-    applyLocalization();
-    await loadTable();
+    await initializeApp();
 
-    if (USER_TOKEN && !IS_ADMIN) {
-        document.getElementById('columnManagerPanel').style.display = 'none';
-        document.getElementById('branchManagerPanel').style.display = 'none';
-        const clearBtn = document.getElementById('clearHistoryBtn');
-        if (clearBtn) clearBtn.style.display = 'none';
-        document.getElementById('tokenDashboardCard').style.display = 'none';
-    }
-
+    // Auto-save strictly checks initialization success
     setInterval(() => {
-        if (USER_TOKEN) {
+        if (COMPANY_ID && (IS_ADMIN || CURRENT_BRANCH_NAME)) {
             saveTable(false);
         }
     }, 300000);
 };
 
 window.addEventListener('beforeunload', () => {
-    if (USER_TOKEN) {
+    if (COMPANY_ID && (IS_ADMIN || CURRENT_BRANCH_NAME)) {
         saveTable(false);
     }
 });
