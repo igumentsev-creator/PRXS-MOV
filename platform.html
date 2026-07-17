@@ -567,7 +567,8 @@
             }
 
             updateMapFromTable();
-            saveTable(false); 
+            // Вызываем принудительную перерисовку графиков "на лету" до нажатия кнопки Save
+            updateAnalytics();
         });
         return row;
     }
@@ -1017,6 +1018,9 @@
                 }
             });
         }
+
+        // Обновляем виртуальный глобальный массив перед отправкой, чтобы график сразу синхронизировался
+        globalHistory = localHistory;
 
         try {
             const res = await apiCall("save", {
