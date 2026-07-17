@@ -5,48 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universal Data Collection Platform</title>
     <style>
-        /* Базовые стили для чистого и современного интерфейса */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
         .container { width: 100%; max-width: 1400px; }
         .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        
-        /* Скрываем элементы по умолчанию */
         .hidden { display: none !important; }
-        
-        /* Экраны входа и настройки */
         .auth-screen { max-width: 500px; margin: 40px auto; text-align: center; border: 2px solid #3b82f6; }
         .auth-screen h2 { color: #1e3a8a; margin-bottom: 12px; }
         .auth-screen p { color: #64748b; font-size: 14px; margin-bottom: 20px; }
         .auth-screen input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; text-align: center; }
         .auth-screen input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
-        
-        /* Кнопки */
         .btn-main { width: 100%; background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .btn-main:hover { background: #1d4ed8; }
         .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
-
-        /* Уведомления об ошибках */
         .error-msg { color: #dc2626; font-size: 14px; font-weight: bold; margin-bottom: 16px; min-height: 20px; }
-        
-        /* Дашборд (пока пустой каркас) */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; }
         .header h1 { color: #1e3a8a; font-size: 24px; }
         .user-status { background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    
-    <!-- Индикатор загрузки системы -->
     <div id="loadingPanel" class="card auth-screen" style="border-color: transparent; box-shadow: none; background: transparent;">
         <h2>🔄 Подключение к системе...</h2>
         <p id="systemStatus">Проверка рабочего пространства</p>
     </div>
-
-    <!-- ЭКРАН 1: Создание пароля (Setup) -->
     <div id="setupPanel" class="card auth-screen hidden">
         <h2>🔑 Создание пространства</h2>
         <p>Придумайте надежный пароль администратора (минимум 6 символов).</p>
@@ -54,8 +37,6 @@
         <input type="password" id="setupInput" placeholder="Новый пароль" minlength="6">
         <button id="btnSetup" class="btn-main">🚀 Создать и войти</button>
     </div>
-
-    <!-- ЭКРАН 2: Вход (Login) -->
     <div id="loginPanel" class="card auth-screen hidden">
         <h2>🔒 Вход в систему</h2>
         <p>Введите пароль администратора или токен филиала.</p>
@@ -63,8 +44,6 @@
         <input type="password" id="loginInput" placeholder="Токен доступа">
         <button id="btnLogin" class="btn-main">🔓 Войти</button>
     </div>
-
-    <!-- ЭКРАН 3: Основной рабочий стол (Dashboard) -->
     <div id="dashboardPanel" class="container hidden">
         <div class="card">
             <div class="header">
@@ -76,20 +55,13 @@
             </p>
         </div>
     </div>
-
 </div>
-
 <script>
-    // --- КОНФИГУРАЦИЯ ---
-    // Вставь сюда URL твоей Edge Function из Supabase
     const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
-    
-    // Читаем параметры из адресной строки (?id=GURU_Valera&token=123)
     const urlParams = new URLSearchParams(window.location.search);
     const WORKSPACE_ID = urlParams.get('id') || 'default_workspace';
     let USER_TOKEN = urlParams.get('token') || '';
 
-    // --- ФУНКЦИЯ ОБЩЕНИЯ С API ---
     async function apiCall(action, extraData = {}) {
         try {
             const response = await fetch(API_URL, {
@@ -97,13 +69,16 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action, id: WORKSPACE_ID, secret: USER_TOKEN, ...extraData })
             });
+            if (!response.ok) {
+                const errText = await response.text();
+                return { error: `Ошибка сервера ${response.status}: ${errText}` };
+            }
             return await response.json();
         } catch (error) {
-            return { error: "Сбой сети или API недоступно: " + error.message };
+            return { error: "Сбой сети (CORS или сервер недоступен): " + error.message };
         }
     }
 
-    // --- УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ ---
     function showScreen(screenId) {
         ['loadingPanel', 'setupPanel', 'loginPanel', 'dashboardPanel'].forEach(id => {
             document.getElementById(id).classList.add('hidden');
@@ -115,36 +90,38 @@
         document.getElementById(elementId).innerText = text;
     }
 
-    // --- ЛОГИКА ИНИЦИАЛИЗАЦИИ ---
     async function init() {
         document.getElementById('systemStatus').innerText = `Проверка ID: ${WORKSPACE_ID}...`;
         
-        // Пытаемся загрузить данные (действие 'load')
         const res = await apiCall("load");
 
+        if (res.error && (res.error.includes("Сбой сети") || res.error.includes("Ошибка сервера"))) {
+            document.getElementById('systemStatus').innerHTML = `
+                <span style="color: #dc2626; font-weight: bold;">❌ Ошибка подключения к Supabase</span><br><br>
+                ${res.error}<br><br>
+                <small style="color: #64748b;">Подсказка: Если это ошибка 401 или CORS, убедитесь, что вы развернули функцию с флагом <b>--no-verify-jwt</b></small>
+            `;
+            return;
+        }
+
         if (res.error === "Workspace not found") {
-            // Базы нет -> показываем создание
             showScreen('setupPanel');
-        } else if (res.error === "Invalid credentials" || res.error === "Missing workspace id" || !USER_TOKEN) {
-            // База есть, но токен неверный или пустой -> показываем логин
+        } else if (res.error === "Invalid credentials" || res.error === "Missing workspace id") {
             showScreen('loginPanel');
         } else if (res.ok) {
-            // Успешный вход -> показываем дашборд
             document.getElementById('roleBadge').innerText = res.role === 'admin' ? '👑 Администратор' : `🏢 Филиал: ${res.branchName}`;
             showScreen('dashboardPanel');
         } else {
-            // Непредвиденная системная ошибка
-            document.getElementById('systemStatus').innerText = "❌ Ошибка: " + res.error;
+            showScreen('loginPanel');
         }
     }
 
-    // --- ОБРАБОТЧИКИ КНОПОК ---
     document.getElementById('btnSetup').addEventListener('click', async () => {
         const password = document.getElementById('setupInput').value.trim();
         if (password.length < 6) return showError('setupError', "Пароль минимум 6 символов!");
         
         showError('setupError', "Создание...");
-        USER_TOKEN = password; // Временно сохраняем для отправки
+        USER_TOKEN = password;
         const res = await apiCall("setup");
         
         if (res.ok) {
@@ -171,7 +148,6 @@
         }
     });
 
-    // Запускаем при загрузке страницы
     init();
 </script>
 </body>
