@@ -397,8 +397,15 @@
             document.getElementById('pageTitle').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         }
         
-        // PRO: Ищем любую колонку-число, чтобы локализовать заголовок
-        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount" || c.type === "number");
+        // РЕЖИМ ТЕРМИНАТОРА: Ищем колонку с цифрами любыми способами для заголовка графика
+        let numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount" || c.type === "number");
+        if (!numColConfig) {
+            numColConfig = TABLE_CONFIG.columns.find(c => {
+                const titleStr = JSON.stringify(c.title).toLowerCase();
+                return titleStr.includes('показник') || titleStr.includes('value') || titleStr.includes('amount');
+            });
+        }
+        
         const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
         document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
     }
@@ -447,9 +454,16 @@
         
         let localHistoryFromScreen = [];
 
-        // PRO ИСПРАВЛЕНИЕ: Ищем по типу 'number', а не жестко по id!
         const dateColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
-        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
+        
+        // РЕЖИМ ТЕРМИНАТОРА: Ищем индекс колонки с цифрами
+        let amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
+        if (amountColIdx === -1) {
+            amountColIdx = TABLE_CONFIG.columns.findIndex(c => {
+                const titleStr = JSON.stringify(c.title).toLowerCase();
+                return titleStr.includes('показник') || titleStr.includes('value') || titleStr.includes('amount');
+            });
+        }
 
         rows.forEach(row => {
             const rowId = row.getAttribute('data-id');
@@ -471,7 +485,6 @@
             }
 
             if (dateStr) {
-                // Броня от пробелов: убираем пробелы и меняем запятую на точку
                 let cleanValue = amountVal.replace(/\s/g, '').replace(',', '.').trim();
                 localHistoryFromScreen.push({ 
                     rowId: rowId, 
@@ -589,9 +602,16 @@
                 }
             }
 
-            // PRO: Ищем номер колонки по типу
             const dIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
-            const aIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
+            
+            // РЕЖИМ ТЕРМИНАТОРА при вводе
+            let aIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
+            if (aIdx === -1) {
+                aIdx = TABLE_CONFIG.columns.findIndex(c => {
+                    const titleStr = JSON.stringify(c.title).toLowerCase();
+                    return titleStr.includes('показник') || titleStr.includes('value') || titleStr.includes('amount');
+                });
+            }
             
             const dateStr = (dIdx !== -1 && row.cells[dIdx]) ? row.cells[dIdx].innerText.trim() : "";
             const valStr = (aIdx !== -1 && row.cells[aIdx]) ? row.cells[aIdx].innerText.trim() : "";
@@ -816,7 +836,6 @@
         const statusEl = document.getElementById('saveStatus');
         statusEl.innerText = "🔄 Translating column... (Please wait)";
         
-        // Генерируется ID, который мы теперь игнорируем при поиске чисел!
         const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
         const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
         
@@ -949,8 +968,15 @@
     // --- АНАЛИТИКА ---
     function updateAnalytics() {
         const t = LOCALES[currentLang] || LOCALES['en'];
-        // PRO: Ищем конфиг колонки по типу, чтобы взять её имя
-        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount" || c.type === "number");
+        
+        // РЕЖИМ ТЕРМИНАТОРА для заголовка графика
+        let numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount" || c.type === "number");
+        if (!numColConfig) {
+            numColConfig = TABLE_CONFIG.columns.find(c => {
+                const titleStr = JSON.stringify(c.title).toLowerCase();
+                return titleStr.includes('показник') || titleStr.includes('value') || titleStr.includes('amount');
+            });
+        }
         const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
         document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
         
@@ -1042,9 +1068,16 @@
 
         let localHistory = [...globalHistory];
 
-        // PRO: Ищем индексы перед сохранением тоже по ТИПУ колонки
         const dateColIdx = TABLE_CONFIG.columns.findIndex(c => c.type === 'date' || c.id === 'date');
-        const amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
+        
+        // РЕЖИМ ТЕРМИНАТОРА перед сохранением
+        let amountColIdx = TABLE_CONFIG.columns.findIndex(c => c.id === 'amount' || c.type === 'number');
+        if (amountColIdx === -1) {
+            amountColIdx = TABLE_CONFIG.columns.findIndex(c => {
+                const titleStr = JSON.stringify(c.title).toLowerCase();
+                return titleStr.includes('показник') || titleStr.includes('value') || titleStr.includes('amount');
+            });
+        }
 
         document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
             const rowId = row.getAttribute('data-id') || ""; 
