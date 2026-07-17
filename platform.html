@@ -91,26 +91,26 @@
     
     <!-- Индикатор загрузки системы -->
     <div id="loadingPanel" class="card auth-screen" style="border-color: transparent; box-shadow: none; background: transparent;">
-        <h2>🔄 Подключение...</h2>
-        <p id="systemStatus">Инициализация структуры...</p>
+        <h2>🔄 Підключення...</h2>
+        <p id="systemStatus">Ініціалізація структури...</p>
     </div>
 
-    <!-- ЭКРАН 1: Создание пароля (Setup) -->
+    <!-- ЭКРАН 1: Создание пространства (Setup) -->
     <div id="setupPanel" class="card auth-screen hidden">
-        <h2>🔑 Создание пространства</h2>
-        <p>Придумайте надежный пароль администратора (минимум 6 символов).</p>
+        <h2>🔑 Створення простору</h2>
+        <p>Придумайте надійний пароль адміністратора (мінімум 6 символів).</p>
         <div id="setupError" class="error-msg"></div>
-        <input type="password" id="setupInput" placeholder="Новый пароль" minlength="6">
-        <button id="btnSetup" class="btn-main">🚀 Создать и войти</button>
+        <input type="password" id="setupInput" placeholder="Новий пароль" minlength="6">
+        <button id="btnSetup" class="btn-main">🚀 Створити та увійти</button>
     </div>
 
     <!-- ЭКРАН 2: Вход (Login) -->
     <div id="loginPanel" class="card auth-screen hidden">
-        <h2>🔒 Вход в систему</h2>
-        <p>Введите пароль администратора или токен филиала.</p>
+        <h2>🔒 Вхід до системи</h2>
+        <p>Введіть пароль адміністратора або токен філії.</p>
         <div id="loginError" class="error-msg"></div>
-        <input type="password" id="loginInput" placeholder="Токен доступа">
-        <button id="btnLogin" class="btn-main">🔓 Войти</button>
+        <input type="password" id="loginInput" placeholder="Токен доступу">
+        <button id="btnLogin" class="btn-main">🔓 Увійти</button>
     </div>
 
     <!-- ЭКРАН 3: Основной рабочий стол (Dashboard) -->
@@ -234,15 +234,15 @@
         },
         ua: {
             denied: "❌ ДОСТУП ЗАБОРОНЕНО: Недійсний або відсутній токен в URL.", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка збереження: ", totalCount: "Загальна кількість рядків:", confirmDelCol: "Видалити цю колонку? Дані будуть втрачені.", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію аналітики?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано зі сховищем", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок (Тільки Адмін):", lblBranchManager: "🏢 Менеджер Робочих Просторів / Філій:", btnSave: "💾 Зберегти Дані та Структуру", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити історію графіка", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати (Шир, Дов)", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати посилання", dashTitle: "🔑 Генератор токенів безпеки та персональних регіональних посилань", thBranch: "Регіон / Філія", thCoords: "Центральні координати", thToken: "Токен Безпеки (UUID)", thActions: "Дії", confirmDelBranch: "Повністю видалити цей регіон та анулювати його посилання?",
-            chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Кількість / Значення", col_weather: "Погодні умови", col_action: "Дія",
+            chartTitle: "Динаміка показників", col_id: "№", col_item_name: "Назва об'єкта / цілі", col_coords: "Координати (Шир, Дов)", col_date: "Дата", col_time: "Час", col_amount: "Показники", col_weather: "Погодні умови", col_action: "Дія",
             wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція",
-            setupTitle: "🔑 Створення пароля администратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
+            setupTitle: "🔑 Створення пароля адміністратора", setupDesc: "Ласкаво просимо! Будь ласка, придумайте ваш особистий секретний пароль (Master Token).", setupPlaceholder: "Введіть новий пароль", setupBtn: "🚀 Зберегти пароль та увійти",
             loginTitle: "🔒 Вхід до робочого простору", loginDesc: "Цей простір захищено паролем. Будь ласка, введіть токен доступу.", loginPlaceholder: "Введіть пароль / токен", loginBtn: "🔓 Увійти", loginIncorrect: "❌ Невірний пароль або токен безпеки!"
         },
         fr: {
             denied: "❌ ACCÈS REFUSÉ", adminSession: "👑 Panneau d'administration", secureSession: "🔒 Session sécurisée", saved: "✅ Enregistré: ", saveError: "❌ Erreur: ", totalCount: "Total lignes:", confirmDelCol: "Supprimer la colonne?", confirmDelRow: "Supprimer la ligne?", confirmClearHis: "Effacer l'historique?", missingCoords: "❌ Coordonnées manquantes", apiError: "❌ Erreur", invalidFormat: "⚠️ Format invalide", loading: "🔄 Chargement...", sync: "Synchronisé", readyEmpty: "Prêt", lblColManager: "📋 Colonnes:", lblBranchManager: "🏢 Branches:", btnSave: "💾 Enregistrer", btnExport: "📥 Exporter JSON", btnClearHis: "🧹 Effacer l'historique", btnAddCol: "➕ Colonne", btnAddBranch: "➕ Branche", colPlaceholder: "Nom", branchPlaceholder: "Branche", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Ligne", copyLinkBtn: "🔗 Copier", dashTitle: "🔑 Jetons", thBranch: "Branche", thCoords: "Coords", thToken: "Jeton", thActions: "Actions", confirmDelBranch: "Supprimer?",
             chartTitle: "Dynamique", col_id: "№", col_item_name: "Nom", col_coords: "Coords", col_date: "Date", col_time: "Heure", col_amount: "Valeur", col_weather: "Météo", col_action: "Action",
-            wWind: "Vent", wSpeed: "m/s", wStability: "Stabilità", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
+            wWind: "Vent", wSpeed: "m/s", wStability: "Stabilité", wInversion: "Inversion", wIsothermy: "Isothermie", wConvection: "Convection",
             setupTitle: "🔑 Configuration", setupDesc: "Créez votre mot de passe.", setupPlaceholder: "Mot de passe", setupBtn: "🚀 Enregistrer",
             loginTitle: "🔒 Connexion", loginDesc: "Espace sécurisé.", loginPlaceholder: "Mot de passe / jeton", loginBtn: "🔓 Se connecter", loginIncorrect: "❌ Incorrect !"
         },
@@ -397,10 +397,9 @@
             document.getElementById('pageTitle').innerHTML = IS_ADMIN ? t.adminSession : `${t.secureSession}: ${CURRENT_BRANCH_NAME}`;
         }
         
-        const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
-        if (numCol) {
-            document.getElementById('chartTitle').innerText = `${getColumnTitle(numCol, currentLang)} - ${t.chartTitle}`;
-        }
+        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === "amount");
+        const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
+        document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
     }
 
     // --- СЕРВИСНЫЕ ФУНКЦИИ ---
@@ -459,8 +458,7 @@
             let itemName = itemCell ? itemCell.innerText.trim() : "";
             let coordsStr = coordsInput ? coordsInput.innerText.trim() : "";
 
-            const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
-            let amountVal = numCol ? (row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "") : "";
+            let amountVal = row.querySelector(`.cell-amount`)?.innerText.trim() || "";
 
             if (!itemName && !coordsStr) {
                 if (activeMarkers[rowId]) { map.removeLayer(activeMarkers[rowId]); delete activeMarkers[rowId]; }
@@ -871,22 +869,16 @@
         }
     }
 
-    function copyBranchLink(token) {
-        const currentUrl = window.location.href.split('?')[0];
-        const fullLink = `${currentUrl}?id=${WORKSPACE_ID}&token=${token}`; 
-        navigator.clipboard.writeText(fullLink).then(() => {
-            alert("Success! Link copied to clipboard:\n" + fullLink);
-        });
-    }
-
-    // --- АНАЛИТИКА (CHART.JS) ---
+    // --- АНАЛИТИКА И ГРАФИК (ЗАВЯЗАНО НА AMOUNT) ---
     function updateAnalytics() {
-        const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
+        const numColId = "amount";
         const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
-        if (!numCol || !dateCol) return;
+        if (!dateCol) return;
 
         const t = LOCALES[currentLang] || LOCALES['en'];
-        document.getElementById('chartTitle').innerText = `${getColumnTitle(numCol, currentLang)} - ${t.chartTitle}`;
+        const numColConfig = TABLE_CONFIG.columns.find(c => c.id === numColId);
+        const localizedNumTitle = numColConfig ? getColumnTitle(numColConfig, currentLang) : "Value";
+        document.getElementById('chartTitle').innerText = `${localizedNumTitle} - ${t.chartTitle}`;
         
         const dailyData = {}; 
         globalHistory.forEach(item => {
@@ -916,6 +908,7 @@
             if (analyticsChart) {
                 analyticsChart.data.labels = [];
                 analyticsChart.data.datasets[0].data = [];
+                analyticsChart.data.datasets[1].data = [];
                 analyticsChart.update();
             }
             return;
@@ -949,7 +942,7 @@
         } 
     }
 
-    // --- СИНХРОНИЗАЦИЯ И СОХРАНЕНИЕ ---
+    // --- СИНХРОНИЗАЦИЯ И СОХРАНЕНИЕ В БАЗУ ---
     async function saveTable(showVisualStatus = false) {
         if (!WORKSPACE_ID) return;
         const t = LOCALES[currentLang] || LOCALES['en']; 
@@ -973,15 +966,15 @@
         });
 
         let localHistory = [...globalHistory];
-        const numCol = TABLE_CONFIG.columns.find(c => c.type === 'number');
+        const numColId = "amount";
         const dateCol = TABLE_CONFIG.columns.find(c => c.type === 'date');
 
-        if (numCol && dateCol) {
+        if (dateCol) {
             document.querySelectorAll('#tableBody tr:not(.region-header-row)').forEach(row => {
                 const rowId = row.getAttribute('data-id') || ""; 
                 const branch = row.getAttribute('data-branch') || "";
                 const dateStr = row.querySelector(`.cell-${dateCol.id}`)?.innerText.trim() || "";
-                const valStr = row.querySelector(`.cell-${numCol.id}`)?.innerText.trim() || "";
+                const valStr = row.querySelector(`.cell-${numColId}`)?.innerText.trim() || "";
                 if (dateStr && valStr) {
                     const exactMatchIndex = localHistory.findIndex(h => h.rowId === rowId && h.date === dateStr);
                     const historyItem = { rowId, branch, date: dateStr, value: valStr };
@@ -1033,32 +1026,32 @@
     // --- ОБРАБОТЧИКИ КНОПОК АВТОРИЗАЦИИ ---
     document.getElementById('btnSetup').addEventListener('click', async () => {
         const password = document.getElementById('setupInput').value.trim();
-        if (password.length < 6) return showError('setupError', "Пароль минимум 6 символов!");
+        if (password.length < 6) return showError('setupError', "Пароль мінімум 6 символів!");
         
-        showError('setupError', "Создание пространства...");
+        showError('setupError', "Створення простору...");
         USER_TOKEN = password;
         const res = await apiCall("setup");
         
         if (res.ok) {
             window.location.search = `?id=${WORKSPACE_ID}&token=${password}`;
         } else {
-            showError('setupError', res.error || "Ошибка создания");
+            showError('setupError', res.error || "Помилка створення");
             USER_TOKEN = ''; 
         }
     });
 
     document.getElementById('btnLogin').addEventListener('click', async () => {
         const token = document.getElementById('loginInput').value.trim();
-        if (!token) return showError('loginError', "Введите токен!");
+        if (!token) return showError('loginError', "Введіть токен!");
         
-        showError('loginError', "Проверка...");
+        showError('loginError', "Перевірка...");
         USER_TOKEN = token;
         const res = await apiCall("login");
         
         if (res.ok) {
             window.location.search = `?id=${WORKSPACE_ID}&token=${token}`;
         } else {
-            showError('loginError', res.error || "Неверный токен");
+            showError('loginError', res.error || "Невірний токен");
             USER_TOKEN = '';
         }
     });
