@@ -216,12 +216,37 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    // --- ФУНКЦИИ БЕЗОПАСНОСТИ ---
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    function generateSecureToken(prefix) {
+        const array = new Uint8Array(16);
+        window.crypto.getRandomValues(array);
+        const randomStr = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        return prefix ? `${prefix}_${randomStr.substring(0, 9)}` : randomStr.substring(0, 9);
+    }
+
     // --- НАСТРОЙКИ ---
     const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
     
     const urlParams = new URLSearchParams(window.location.search);
     const WORKSPACE_ID = urlParams.get('id') || 'default_workspace';
-    let USER_TOKEN = urlParams.get('token') || '';
+    let USER_TOKEN = urlParams.get('token') || sessionStorage.getItem('USER_TOKEN') || '';
+
+    // Скрываем токен из URL для безопасности, сохраняя сессию
+    if (urlParams.has('token')) {
+        sessionStorage.setItem('USER_TOKEN', USER_TOKEN);
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?id=" + WORKSPACE_ID;
+        window.history.replaceState({path: newUrl}, '', newUrl);
+    }
 
     // --- ЛОКАЛИЗАЦИЯ ---
     const LOCALES = {
@@ -515,9 +540,9 @@
                 finalCoords = [parseFloat(row.dataset.lat), parseFloat(row.dataset.lng)];
             }
 
-            let popupText = `<b>🏢 ${branch}</b><br>`;
-            if (itemName) popupText += `Item: ${itemName}<br>`;
-            if (amountVal) popupText += `Value: <b>${amountVal}</b>`;
+            let popupText = `<b>🏢 ${escapeHTML(branch)}</b><br>`;
+            if (itemName) popupText += `Item: ${escapeHTML(itemName)}<br>`;
+            if (amountVal) popupText += `Value: <b>${escapeHTML(amountVal)}</b>`;
 
             if (activeMarkers[rowId]) {
                 activeMarkers[rowId].setLatLng(finalCoords);
@@ -552,7 +577,7 @@
         TABLE_CONFIG.columns.forEach(col => {
             colgroup.innerHTML += `<col style="width: ${col.width}">`; 
             const displayTitle = getColumnTitle(col, currentLang);
-            headHtml += `<th>${displayTitle}</th>`;
+            headHtml += `<th>${escapeHTML(displayTitle)}</th>`;
         });
         headHtml += '</tr>';
         thead.innerHTML = headHtml;
@@ -563,7 +588,7 @@
     function createDataRow(branchName, rawItem = null, defaultCoords = '', isFirstInit = false) {
         const row = document.createElement('tr');
         row.setAttribute('data-branch', branchName);
-        const rowId = rawItem?.id || 'row_' + Math.random().toString(36).substr(2, 9);
+        const rowId = rawItem?.id || generateSecureToken('row');
         row.setAttribute('data-id', rowId);
         
         let rowHtml = '';
@@ -580,9 +605,9 @@
             } else if (col.type === 'action') {
                 rowHtml += `<td><button class="btn-action del-row-btn" onclick="removeRow(this)">❌</button></td>`;
             } else if (col.type === 'coordinates') {
-                rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${val}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)">⛅</button></div></td>`;
+                rowHtml += `<td><div class="coords-container"><div contenteditable="true" class="coords-input">${escapeHTML(val)}</div><button class="btn-weather-trigger" onclick="triggerWeatherUpdate(this)">⛅</button></div></td>`;
             } else {
-                rowHtml += `<td contenteditable="true" class="cell-${col.id}">${val}</td>`;
+                rowHtml += `<td contenteditable="true" class="cell-${col.id}">${escapeHTML(val)}</td>`;
             }
         });
         row.innerHTML = rowHtml;
@@ -714,8 +739,8 @@
             const headRow = document.createElement('tr');
             headRow.classList.add('region-header-row');
             headRow.setAttribute('data-branch', branchObj.name);
-            let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>` : '';
-            headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${branchObj.name} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${branchObj.name}', this)">${t.addBtnRow}</button></td>`;
+            let adminButtons = IS_ADMIN ? `<button class="btn-action copy-link-btn" onclick="copyBranchLink('${escapeHTML(token)}')">${t.copyLinkBtn}</button>` : '';
+            headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${escapeHTML(branchObj.name)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${escapeHTML(branchObj.name)}', this)">${t.addBtnRow}</button></td>`;
             tbody.appendChild(headRow);
 
             const branchItems = Array.isArray(backedData) ? backedData.filter(d => d.branch === branchObj.name) : [];
@@ -837,7 +862,7 @@
         statusEl.innerText = "🔄 Translating column... (Please wait)";
         
         const cleanPrefix = titleValue.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 10);
-        const id = (cleanPrefix || 'col') + '_' + Math.random().toString(36).substr(2, 4);
+        const id = (cleanPrefix || 'col') + '_' + generateSecureToken('');
         
         const titleObject = {};
         const langs = Object.keys(LOCALES);
@@ -884,7 +909,7 @@
             if (col.type === 'index' || col.type === 'action' || col.id === 'item_name' || col.id === 'weather') return;
             const pill = document.createElement('div');
             pill.className = 'pill';
-            pill.innerHTML = `${getColumnTitle(col, currentLang)} (${col.type}) <span onclick="removeColumn('${col.id}')">✕</span>`;
+            pill.innerHTML = `${escapeHTML(getColumnTitle(col, currentLang))} (${escapeHTML(col.type)}) <span onclick="removeColumn('${escapeHTML(col.id)}')">✕</span>`;
             container.appendChild(pill);
         });
     }
@@ -900,15 +925,15 @@
             const tr = document.createElement('tr');
             const rawCoords = branchObj.coords ? branchObj.coords.join(', ') : '';
             tr.innerHTML = `
-                <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${branchObj.name}</td>
+                <td style="text-align: left; font-weight: bold; color: #1e3a8a; padding-left: 10px;">🏢 ${escapeHTML(branchObj.name)}</td>
                 <td>
-                    ${rawCoords} 
-                    <button class="btn-action copy-link-btn" style="float:none; padding:2px 6px; font-size:10px; margin-left:5px;" onclick="copyToClipboard('${rawCoords}')">📋</button>
+                    ${escapeHTML(rawCoords)} 
+                    <button class="btn-action copy-link-btn" style="float:none; padding:2px 6px; font-size:10px; margin-left:5px;" onclick="copyToClipboard('${escapeHTML(rawCoords)}')">📋</button>
                 </td>
-                <td><span class="token-code">${token}</span></td>
+                <td><span class="token-code">${escapeHTML(token)}</span></td>
                 <td>
-                    <button class="btn-action copy-link-btn" style="float:none; padding:4px 10px;" onclick="copyBranchLink('${token}')">${t.copyLinkBtn}</button>
-                    <button class="btn-action del-row-btn" style="padding:4px 10px;" onclick="deleteBranch('${token}')">❌</button>
+                    <button class="btn-action copy-link-btn" style="float:none; padding:4px 10px;" onclick="copyBranchLink('${escapeHTML(token)}')">${t.copyLinkBtn}</button>
+                    <button class="btn-action del-row-btn" style="padding:4px 10px;" onclick="deleteBranch('${escapeHTML(token)}')">❌</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -932,7 +957,7 @@
         const t = LOCALES[currentLang] || LOCALES['en'];
         if (!coords) { alert(t.invalidFormat); return; }
         
-        const newToken = 'usr_' + Math.random().toString(36).substr(2, 9);
+        const newToken = generateSecureToken('usr');
         TABLE_CONFIG.branches[newToken] = { name, coords };
         document.getElementById('newBranchName').value = '';
         document.getElementById('newBranchCoords').value = '';
@@ -1151,7 +1176,8 @@
         const res = await apiCall("setup");
         
         if (res.ok) {
-            window.location.search = `?id=${WORKSPACE_ID}&token=${password}`;
+            sessionStorage.setItem('USER_TOKEN', password);
+            window.location.search = `?id=${WORKSPACE_ID}`;
         } else {
             showError('setupError', res.error || "Помилка створення");
             USER_TOKEN = ''; 
@@ -1167,7 +1193,8 @@
         const res = await apiCall("login");
         
         if (res.ok) {
-            window.location.search = `?id=${WORKSPACE_ID}&token=${token}`;
+            sessionStorage.setItem('USER_TOKEN', token);
+            window.location.search = `?id=${WORKSPACE_ID}`;
         } else {
             showError('loginError', res.error || "Невірний токен");
             USER_TOKEN = '';
