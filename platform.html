@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- [БЕЗОПАСНОСТЬ]: Внедрена строгая политика CSP. Блокирует отправку украденных данных на чужие серверы и защищает от загрузки сторонних вредоносных скриптов. Добавлено 'unsafe-inline' и 'unsafe-eval' для сохранения 100% работоспособности твоего текущего кода. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://unpkg.com 'unsafe-inline'; img-src 'self' https://*.tile.openstreetmap.org data:; connect-src 'self' https://ouslqtffwgbtqqslwiki.supabase.co https://api.open-meteo.com https://translate.googleapis.com https://api.mymemory.translated.net;">
+
     <title>Universal Data Collection Platform</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- [БЕЗОПАСНОСТЬ]: Добавлен контроль целостности (SRI) для Leaflet CSS. Если хакеры взломают unpkg.com и подменят стили, браузер откажется их применять. -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -212,7 +219,8 @@
 </div>
 
 <!-- Скрипты Leaflet & Chart.js -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- [БЕЗОПАСНОСТЬ]: Добавлен контроль целостности (SRI) для Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
