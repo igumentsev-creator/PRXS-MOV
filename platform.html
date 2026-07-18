@@ -96,32 +96,32 @@
 </head>
 <body>
 
-<div class="version-badge">Version 3.1</div>
+<div class="version-badge">Version 3.2</div>
 
 <div class="container">
     
     <!-- Индикатор загрузки системы -->
     <div id="loadingPanel" class="card auth-screen" style="border-color: transparent; box-shadow: none; background: transparent;">
-        <h2>🔄 Підключення...</h2>
-        <p id="systemStatus">Ініціалізація... структури...</p>
+        <h2>🔄 Connecting...</h2>
+        <p id="systemStatus">Initializing structure...</p>
     </div>
 
     <!-- ЭКРАН 1: Создание пространства (Setup) -->
     <div id="setupPanel" class="card auth-screen hidden">
-        <h2>🔑 Створення простору</h2>
-        <p>Придумайте надійний пароль адміністратора (мінімум 6 символов).</p>
+        <h2>🔑 Creation of Administrator Password</h2>
+        <p>Welcome! Please think up your personal secret password (Master Token) to secure owner rights over this workspace.</p>
         <div id="setupError" class="error-msg"></div>
-        <input type="password" id="setupInput" placeholder="Новий пароль" minlength="6">
-        <button id="btnSetup" class="btn-main">🚀 Створити та увійти</button>
+        <input type="password" id="setupInput" placeholder="Enter new password" minlength="6">
+        <button id="btnSetup" class="btn-main">🚀 Save password & login</button>
     </div>
 
     <!-- ЭКРАН 2: Вход (Login) -->
     <div id="loginPanel" class="card auth-screen hidden">
-        <h2>🔒 Вхід до системи</h2>
-        <p>Введіть пароль адміністратора або токен філії.</p>
+        <h2>🔒 Workspace Login</h2>
+        <p>This workspace is protected. Please enter administrator password or regional branch security token.</p>
         <div id="loginError" class="error-msg"></div>
-        <input type="password" id="loginInput" placeholder="Токен доступу">
-        <button id="btnLogin" class="btn-main">🔓 Увійти</button>
+        <input type="password" id="loginInput" placeholder="Enter password / token">
+        <button id="btnLogin" class="btn-main">🔓 Login</button>
     </div>
 
     <!-- ЭКРАН 3: Основной рабочий стол (Dashboard) -->
@@ -339,11 +339,12 @@
 
     function showError(elementId, text) {
         document.getElementById(elementId).innerText = text;
+        document.getElementById(elementId).style.display = 'block';
     }
 
     // --- ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ---
     async function init() {
-        document.getElementById('systemStatus').innerText = `Проверка ID: ${WORKSPACE_ID}...`;
+        document.getElementById('systemStatus').innerText = `Checking ID: ${WORKSPACE_ID}...`;
         
         const res = await apiCall("load");
 
@@ -389,7 +390,7 @@
             // Первичное обновление аналитики и карты
             updateMapFromTable();
         } else {
-            document.getElementById('systemStatus').innerText = "❌ Ошибка: " + res.error;
+            document.getElementById('systemStatus').innerText = "❌ Error: " + res.error;
         }
     }
 
@@ -1188,9 +1189,9 @@
     // --- ОБРАБОТЧИКИ КНОПОК АВТОРИЗАЦИИ ---
     document.getElementById('btnSetup').addEventListener('click', async () => {
         const password = document.getElementById('setupInput').value.trim();
-        if (password.length < 6) return showError('setupError', "Пароль мінімум 6 символів!");
+        if (password.length < 6) return showError('setupError', "Password must be at least 6 characters!");
         
-        showError('setupError', "Створення простору...");
+        showError('setupError', "Creating workspace...");
         USER_TOKEN = password;
         const res = await apiCall("setup");
         
@@ -1198,16 +1199,16 @@
             sessionStorage.setItem('USER_TOKEN', password);
             window.location.search = `?id=${WORKSPACE_ID}`;
         } else {
-            showError('setupError', res.error || "Помилка створення");
+            showError('setupError', res.error || "Creation error");
             USER_TOKEN = ''; 
         }
     });
 
     document.getElementById('btnLogin').addEventListener('click', async () => {
         const token = document.getElementById('loginInput').value.trim();
-        if (!token) return showError('loginError', "Введіть токен!");
+        if (!token) return showError('loginError', "Please enter a token!");
         
-        showError('loginError', "Перевірка...");
+        showError('loginError', "Checking...");
         USER_TOKEN = token;
         const res = await apiCall("login");
         
@@ -1215,7 +1216,7 @@
             sessionStorage.setItem('USER_TOKEN', token);
             window.location.search = `?id=${WORKSPACE_ID}`;
         } else {
-            showError('loginError', res.error || "Невірний токен");
+            showError('loginError', res.error || "Invalid password or token");
             USER_TOKEN = '';
         }
     });
