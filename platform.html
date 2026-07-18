@@ -14,10 +14,12 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .container { width: 100%; max-width: 1400px; }
         .card { background: white; border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
         
+        .version-badge { position: absolute; top: 15px; left: 20px; font-weight: bold; color: #64748b; font-size: 14px; z-index: 1000; letter-spacing: 0.5px; }
+
         .hidden { display: none !important; }
 
         /* Экраны авторизации */
@@ -93,6 +95,8 @@
     </style>
 </head>
 <body>
+
+<div class="version-badge">Version 3.1</div>
 
 <div class="container">
     
@@ -758,7 +762,8 @@
             headRow.innerHTML = `<td colspan="${TABLE_CONFIG.columns.length}">🏢 ${escapeHTML(branchObj.name)} ${adminButtons} <button class="btn-action add-row-btn" onclick="addBranchRow('${escapeHTML(branchObj.name)}', this)">${t.addBtnRow}</button></td>`;
             tbody.appendChild(headRow);
 
-            const branchItems = Array.isArray(backedData) ? backedData.filter(d => d.branch === branchObj.name) : [];
+            // [ИСПРАВЛЕНИЕ 1]: Отфильтровываем битые строки (сохраненные ранее заголовки без data)
+            const branchItems = Array.isArray(backedData) ? backedData.filter(d => d.branch === branchObj.name && d.isHeader !== true && d.data) : [];
             if (branchItems.length === 0) {
                 const baseCoordsStr = branchObj.coords ? branchObj.coords.join(', ') : '';
                 tbody.appendChild(createDataRow(branchObj.name, null, baseCoordsStr, true));
@@ -1091,20 +1096,18 @@
         if (showVisualStatus) document.getElementById('saveStatus').innerText = t.loading;
 
         const localRowsData = [];
-        document.querySelectorAll('#dynamicTable tbody tr').forEach(row => {
+        
+        // [ИСПРАВЛЕНИЕ 2]: Игнорируем строки-заголовки (.region-header-row), собираем только данные
+        document.querySelectorAll('#dynamicTable tbody tr:not(.region-header-row)').forEach(row => {
             const branchName = row.getAttribute('data-branch') || "";
-            if (row.classList.contains('region-header-row')) {
-                localRowsData.push({ isHeader: true, branch: branchName, id: row.getAttribute('data-id') || "", cells: [] });
-            } else {
-                const cellsData = {};
-                TABLE_CONFIG.columns.forEach(col => {
-                    if (col.type === 'index' || col.type === 'action' || col.id === 'action') return;
-                    cellsData[col.id] = col.type === 'coordinates' ? 
-                        (row.querySelector('.coords-input')?.innerText.trim() || "") : 
-                        (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
-                });
-                localRowsData.push({ isHeader: false, branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
-            }
+            const cellsData = {};
+            TABLE_CONFIG.columns.forEach(col => {
+                if (col.type === 'index' || col.type === 'action' || col.id === 'action') return;
+                cellsData[col.id] = col.type === 'coordinates' ? 
+                    (row.querySelector('.coords-input')?.innerText.trim() || "") : 
+                    (row.querySelector(`.cell-${col.id}`)?.innerText.trim() || "");
+            });
+            localRowsData.push({ branch: branchName, id: row.getAttribute('data-id') || "", data: cellsData });
         });
 
         let localHistory = [...globalHistory];
