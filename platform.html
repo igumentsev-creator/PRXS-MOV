@@ -56,7 +56,7 @@
 
         /* Таблица сбора данных */
         .table-wrapper { overflow-x: auto; max-height: 750px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 10px; }
-        table.data-table { border-collapse: collapse; width: 100%; table-layout: fixed; min-width: 1400px; }
+        table.data-table { border-collapse: collapse; width: 100%; table-layout: fixed; }
         table.data-table th { position: sticky; top: 0; background: #1e40af; color: white; z-index: 10; font-size: 11px; white-space: normal; line-height: 1.2; padding: 10px 4px; vertical-align: middle; word-wrap: break-word; }
         table.data-table th, table.data-table td { border: 1px solid #cbd5e1; padding: 8px 4px; text-align: center; vertical-align: middle; font-size: 12px; overflow: hidden; }
 
@@ -733,15 +733,15 @@
 
     // --- ПОГОДА OPEN-METEO ---
     function getWindDirection(deg) {
-        if (deg >= 337.5 || deg < 22.5) return 'N';
-        if (deg >= 22.5 && deg < 67.5) return 'NE';
-        if (deg >= 67.5 && deg < 112.5) return 'E';
-        if (deg >= 112.5 && deg < 157.5) return 'SE';
-        if (deg >= 157.5 && deg < 202.5) return 'S';
-        if (deg >= 202.5 && deg < 247.5) return 'SW';
-        if (deg >= 247.5 && deg < 292.5) return 'W';
-        if (deg >= 292.5 && deg < 337.5) return 'NW';
-        return 'Unknown';  
+        const dirs = {
+            en: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
+            ua: ['Пн', 'Пн-Сх', 'Сх', 'Пд-Сх', 'Пд', 'Пд-Зх', 'Зх', 'Пн-Зх'],
+            fr: ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'],
+            ja: ['北', '北東', '東', '南東', '南', '南西', '西', '北西']
+        };
+        const lang = dirs[currentLang] ? currentLang : 'en';
+        const idx = Math.floor(((deg % 360) + 22.5) / 45) % 8;
+        return dirs[lang][idx];
     }
 
     async function fetchWeatherData(lat, lng) {
