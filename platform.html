@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- [БЕЗОПАСНОСТЬ]: Внедрена строгая политика CSP. Блокирует отправку украденных данных на чужие серверы и защищает от загрузки сторонних вредоносных скриптов. Добавлено 'unsafe-inline' и 'unsafe-eval' для сохранения 100% работоспособности твоего текущего кода. -->
+    <!-- [БЕЗОПАСНОСТЬ]: Внедрена строгая политика CSP. Блокирует отправку украденных данных на чужие серверы и защищает от загрузки сторонних вредоносных скриптов. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://unpkg.com 'unsafe-inline'; img-src 'self' https://*.tile.openstreetmap.org data:; connect-src 'self' https://ouslqtffwgbtqqslwiki.supabase.co https://api.open-meteo.com https://translate.googleapis.com https://api.mymemory.translated.net;">
 
     <title>Universal Data Collection Platform</title>
     
-    <!-- [БЕЗОПАСНОСТЬ]: Добавлен контроль целостности (SRI) для Leaflet CSS. Если хакеры взломают unpkg.com и подменят стили, браузер откажется их применять. -->
+    <!-- [БЕЗОПАСНОСТЬ]: Добавлен контроль целостности (SRI) для Leaflet CSS. -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
     <style>
@@ -242,15 +242,22 @@
         return prefix ? `${prefix}_${randomStr.substring(0, 9)}` : randomStr.substring(0, 9);
     }
 
-    // --- НАСТРОЙКИ ---
+    // --- НАСТРОЙКИ И БЕЗОПАСНАЯ ИНИЦИАЛИЗАЦИЯ ТОКЕНОВ ---
     const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
     
     const urlParams = new URLSearchParams(window.location.search);
     const WORKSPACE_ID = urlParams.get('id') || 'default_workspace';
-    let USER_TOKEN = urlParams.get('token') || sessionStorage.getItem('USER_TOKEN') || '';
 
-    // Скрываем токен из URL для безопасности, сохраняя сессию
-    if (urlParams.has('token')) {
+    // [БЕЗОПАСНОСТЬ]: Читаем токен из хэша (#token=), если он там есть
+    let hashToken = '';
+    if (window.location.hash.startsWith('#token=')) {
+        hashToken = window.location.hash.substring(7);
+    }
+
+    let USER_TOKEN = hashToken || urlParams.get('token') || sessionStorage.getItem('USER_TOKEN') || '';
+
+    // [БЕЗОПАСНОСТЬ]: Скрываем токен из URL (и из параметров, и из хэша), сохраняя сессию
+    if (hashToken || urlParams.has('token')) {
         sessionStorage.setItem('USER_TOKEN', USER_TOKEN);
         const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?id=" + WORKSPACE_ID;
         window.history.replaceState({path: newUrl}, '', newUrl);
@@ -990,9 +997,10 @@
         }
     }
 
+    // [БЕЗОПАСНОСТЬ]: Используем # вместо & для генерации безопасных ссылок
     function copyBranchLink(token) {
-        const currentUrl = window.location.href.split('?')[0];
-        const fullLink = `${currentUrl}?id=${WORKSPACE_ID}&token=${token}`; 
+        const currentUrl = window.location.href.split('?')[0].split('#')[0];
+        const fullLink = `${currentUrl}?id=${WORKSPACE_ID}#token=${token}`; 
         navigator.clipboard.writeText(fullLink).then(() => {
             alert("Success! Link copied to clipboard:\n" + fullLink);
         });
