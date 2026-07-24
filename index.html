@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment and Access - Version 2.1</title>
+  <title>Payment and Access - Version 2.2</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -146,7 +146,7 @@
 <body>
 
 <div class="payment-card">
-  <div class="version-badge">Version 2.1</div>
+  <div class="version-badge">Version 2.2</div>
   
   <!-- БЛОК С РЕКЛАМНЫМ РОЛИКОМ -->
   <div class="video-container">
@@ -192,43 +192,29 @@
   async function checkPaymentStatus() {
     const confirmBtn = document.getElementById('confirmBtn');
     const loader = document.getElementById('loader');
-    const resultBox = document.getElementById('resultBox');
-    const accessLinkInput = document.getElementById('accessLinkInput');
-    const openLinkBtn = document.getElementById('openLinkBtn');
 
-    // Блокируем кнопку и показываем загрузку
+    // Блокируем кнопку и показываем лоадер
     confirmBtn.disabled = true;
     loader.style.display = 'block';
 
     try {
-      // Делаем запрос к базе для проверки платежа
-      const response = await fetch('https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/check-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer sb_publishable_H2ZvOFQcdc-bb7VGYLOujA_CZIprR_z'
-        },
-        body: JSON.stringify({ action: "verify_latest_payment" }) 
-      });
-
+      // Запрос к Supabase Edge Function
+      const response = await fetch('https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/check-payment');
       const data = await response.json();
 
-      if (response.ok && data.accessLink) {
-        // Если сервер подтвердил оплату и дал ссылку — показываем её
-        showAccess(data.accessLink);
+      // Находим ссылку в любом из полей ответа
+      const accessUrl = data.downloadUrl || data.accessLink || data.url;
+
+      if (response.ok && (data.success || data.paid || accessUrl)) {
+        showAccess(accessUrl);
       } else {
-        // Если оплаты нет, выдаем предупреждение
         alert("Платеж еще не поступил или обрабатывается банком. Попробуйте нажать кнопку через 10-15 секунд.");
-        
-        // Возвращаем кнопку в исходное состояние
         confirmBtn.disabled = false;
         loader.style.display = 'none';
       }
     } catch (error) {
       console.warn("Ошибка проверки оплаты:", error);
       alert("Не удалось связаться с сервером проверки. Пожалуйста, подождите минуту и попробуйте снова.");
-      
-      // Возвращаем кнопку в исходное состояние
       confirmBtn.disabled = false;
       loader.style.display = 'none';
     }
