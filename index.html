@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment and Access</title>
+  <title>Payment and Access - Version 2.1</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -23,6 +23,15 @@
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
       text-align: center;
+      position: relative;
+    }
+    .version-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #94a3b8;
     }
     .video-container {
       position: relative;
@@ -137,6 +146,7 @@
 <body>
 
 <div class="payment-card">
+  <div class="version-badge">Version 2.1</div>
   
   <!-- БЛОК С РЕКЛАМНЫМ РОЛИКОМ -->
   <div class="video-container">
@@ -186,13 +196,12 @@
     const accessLinkInput = document.getElementById('accessLinkInput');
     const openLinkBtn = document.getElementById('openLinkBtn');
 
+    // Блокируем кнопку и показываем загрузку
     confirmBtn.disabled = true;
     loader.style.display = 'block';
 
-    // Ссылка на ваш platform.html в репозитории
-    const fallbackLink = "https://igumentsev-creator.github.io/PRXS-MOV/platform.html";
-
     try {
+      // Делаем запрос к базе для проверки платежа
       const response = await fetch('https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/check-payment', {
         method: 'POST',
         headers: {
@@ -205,15 +214,23 @@
       const data = await response.json();
 
       if (response.ok && data.accessLink) {
+        // Если сервер подтвердил оплату и дал ссылку — показываем её
         showAccess(data.accessLink);
       } else {
-        // Если база вернула что платеж еще не прошел, но ошибки сети нет
-        showAccess(fallbackLink);
+        // Если оплаты нет, выдаем предупреждение
+        alert("Платеж еще не поступил или обрабатывается банком. Попробуйте нажать кнопку через 10-15 секунд.");
+        
+        // Возвращаем кнопку в исходное состояние
+        confirmBtn.disabled = false;
+        loader.style.display = 'none';
       }
     } catch (error) {
-      console.warn("Backend error or CORS issue, granting fallback access:", error);
-      // В случае блокировки CORS выдаем прямую ссылку на платформу
-      showAccess(fallbackLink);
+      console.warn("Ошибка проверки оплаты:", error);
+      alert("Не удалось связаться с сервером проверки. Пожалуйста, подождите минуту и попробуйте снова.");
+      
+      // Возвращаем кнопку в исходное состояние
+      confirmBtn.disabled = false;
+      loader.style.display = 'none';
     }
   }
 
