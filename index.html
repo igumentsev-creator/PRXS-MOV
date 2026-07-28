@@ -156,7 +156,7 @@
   <h2>Get Access to the Program</h2>
   <p>Watch the video, pay for access via Monobank Jar, and get your personal link immediately after the payment.</p>
   
-  <div class="price-tag">100 UAH</div>
+  <div class="price-tag">$3</div>
 
   <!-- ШАГ 1: Ссылка на Банку -->
   <a href="https://send.monobank.ua/jar/9AB926QdsP" target="_blank" class="btn btn-mono">
@@ -208,13 +208,13 @@
       if (response.ok && (data.success || data.paid || accessUrl)) {
         showAccess(accessUrl);
       } else {
-        alert("Платеж еще не поступил или обрабатывается банком. Попробуйте нажать кнопку через 10-15 секунд.");
+        alert("The payment has not been received yet or is being processed by the bank. Please try clicking the button in 10-15 seconds.");
         confirmBtn.disabled = false;
         loader.style.display = 'none';
       }
     } catch (error) {
-      console.warn("Ошибка проверки оплаты:", error);
-      alert("Не удалось связаться с сервером проверки. Пожалуйста, подождите минуту и попробуйте снова.");
+      console.warn("Payment verification error:", error);
+      alert("Failed to connect to the verification server. Please wait a minute and try again.");
       confirmBtn.disabled = false;
       loader.style.display = 'none';
     }
