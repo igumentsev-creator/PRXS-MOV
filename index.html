@@ -1,248 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment and Access - Version 2.2</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f4f6f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
-    .payment-card {
-      background: #ffffff;
-      max-width: 500px;
-      width: 100%;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      text-align: center;
-      position: relative;
-    }
-    .version-badge {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      font-size: 12px;
-      font-weight: bold;
-      color: #94a3b8;
-    }
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      margin-bottom: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    .video-container iframe,
-    .video-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    h2 {
-      margin-top: 0;
-      color: #1a1a1a;
-      font-size: 24px;
-    }
-    p {
-      color: #666;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-    .price-tag {
-      font-size: 32px;
-      font-weight: bold;
-      color: #000;
-      margin: 15px 0;
-    }
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 14px 0;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      box-sizing: border-box;
-      margin-bottom: 12px;
-    }
-    .btn-mono {
-      background-color: #ea5353;
-      color: #fff;
-    }
-    .btn-mono:hover {
-      background-color: #d64242;
-    }
-    .btn-confirm {
-      background-color: #000000;
-      color: #ffffff;
-    }
-    .btn-confirm:hover {
-      background-color: #222222;
-    }
-    .btn:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-    .result-box {
-      margin-top: 20px;
-      padding: 16px;
-      background-color: #f0fff4;
-      border: 1px solid #b7eb8f;
-      border-radius: 10px;
-      text-align: left;
-      display: none;
-    }
-    .result-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #d9d9d9;
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-    .btn-copy {
-      background: #1890ff;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-right: 8px;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-open {
-      background: #52c41a;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      display: inline-block;
-      text-decoration: none;
-    }
-    .loader {
-      display: none;
-      margin: 15px auto;
-      font-weight: 600;
-      color: #1890ff;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Workspace Auth</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); width: 100%; max-width: 400px; box-sizing: border-box; }
+        h2 { margin-top: 0; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #2563eb; }
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-<div class="payment-card">
-  <div class="version-badge">Version 2.2</div>
-  
-  <!-- БЛОК С РЕКЛАМНЫМ РОЛИКОМ -->
-  <div class="video-container">
-    <iframe src="https://www.youtube.com/embed/ppBa8PO9T1o" title="Promo Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </div>
-
-  <h2>Get Access to the Program</h2>
-  <p>Watch the video, pay for access via Monobank Jar, and get your personal link immediately after the payment.
-Just the price of a cup of coffee — $3 USD. When you go to the payment page, enter 140 Ukrainian Hryvnias = $3 USD.</p>
-  
-  <div class="price-tag">$3</div>
-
-  <!-- ШАГ 1: Ссылка на Банку -->
-  <a href="https://send.monobank.ua/jar/9AB926QdsP" target="_blank" class="btn btn-mono">
-    1. Pay via Monobank 💳
-  </a>
-
-  <!-- ШАГ 2: Проверка оплаты -->
-  <button id="confirmBtn" class="btn btn-confirm" onclick="checkPaymentStatus()">
-    2. I have paid — get the link 🚀
-  </button>
-
-  <div id="loader" class="loader">⏳ Checking payment & granting access...</div>
-
-  <!-- БЛОК С ГОТОВОЙ ССЫЛКОЙ И ИНСТРУКЦИЕЙ -->
-  <div id="resultBox" class="result-box">
-    <b style="color: #2b78e4;">🎉 Your access is ready!</b>
-    <p style="margin: 6px 0; font-size: 13px;">Copy the link below or open it right away:</p>
-    <input type="text" id="accessLinkInput" readonly>
-    <div style="margin-top: 8px; margin-bottom: 20px;">
-      <button class="btn-copy" onclick="copyLink()">Copy</button>
-      <a id="openLinkBtn" href="#" target="_blank" class="btn-open">Open</a>
+    <!-- Форма первичной настройки (Setup) -->
+    <div id="setupPanel" class="card hidden">
+        <h2>Создание пространства</h2>
+        <form id="setupForm">
+            <input type="password" id="setupPassword" placeholder="Придумайте пароль (мин. 6 символов)" required minlength="6">
+            <button type="submit">Создать пространство</button>
+        </form>
     </div>
 
-    <!-- ВИДЕОИНСТРУКЦИЯ -->
-    <b style="color: #1a1a1a; display: block; margin-bottom: 10px; text-align: center;">How to use the program:</b>
-    <div class="video-container" style="margin-bottom: 0;">
-      <iframe src="https://www.youtube.com/embed/pKLBROJEbzI" title="Video Instruction" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <!-- Форма входа (Login) -->
+    <div id="authPanel" class="card hidden">
+        <h2>Вход в пространство</h2>
+        <form id="loginForm">
+            <input type="password" id="loginPassword" placeholder="Введите пароль" required>
+            <button type="submit">Войти</button>
+        </form>
     </div>
-  </div>
-</div>
 
-<script>
-  async function checkPaymentStatus() {
-    const confirmBtn = document.getElementById('confirmBtn');
-    const loader = document.getElementById('loader');
+    <!-- Главный экран приложения -->
+    <div id="dashboardPanel" class="card hidden" style="max-width: 800px;">
+        <h2>Добро пожаловать!</h2>
+        <p>Авторизация успешно пройдена.</p>
+    </div>
 
-    // Блокируем кнопку и показываем лоадер
-    confirmBtn.disabled = true;
-    loader.style.display = 'block';
+    <script>
+        const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
+        const urlParams = new URLSearchParams(window.location.search);
+        const WORKSPACE_ID = urlParams.get('id');
 
-    try {
-      // Запрос к Supabase Edge Function
-      const response = await fetch('https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/check-payment');
-      const data = await response.json();
+        const authPanel = document.getElementById('authPanel');
+        const setupPanel = document.getElementById('setupPanel');
+        const appPanel = document.getElementById('dashboardPanel');
 
-      // Находим ссылку в любом из полей ответа
-      const accessUrl = data.downloadUrl || data.accessLink || data.url;
+        async function initAuth() {
+            if (!WORKSPACE_ID) {
+                document.body.innerHTML = "<h2 style='text-align:center;'>Ошибка: Не указан ID пространства в ссылке (?id=...)</h2>";
+                return;
+            }
 
-      if (response.ok && (data.success || data.paid || accessUrl)) {
-        showAccess(accessUrl);
-      } else {
-        alert("The payment has not been received yet or is being processed by the bank. Please try clicking the button in 10-15 seconds.");
-        confirmBtn.disabled = false;
-        loader.style.display = 'none';
-      }
-    } catch (error) {
-      console.warn("Payment verification error:", error);
-      alert("Failed to connect to the verification server. Please wait a minute and try again.");
-      confirmBtn.disabled = false;
-      loader.style.display = 'none';
-    }
-  }
+            if (sessionStorage.getItem('USER_TOKEN')) {
+                startApp();
+                return;
+            }
 
-  function showAccess(url) {
-    const confirmBtn = document.getElementById('confirmBtn');
-    const loader = document.getElementById('loader');
-    const resultBox = document.getElementById('resultBox');
-    const accessLinkInput = document.getElementById('accessLinkInput');
-    const openLinkBtn = document.getElementById('openLinkBtn');
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: WORKSPACE_ID, action: "get_data" })
+                });
+                const data = await res.json();
 
-    accessLinkInput.value = url;
-    openLinkBtn.href = url;
+                if (res.status === 403 || (res.ok && !data.data?.masterHash)) {
+                    setupPanel.classList.remove('hidden');
+                } else if (res.ok && data.data?.masterHash) {
+                    authPanel.classList.remove('hidden');
+                } else {
+                    console.error("Неизвестный ответ сервера:", data);
+                }
+            } catch (e) {
+                console.error("Ошибка сети:", e);
+                alert("Ошибка подключения к серверу.");
+            }
+        }
 
-    loader.style.display = 'none';
-    resultBox.style.display = 'block';
-    confirmBtn.style.display = 'none'; 
-  }
+        async function handleSetup(event) {
+            event.preventDefault();
+            const password = document.getElementById('setupPassword').value;
 
-  function copyLink() {
-    const input = document.getElementById('accessLinkInput');
-    input.select();
-    navigator.clipboard.writeText(input.value);
-    alert("Link copied to clipboard!");
-  }
-</script>
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: WORKSPACE_ID, action: "setup", secret: password })
+                });
+                const data = await res.json();
 
+                if (res.ok && data.token) {
+                    sessionStorage.setItem('USER_TOKEN', data.token);
+                    updateUrlAndStartApp();
+                } else {
+                    alert(data.error || "Ошибка при регистрации пространства.");
+                }
+            } catch (e) {
+                alert("Ошибка сети при отправке запроса.");
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: WORKSPACE_ID, action: "login", secret: password })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.token) {
+                    sessionStorage.setItem('USER_TOKEN', data.token);
+                    updateUrlAndStartApp();
+                } else {
+                    alert(data.error || "Неверный пароль.");
+                }
+            } catch (e) {
+                alert("Ошибка сети при отправке запроса.");
+            }
+        }
+
+        function updateUrlAndStartApp() {
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?id=${WORKSPACE_ID}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+            startApp();
+        }
+
+        function startApp() {
+            authPanel.classList.add('hidden');
+            setupPanel.classList.add('hidden');
+            appPanel.classList.remove('hidden');
+            if (typeof loadWorkspaceData === 'function') {
+                loadWorkspaceData();
+            }
+        }
+
+        document.getElementById('setupForm')?.addEventListener('submit', handleSetup);
+        document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
+
+        initAuth();
+    </script>
 </body>
 </html>
