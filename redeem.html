@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redeem Access | Universal Data Collection Platform</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        h2 { margin-top: 0; color: #111; font-size: 24px; }
+        p { color: #555; font-size: 15px; margin-bottom: 25px; line-height: 1.5; }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: #ffc107; }
+        button {
+            background-color: #ffc107;
+            color: #000;
+            font-weight: 600;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #ffb000; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Redeem Your Access</h2>
+        <p>Congratulations on your purchase! Enter your unique AppSumo code below to unlock and claim your personal workspace.</p>
+        <input type="text" id="appsumo-code" placeholder="Example: ws_A1B2C3D4">
+        <button onclick="redeem()">Redeem & Enter</button>
+    </div>
+
+    <script>
+        function redeem() {
+            var codeInput = document.getElementById('appsumo-code').value.trim();
+            if (codeInput === "") {
+                alert("Please enter your AppSumo code.");
+                return;
+            }
+            // Редирект на платформу с кодом в качестве ID пространства
+            window.location.href = "platform.html?id=" + encodeURIComponent(codeInput);
+        }
+    </script>
+
+</body>
+</html>
