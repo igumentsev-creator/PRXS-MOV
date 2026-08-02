@@ -1,40 +1,422 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Активация доступа</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Activation</title>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); width: 100%; max-width: 400px; box-sizing: border-box; }
-        h2 { margin-top: 0; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #2563eb; }
-        .error { color: #ef4444; font-size: 14px; margin-top: 10px; text-align: center; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.95);
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #334155;
+        }
+
+        .divider span {
+            padding: 0 16px;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 1px solid #334155;
+            box-shadow: none;
+            color: #cbd5e1;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #475569;
+            box-shadow: none;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .error.show {
+            display: block;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Login mode styles */
+        .mode-toggle {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .mode-toggle a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mode-toggle a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>🔐 Активация доступа</h2>
+        <div class="logo">
+            <div class="logo-icon">🔐</div>
+            <h2 id="pageTitle">Access Activation</h2>
+            <p class="subtitle" id="pageSubtitle">Enter your activation code to create a new workspace</p>
+        </div>
+
         <form id="redeemForm">
-            <input type="text" id="code" placeholder="Введите код активации (например, AppSumo)" required>
-            <input type="password" id="password" placeholder="Придумайте пароль (мин. 6 символов)" required minlength="6">
-            <button type="submit">Активировать и войти</button>
+            <div class="form-group">
+                <label for="codeInput">Activation Code</label>
+                <input 
+                    type="text" 
+                    id="codeInput" 
+                    placeholder="e.g. AppSumo-ABC123" 
+                    required
+                    autocomplete="off"
+                >
+                <p class="hint" id="codeHint">Your purchase code or invite token</p>
+            </div>
+
+            <div class="form-group">
+                <label for="passwordInput">Password</label>
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    placeholder="Min. 6 characters" 
+                    required 
+                    minlength="6"
+                    autocomplete="new-password"
+                >
+                <p class="hint" id="passwordHint">This will be your admin password</p>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Activate & Enter</span>
+            </button>
         </form>
+
+        <div class="divider" id="divider">
+            <span>or</span>
+        </div>
+
+        <button class="secondary-btn" id="loginToggleBtn">
+            Already have a workspace? Log in
+        </button>
+
         <div id="errorMsg" class="error"></div>
+        <div id="successMsg" class="success"></div>
+
+        <div class="footer">
+            Secure connection • Workspace ID auto-generated
+        </div>
     </div>
 
     <script>
         const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
 
-        document.getElementById('redeemForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const codeInput = document.getElementById('code').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-            const errorDiv = document.getElementById('errorMsg');
-            errorDiv.textContent = "";
+        // Mode: 'activate' or 'login'
+        let currentMode = 'activate';
 
-            const workspaceId = "ws-" + btoa(codeInput).replace(/[^a-zA-Z0-9]/g, "").toLowerCase().slice(0, 16);
+        const els = {
+            form: document.getElementById('redeemForm'),
+            codeInput: document.getElementById('codeInput'),
+            passwordInput: document.getElementById('passwordInput'),
+            submitBtn: document.getElementById('submitBtn'),
+            btnText: document.getElementById('btnText'),
+            errorMsg: document.getElementById('errorMsg'),
+            successMsg: document.getElementById('successMsg'),
+            pageTitle: document.getElementById('pageTitle'),
+            pageSubtitle: document.getElementById('pageSubtitle'),
+            codeHint: document.getElementById('codeHint'),
+            passwordHint: document.getElementById('passwordHint'),
+            divider: document.getElementById('divider'),
+            loginToggleBtn: document.getElementById('loginToggleBtn')
+        };
+
+        function showError(text) {
+            els.errorMsg.textContent = text;
+            els.errorMsg.classList.add('show');
+            els.successMsg.classList.remove('show');
+        }
+
+        function showSuccess(text) {
+            els.successMsg.textContent = text;
+            els.successMsg.classList.add('show');
+            els.errorMsg.classList.remove('show');
+        }
+
+        function clearMessages() {
+            els.errorMsg.classList.remove('show');
+            els.successMsg.classList.remove('show');
+        }
+
+        function setLoading(isLoading) {
+            els.submitBtn.disabled = isLoading;
+            if (isLoading) {
+                els.btnText.innerHTML = '<span class="spinner"></span>Processing...';
+            } else {
+                els.btnText.textContent = currentMode === 'activate' ? 'Activate & Enter' : 'Log In';
+            }
+        }
+
+        function generateWorkspaceId(code) {
+            // Normalize code to create consistent workspace ID
+            const normalized = code.toLowerCase().trim().replace(/\s+/g, '-');
+            const baseId = "ws-" + btoa(normalized).replace(/[^a-zA-Z0-9]/g, "").toLowerCase().slice(0, 16);
+            return baseId;
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            clearMessages();
+
+            if (mode === 'activate') {
+                els.pageTitle.textContent = 'Access Activation';
+                els.pageSubtitle.textContent = 'Enter your activation code to create a new workspace';
+                els.codeInput.placeholder = 'e.g. AppSumo-ABC123';
+                els.codeHint.textContent = 'Your purchase code or invite token';
+                els.passwordHint.textContent = 'This will be your admin password';
+                els.passwordInput.placeholder = 'Min. 6 characters';
+                els.passwordInput.minLength = 6;
+                els.btnText.textContent = 'Activate & Enter';
+                els.loginToggleBtn.textContent = 'Already have a workspace? Log in';
+                els.divider.classList.remove('hidden');
+            } else {
+                els.pageTitle.textContent = 'Workspace Login';
+                els.pageSubtitle.textContent = 'Enter your workspace credentials';
+                els.codeInput.placeholder = 'Workspace ID or Activation Code';
+                els.codeHint.textContent = 'Your workspace identifier';
+                els.passwordHint.textContent = 'Your admin password or branch token';
+                els.passwordInput.placeholder = 'Password or token';
+                els.passwordInput.minLength = 1;
+                els.btnText.textContent = 'Log In';
+                els.loginToggleBtn.textContent = 'Need to activate a new workspace?';
+                els.divider.classList.add('hidden');
+            }
+        }
+
+        els.loginToggleBtn.addEventListener('click', () => {
+            switchMode(currentMode === 'activate' ? 'login' : 'activate');
+        });
+
+        els.form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+
+            const codeInput = els.codeInput.value.trim();
+            const passwordInput = els.passwordInput.value.trim();
+
+            if (!codeInput) {
+                showError('Please enter an activation code or workspace ID.');
+                return;
+            }
+
+            if (!passwordInput) {
+                showError('Please enter a password.');
+                return;
+            }
+
+            if (currentMode === 'activate' && passwordInput.length < 6) {
+                showError('Password must be at least 6 characters long.');
+                return;
+            }
+
+            setLoading(true);
+
+            let workspaceId;
+            if (currentMode === 'activate') {
+                workspaceId = generateWorkspaceId(codeInput);
+            } else {
+                // In login mode, try to parse as workspace ID or generate from code
+                if (codeInput.startsWith('ws-')) {
+                    workspaceId = codeInput;
+                } else {
+                    workspaceId = generateWorkspaceId(codeInput);
+                }
+            }
 
             try {
                 const response = await fetch(API_URL, {
@@ -42,24 +424,53 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         id: workspaceId,
-                        action: "setup",
+                        action: currentMode === 'activate' ? "setup" : "login",
                         secret: passwordInput
                     })
                 });
 
                 const result = await response.json();
 
-                if (response.ok) {
+                if (response.ok && result.ok) {
+                    // Success — save token and redirect
                     sessionStorage.setItem('USER_TOKEN', passwordInput);
-                    window.location.href = `index.html?id=${workspaceId}`;
+                    showSuccess(currentMode === 'activate' 
+                        ? 'Workspace created successfully! Redirecting...' 
+                        : 'Login successful! Redirecting...');
+
+                    // Small delay so user sees the success message
+                    setTimeout(() => {
+                        window.location.href = `platform.html?id=${workspaceId}`;
+                    }, 800);
                 } else {
-                    errorDiv.textContent = result.error || "Ошибка активации кода.";
+                    // API returned error
+                    const errorText = result.error || 'Unknown server error.';
+
+                    if (currentMode === 'activate' && errorText.includes('already exists')) {
+                        showError('This workspace already exists. Switch to Login mode to access it.');
+                    } else if (currentMode === 'login' && errorText.includes('not found')) {
+                        showError('Workspace not found. Check your code or activate a new workspace.');
+                    } else if (errorText.includes('Invalid credentials')) {
+                        showError('Invalid password or token. Please try again.');
+                    } else {
+                        showError('Error: ' + errorText);
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                errorDiv.textContent = "Ошибка сети при обращении к серверу.";
+                showError('Network error: Unable to reach the server. Please check your connection and try again.');
+            } finally {
+                setLoading(false);
             }
         });
+
+        // Check if we have a token in URL (for direct access links)
+        const urlParams = new URLSearchParams(window.location.search);
+        const presetId = urlParams.get('id');
+        if (presetId) {
+            els.codeInput.value = presetId;
+            switchMode('login');
+        }
     </script>
 </body>
 </html>
