@@ -1,77 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redeem Access | Universal Data Collection Platform</title>
+    <title>Активация доступа</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f7f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        h2 { margin-top: 0; color: #111; font-size: 24px; }
-        p { color: #555; font-size: 15px; margin-bottom: 25px; line-height: 1.5; }
-        input {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 20px;
-            border: 2px solid #eaeaea;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input:focus { border-color: #ffc107; }
-        button {
-            background-color: #ffc107;
-            color: #000;
-            font-weight: 600;
-            border: none;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.2s;
-        }
-        button:hover { background-color: #ffb000; }
+        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); width: 100%; max-width: 400px; box-sizing: border-box; }
+        h2 { margin-top: 0; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #2563eb; }
+        .error { color: #ef4444; font-size: 14px; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
-
     <div class="card">
-        <h2>Redeem Your Access</h2>
-        <p>Congratulations on your purchase! Enter your unique AppSumo code below to unlock and claim your personal workspace.</p>
-        <input type="text" id="appsumo-code" placeholder="Example: ws_A1B2C3D4">
-        <button onclick="redeem()">Redeem & Enter</button>
+        <h2>🔐 Активация доступа</h2>
+        <form id="redeemForm">
+            <input type="text" id="code" placeholder="Введите код активации (например, AppSumo)" required>
+            <input type="password" id="password" placeholder="Придумайте пароль (мин. 6 символов)" required minlength="6">
+            <button type="submit">Активировать и войти</button>
+        </form>
+        <div id="errorMsg" class="error"></div>
     </div>
 
     <script>
-        function redeem() {
-            var codeInput = document.getElementById('appsumo-code').value.trim();
-            if (codeInput === "") {
-                alert("Please enter your AppSumo code.");
-                return;
-            }
-            // Редирект на платформу с кодом в качестве ID пространства
-            window.location.href = "platform.html?id=" + encodeURIComponent(codeInput);
-        }
-    </script>
+        const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
 
+        document.getElementById('redeemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const codeInput = document.getElementById('code').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = "";
+
+            // Генерируем уникальный ID пространства на основе введенного кода
+            const workspaceId = "ws-" + btoa(codeInput).replace(/[^a-zA-Z0-9]/g, "").toLowerCase().slice(0, 16);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: workspaceId,
+                        action: "setup",
+                        secret: passwordInput
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.token) {
+                    sessionStorage.setItem('USER_TOKEN', result.token);
+                    // Перенаправляем на главный файл с созданным ID пространства
+                    window.location.href = `index.html?id=${workspaceId}`;
+                } else {
+                    errorDiv.textContent = result.error || "Ошибка активации кода.";
+                }
+            } catch (err) {
+                console.error(err);
+                errorDiv.textContent = "Ошибка сети при обращении к серверу.";
+            }
+        });
+    </script>
 </body>
 </html>
