@@ -3,198 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Activation</title>
+    <title>Workspace Access Portal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .card {
-            background: rgba(30, 41, 59, 0.95);
-            padding: 40px;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            width: 100%;
-            max-width: 420px;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo { text-align: center; margin-bottom: 30px; }
-        .logo-icon { font-size: 48px; margin-bottom: 12px; }
-        h2 { font-size: 24px; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
-        .subtitle { color: #94a3b8; font-size: 14px; line-height: 1.5; }
-
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 10px; font-size: 15px; transition: all 0.2s; outline: none; }
-        input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-        input::placeholder { color: #64748b; }
-        .hint { font-size: 12px; color: #64748b; margin-top: 6px; }
-
-        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-        button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4); }
-        button:active { transform: translateY(0); }
-        button:disabled { background: #475569; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        .divider { display: flex; align-items: center; margin: 24px 0; color: #64748b; font-size: 13px; }
-        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #334155; }
-        .divider span { padding: 0 16px; }
-
-        .secondary-btn { background: transparent; border: 1px solid #334155; box-shadow: none; color: #cbd5e1; }
-        .secondary-btn:hover { background: rgba(255, 255, 255, 0.05); border-color: #475569; }
-
-        .error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; font-size: 14px; padding: 12px 16px; border-radius: 10px; margin-top: 16px; display: none; line-height: 1.5; }
-        .error.show { display: block; animation: shake 0.4s ease-in-out; }
-        .success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); color: #4ade80; font-size: 14px; padding: 12px 16px; border-radius: 10px; margin-top: 16px; display: none; }
-        .success.show { display: block; }
-
-        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
-        .footer { text-align: center; margin-top: 24px; font-size: 12px; color: #475569; }
-        .hidden { display: none !important; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f1f5f9; color: #1e293b; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        
+        .auth-card { background: white; border-radius: 18px; padding: 35px; width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; border-top: 5px solid #2563eb; }
+        .auth-card h2 { color: #1e3a8a; margin-bottom: 12px; font-size: 24px; }
+        .auth-card p { color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        
+        input { width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; text-align: center; background: #f8fafc; }
+        input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); background: #ffffff; }
+        
+        button { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 15px; transition: background 0.2s; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
+        button:hover { background: #1d4ed8; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; }
+        
+        .toggle-link { color: #3b82f6; cursor: pointer; font-size: 14px; font-weight: bold; text-decoration: none; transition: color 0.2s; display: inline-block; }
+        .toggle-link:hover { color: #1e3a8a; text-decoration: underline; }
+        
+        .message { font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; padding: 10px; border-radius: 8px; }
+        .msg-error { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .msg-success { background: #dcfce3; color: #16a34a; border: 1px solid #bbf7d0; }
+        .msg-info { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo">
-            <div class="logo-icon">🔐</div>
-            <h2 id="pageTitle">Access Activation</h2>
-            <p class="subtitle" id="pageSubtitle">Enter your activation code to create a new workspace</p>
-        </div>
 
-        <form id="redeemForm">
-            <div class="form-group">
-                <label for="codeInput">Activation Code</label>
-                <input type="text" id="codeInput" placeholder="e.g. AppSumo-ABC123" required autocomplete="off">
-                <p class="hint" id="codeHint">Your purchase code or invite token</p>
-            </div>
+<div class="auth-card">
+    <h2 id="titleEl">🚀 Access Activation</h2>
+    <p id="descEl">Enter your activation code and create a secure personal password.</p>
+    
+    <div id="messageEl" class="message"></div>
 
-            <div class="form-group">
-                <label for="passwordInput">Password</label>
-                <input type="password" id="passwordInput" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password">
-                <p class="hint" id="passwordHint">This will be your admin password</p>
-            </div>
+    <input type="text" id="codeInput" placeholder="Activation Code (e.g. Alpha-777)">
+    <input type="password" id="passwordInput" placeholder="Create Admin Password">
+    
+    <button id="submitBtn">Activate & Enter</button>
+    
+    <div class="toggle-link" id="toggleModeBtn">Already have a workspace? Log in</div>
+</div>
 
-            <button type="submit" id="submitBtn">
-                <span id="btnText">Activate & Enter</span>
-            </button>
-        </form>
+<script>
+    const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
+    
+    let currentMode = 'activate'; 
+    
+    const els = {
+        title: document.getElementById('titleEl'),
+        desc: document.getElementById('descEl'),
+        message: document.getElementById('messageEl'),
+        codeInput: document.getElementById('codeInput'),
+        passwordInput: document.getElementById('passwordInput'),
+        submitBtn: document.getElementById('submitBtn'),
+        toggleBtn: document.getElementById('toggleModeBtn')
+    };
 
-        <div class="divider" id="divider"><span>or</span></div>
-        <button class="secondary-btn" id="loginToggleBtn">Already have a workspace? Log in</button>
+    function showMessage(type, text) {
+        els.message.className = `message msg-${type}`;
+        els.message.innerText = text;
+        els.message.style.display = 'block';
+    }
 
-        <div id="errorMsg" class="error"></div>
-        <div id="successMsg" class="success"></div>
-        <div class="footer">Secure connection • Workspace ID auto-generated</div>
-    </div>
+    function hideMessage() {
+        els.message.style.display = 'none';
+    }
 
-    <script>
-        const API_URL = "https://ouslqtffwgbtqqslwiki.supabase.co/functions/v1/workspace-api";
-        let currentMode = 'activate';
-
-        const els = {
-            form: document.getElementById('redeemForm'), codeInput: document.getElementById('codeInput'),
-            passwordInput: document.getElementById('passwordInput'), submitBtn: document.getElementById('submitBtn'),
-            btnText: document.getElementById('btnText'), errorMsg: document.getElementById('errorMsg'),
-            successMsg: document.getElementById('successMsg'), pageTitle: document.getElementById('pageTitle'),
-            pageSubtitle: document.getElementById('pageSubtitle'), codeHint: document.getElementById('codeHint'),
-            passwordHint: document.getElementById('passwordHint'), divider: document.getElementById('divider'),
-            loginToggleBtn: document.getElementById('loginToggleBtn')
-        };
-
-        function showError(text) { els.errorMsg.textContent = text; els.errorMsg.classList.add('show'); els.successMsg.classList.remove('show'); }
-        function showSuccess(text) { els.successMsg.textContent = text; els.successMsg.classList.add('show'); els.errorMsg.classList.remove('show'); }
-        function clearMessages() { els.errorMsg.classList.remove('show'); els.successMsg.classList.remove('show'); }
+    function switchMode(mode) {
+        currentMode = mode;
+        hideMessage();
         
-        function setLoading(isLoading) {
-            els.submitBtn.disabled = isLoading;
-            els.btnText.innerHTML = isLoading ? '<span class="spinner"></span>Processing...' : (currentMode === 'activate' ? 'Activate & Enter' : 'Log In');
+        if (mode === 'activate') {
+            els.title.innerText = "🚀 Access Activation";
+            els.desc.innerText = "Enter your activation code and create a secure personal password to claim ownership.";
+            els.codeInput.placeholder = "Activation Code (e.g. Alpha-777)";
+            els.passwordInput.placeholder = "Create Admin Password";
+            els.submitBtn.innerText = "Activate & Enter";
+            els.toggleBtn.innerText = "Already have a workspace? Log in";
+        } else {
+            els.title.innerText = "🔒 Workspace Login";
+            els.desc.innerText = "Enter your Workspace ID and administrator password or regional security token.";
+            els.codeInput.placeholder = "Workspace ID or Code";
+            els.passwordInput.placeholder = "Password / Security Token";
+            els.submitBtn.innerText = "Log In";
+            els.toggleBtn.innerText = "Need to activate a new code? Click here";
+        }
+    }
+
+    els.toggleBtn.addEventListener('click', () => {
+        switchMode(currentMode === 'activate' ? 'login' : 'activate');
+    });
+
+    els.submitBtn.addEventListener('click', async () => {
+        const code = els.codeInput.value.trim();
+        const secret = els.passwordInput.value.trim();
+        
+        if (!code || !secret) {
+            showMessage('error', 'Please fill in both fields.');
+            return;
         }
 
-        function generateWorkspaceId(code) {
-            const normalized = code.toLowerCase().trim().replace(/\s+/g, '-');
-            return "ws-" + btoa(normalized).replace(/[^a-zA-Z0-9]/g, "").toLowerCase().slice(0, 16);
-        }
+        els.submitBtn.disabled = true;
+        els.submitBtn.innerText = "🔄 Processing...";
+        showMessage('info', 'Connecting to secure server...');
 
-        function switchMode(mode) {
-            currentMode = mode;
-            clearMessages();
-            if (mode === 'activate') {
-                els.pageTitle.textContent = 'Access Activation';
-                els.pageSubtitle.textContent = 'Enter your activation code to create a new workspace';
-                els.codeInput.placeholder = 'e.g. AppSumo-ABC123';
-                els.codeHint.textContent = 'Your purchase code or invite token';
-                els.passwordHint.textContent = 'This will be your admin password';
-                els.passwordInput.placeholder = 'Min. 6 characters';
-                els.passwordInput.minLength = 6;
-                els.loginToggleBtn.textContent = 'Already have a workspace? Log in';
-                els.divider.classList.remove('hidden');
+        try {
+            const action = currentMode === 'activate' ? 'setup' : 'login';
+            
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: action, id: code, secret: secret })
+            });
+            
+            const data = await response.json();
+            
+            if (data.ok) {
+                showMessage('success', '✅ Access granted! Redirecting...');
+                
+                // Бэкенд может вернуть правильный системный ID (ws-...). 
+                // Если нет, используем введенный код.
+                const targetId = data.id || data.workspace_id || code;
+                
+                // Сохраняем токен в sessionStorage на всякий случай
+                sessionStorage.setItem('USER_TOKEN', secret);
+                
+                // Перенаправляем на платформу
+                setTimeout(() => {
+                    window.location.href = `platform.html?id=${targetId}#token=${secret}`;
+                }, 800);
             } else {
-                els.pageTitle.textContent = 'Workspace Login';
-                els.pageSubtitle.textContent = 'Enter your workspace credentials';
-                els.codeInput.placeholder = 'Workspace ID or Activation Code';
-                els.codeHint.textContent = 'Your workspace identifier';
-                els.passwordHint.textContent = 'Your admin password or branch token';
-                els.passwordInput.placeholder = 'Password or token';
-                els.passwordInput.minLength = 1;
-                els.loginToggleBtn.textContent = 'Need to activate a new workspace?';
-                els.divider.classList.add('hidden');
+                showMessage('error', '❌ ' + (data.error || 'Authentication failed.'));
+                els.submitBtn.disabled = false;
+                els.submitBtn.innerText = currentMode === 'activate' ? "Activate & Enter" : "Log In";
             }
-            setLoading(false);
+        } catch (err) {
+            showMessage('error', '❌ Network error. Server is unreachable.');
+            els.submitBtn.disabled = false;
+            els.submitBtn.innerText = currentMode === 'activate' ? "Activate & Enter" : "Log In";
         }
+    });
 
-        els.loginToggleBtn.addEventListener('click', () => switchMode(currentMode === 'activate' ? 'login' : 'activate'));
+    // Отработка нажатия Enter в полях ввода
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            els.submitBtn.click();
+        }
+    });
 
-        els.form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            clearMessages();
-            const codeInput = els.codeInput.value.trim();
-            const passwordInput = els.passwordInput.value.trim();
+    // --- АВТОМАТИЧЕСКИЙ ВХОД ДЛЯ ФИЛИАЛОВ И ПО ЗАКЛАДКАМ ---
+    const presetId = new URLSearchParams(window.location.search).get('id');
+    
+    // Достаем токен из хэша ссылки (например: #token=usr_abcd123)
+    let presetToken = '';
+    if (window.location.hash.startsWith('#token=')) {
+        presetToken = window.location.hash.substring(7);
+    }
 
-            if (!codeInput || !passwordInput) return showError('Please fill in all fields.');
-            if (currentMode === 'activate' && passwordInput.length < 6) return showError('Password must be at least 6 characters.');
-
-            setLoading(true);
-            const workspaceId = (currentMode === 'login' && codeInput.startsWith('ws-')) ? codeInput : generateWorkspaceId(codeInput);
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: workspaceId, action: currentMode === 'activate' ? "setup" : "login", secret: passwordInput })
-                });
-                const result = await response.json();
-
-                if (response.ok && result.ok) {
-                    sessionStorage.setItem('USER_TOKEN', passwordInput);
-                    showSuccess(currentMode === 'activate' ? 'Workspace created successfully! Redirecting...' : 'Login successful! Redirecting...');
-                    setTimeout(() => window.location.href = `platform.html?id=${workspaceId}`, 800);
-                } else {
-                    const errorText = result.error || 'Unknown server error.';
-                    if (currentMode === 'activate' && errorText.includes('already exists')) showError('Workspace already exists. Switch to Login mode.');
-                    else if (currentMode === 'login' && errorText.includes('not found')) showError('Workspace not found. Check your ID.');
-                    else if (errorText.includes('Invalid credentials')) showError('Invalid password or token.');
-                    else showError('Error: ' + errorText);
-                }
-            } catch (err) {
-                showError('Network error: Unable to reach the server.');
-            } finally {
-                setLoading(false);
-            }
-        });
-
-        const presetId = new URLSearchParams(window.location.search).get('id');
-        if (presetId) { els.codeInput.value = presetId; switchMode('login'); }
-    </script>
+    if (presetId) { 
+        els.codeInput.value = presetId; 
+        switchMode('login'); 
+        
+        // Если в ссылке был токен, подставляем его и входим автоматически
+        if (presetToken) {
+            els.passwordInput.value = presetToken;
+            els.submitBtn.click();
+        }
+    }
+</script>
 </body>
 </html>
