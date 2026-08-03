@@ -83,7 +83,7 @@
 </head>
 <body>
 
-<div class="version-badge">Version 3.5 (Secure)</div>
+<div class="version-badge">Version 3.5 (Auto-Init)</div>
 
 <div class="container">
     
@@ -239,7 +239,7 @@
     const LOCALES = {
         en: { denied: "❌ ACCESS DENIED", adminSession: "👑 Master Admin Panel (All Workspaces)", secureSession: "🔒 Secure Session", saved: "✅ Saved: ", saveError: "❌ Save Error: ", totalCount: "Total Rows Count:", confirmDelCol: "Delete this column?", confirmDelRow: "Delete this row?", confirmClearHis: "Clear analytics history?", missingCoords: "❌ Missing coords", apiError: "❌ Error", invalidFormat: "⚠️ Invalid format", loading: "🔄 Loading...", sync: "Synchronized with Storage", readyEmpty: "Ready", lblColManager: "📋 Column Manager (Admin Only):", lblBranchManager: "🏢 Workspace / Branch Manager:", btnSave: "💾 Save Data & Structure", btnExport: "📥 Export JSON", btnClearHis: "🧹 Clear Analytics History", btnAddCol: "➕ Add Column", btnAddBranch: "➕ Add Workspace", colPlaceholder: "Column Name", branchPlaceholder: "Branch Name", coordsPlaceholder: "Coords (Lat, Lng)", addBtnRow: "➕ Add Row", copyLinkBtn: "🔗 Copy Link", dashTitle: "🔑 Security Tokens & Links", thBranch: "Region / Workspace", thCoords: "Center Coords", thToken: "Security Token", thActions: "Actions", confirmDelBranch: "Completely delete this region and revoke link?", chartTitle: "Performance Dynamics", col_id: "№", col_item_name: "Item Name", col_coords: "Coordinates", col_date: "Date", col_time: "Time", col_amount: "Amount", col_weather: "Weather", col_action: "Action", wWind: "Wind", wSpeed: "m/s", wStability: "Stability", wInversion: "Inversion", wIsothermy: "Isothermy", wConvection: "Convection" },
         ua: { denied: "❌ ДОСТУП ЗАБОРОНЕНО", adminSession: "👑 Майстер-панель Адміністратора", secureSession: "🔒 Захищена сесія", saved: "✅ Збережено: ", saveError: "❌ Помилка: ", totalCount: "Кількість рядків:", confirmDelCol: "Видалити цю колонку?", confirmDelRow: "Видалити цей рядок?", confirmClearHis: "Очистити історію?", missingCoords: "❌ Відсутні координати", apiError: "❌ Помилка", invalidFormat: "⚠️ Невірний формат", loading: "🔄 Завантаження...", sync: "Синхронізовано", readyEmpty: "Готово", lblColManager: "📋 Менеджер колонок:", lblBranchManager: "🏢 Менеджер Філій:", btnSave: "💾 Зберегти Дані", btnExport: "📥 Експорт JSON", btnClearHis: "🧹 Очистити графік", btnAddCol: "➕ Додати колонку", btnAddBranch: "➕ Додати філію", colPlaceholder: "Назва колонки", branchPlaceholder: "Назва філії", coordsPlaceholder: "Координати", addBtnRow: "➕ Додати рядок", copyLinkBtn: "🔗 Копіювати", dashTitle: "🔑 Токени та посилання", thBranch: "Філія", thCoords: "Координати", thToken: "Токен", thActions: "Дії", confirmDelBranch: "Видалити філію?", chartTitle: "Динаміка", col_id: "№", col_item_name: "Назва", col_coords: "Координати", col_date: "Дата", col_time: "Час", col_amount: "Показники", col_weather: "Погода", col_action: "Дія", wWind: "Вітер", wSpeed: "м/с", wStability: "Стабільність", wInversion: "Інверсія", wIsothermy: "Ізотермія", wConvection: "Конвекція" },
-        // Оставили только базовые для примера, вы можете вернуть все переводы из оригинального файла
+        // Базовые переводы для примера
     };
 
     let currentLang = localStorage.getItem('lang') || 'en';
@@ -271,9 +271,8 @@
         document.getElementById('dashboardPanel').classList.remove('hidden');
     }
 
-    // --- ГЛАВНАЯ ТОЧКА ВХОДА (С БРОНЕЙ) ---
+    // --- ГЛАВНАЯ ТОЧКА ВХОДА (С БРОНЕЙ И АВТО-ИНТИТОМ) ---
     async function init() {
-        // Жесткая проверка: нет ID пространства или нет токена - выбрасываем на форму входа
         if (!WORKSPACE_ID || WORKSPACE_ID === 'default_workspace' || !USER_TOKEN) {
             let redirectUrl = 'redeem.html';
             if (WORKSPACE_ID && WORKSPACE_ID !== 'default_workspace') {
@@ -287,7 +286,6 @@
         
         const res = await apiCall("load");
 
-        // Если сервер отклонил токен или пространство не найдено - выбрасываем на форму входа
         if (res.error || !res.ok) {
             sessionStorage.removeItem('USER_TOKEN');
             window.location.href = `redeem.html?id=${WORKSPACE_ID}`;
@@ -299,6 +297,31 @@
         TABLE_CONFIG.columns = res.columns || [];
         TABLE_CONFIG.branches = res.branches || {};
         globalHistory = res.history || [];
+
+        let isFirstSetup = false;
+
+        // --- ПЕРВИЧНОЕ ФОРМИРОВАНИЕ ТАБЛИЦЫ ---
+        // Если это Админ и в таблице еще нет колонок, создаем стандартный набор
+        if (IS_ADMIN && TABLE_CONFIG.columns.length === 0) {
+            isFirstSetup = true;
+            TABLE_CONFIG.columns = [
+                { id: "index", title: { en: "№", ua: "№", fr: "№", zh: "№", es: "№", de: "№", hi: "№", it: "№", ja: "№" }, width: "4%", type: "index" },
+                { id: "item_name", title: { en: "Item Name", ua: "Назва", fr: "Nom", zh: "名称", es: "Nombre", de: "Name", hi: "नाम", it: "Nome", ja: "名前" }, width: "15%", type: "text" },
+                { id: "coords", title: { en: "Coordinates", ua: "Координати", fr: "Coords", zh: "坐标", es: "Coords", de: "Koordinaten", hi: "निर्देशांक", it: "Coordinate", ja: "座標" }, width: "15%", type: "coordinates" },
+                { id: "date", title: { en: "Date", ua: "Дата", fr: "Date", zh: "日期", es: "Fecha", de: "Datum", hi: "तारीख", it: "Data", ja: "日付" }, width: "10%", type: "date" },
+                { id: "time", title: { en: "Time", ua: "Час", fr: "Heure", zh: "时间", es: "Hora", de: "Zeit", hi: "समय", it: "Ora", ja: "時間" }, width: "8%", type: "time" },
+                { id: "amount", title: { en: "Amount", ua: "Показники", fr: "Valeur", zh: "数量", es: "Cantidad", de: "Menge", hi: "मात्रा", it: "Quantità", ja: "数値" }, width: "10%", type: "number" },
+                { id: "weather", title: { en: "Weather", ua: "Погода", fr: "Météo", zh: "天气", es: "Clima", de: "Wetter", hi: "मौसम", it: "Meteo", ja: "天気" }, width: "15%", type: "text" },
+                { id: "action", title: { en: "Action", ua: "Дія", fr: "Action", zh: "操作", es: "Acción", de: "Aktion", hi: "कार्रवाई", it: "Azione", ja: "操作" }, width: "5%", type: "action" }
+            ];
+            
+            // Если филиалов тоже нет, создаем стартовый "Main Workspace"
+            if (Object.keys(TABLE_CONFIG.branches).length === 0) {
+                const defaultToken = generateSecureToken('usr');
+                TABLE_CONFIG.branches[defaultToken] = { name: "Main Workspace", coords: [48.3794, 31.1656] };
+            }
+        }
+        // ----------------------------------------
 
         if (!IS_ADMIN) {
             CURRENT_BRANCH_NAME = res.branchName;
@@ -324,6 +347,11 @@
         const tableData = res.table || [];
         rebuildTableWithData(tableData);
         updateMapFromTable();
+
+        // Автоматически сохраняем сформированную структуру в базу при первом входе
+        if (isFirstSetup) {
+            saveTable(false);
+        }
     }
 
     function getColumnTitle(col, lang) {
