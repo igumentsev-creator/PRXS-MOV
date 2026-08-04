@@ -300,6 +300,38 @@
 
         let isFirstSetup = false;
 
+        // --- АВТОПОЧИНКА СТОЛБЦОВ БЕЗ ПОДПИСИ ---
+        // Если у столбца отсутствует/пустой title (например, "coords"), восстанавливаем его
+        const DEFAULT_TITLES_BY_ID = {
+            index:     { en: "№", ua: "№", fr: "№", zh: "№", es: "№", de: "№", hi: "№", it: "№", ja: "№" },
+            item_name: { en: "Item Name", ua: "Назва", fr: "Nom", zh: "名称", es: "Nombre", de: "Name", hi: "नाम", it: "Nome", ja: "名前" },
+            coords:    { en: "Coordinates", ua: "Координати", fr: "Coords", zh: "坐标", es: "Coords", de: "Koordinaten", hi: "निर्देशांक", it: "Coordinate", ja: "座標" },
+            date:      { en: "Date", ua: "Дата", fr: "Date", zh: "日期", es: "Fecha", de: "Datum", hi: "तारीख", it: "Data", ja: "日付" },
+            time:      { en: "Time", ua: "Час", fr: "Heure", zh: "时间", es: "Hora", de: "Zeit", hi: "समय", it: "Ora", ja: "時間" },
+            amount:    { en: "Amount", ua: "Показники", fr: "Valeur", zh: "数量", es: "Cantidad", de: "Menge", hi: "मात्रा", it: "Quantità", ja: "数値" },
+            weather:   { en: "Weather", ua: "Погода", fr: "Météo", zh: "天气", es: "Clima", de: "Wetter", hi: "मौसम", it: "Meteo", ja: "天気" },
+            action:    { en: "Action", ua: "Дія", fr: "Action", zh: "操作", es: "Acción", de: "Aktion", hi: "कार्रवाई", it: "Azione", ja: "操作" }
+        };
+        const DEFAULT_TITLES_BY_TYPE = {
+            coordinates: DEFAULT_TITLES_BY_ID.coords,
+            date: DEFAULT_TITLES_BY_ID.date,
+            time: DEFAULT_TITLES_BY_ID.time,
+            number: DEFAULT_TITLES_BY_ID.amount,
+            index: DEFAULT_TITLES_BY_ID.index,
+            action: DEFAULT_TITLES_BY_ID.action
+        };
+        let columnsRepaired = false;
+        TABLE_CONFIG.columns.forEach(col => {
+            const hasTitle = (typeof col.title === 'object' && col.title !== null)
+                ? Object.values(col.title).some(v => v && String(v).trim() !== '')
+                : (col.title && String(col.title).trim() !== '');
+            if (!hasTitle) {
+                col.title = DEFAULT_TITLES_BY_ID[col.id] || DEFAULT_TITLES_BY_TYPE[col.type] || { en: col.id, ua: col.id };
+                columnsRepaired = true;
+            }
+        });
+        // ----------------------------------------
+
         // --- ПЕРВИЧНОЕ ФОРМИРОВАНИЕ ТАБЛИЦЫ ---
         // Если это Админ и в таблице еще нет колонок, создаем стандартный набор
         if (IS_ADMIN && TABLE_CONFIG.columns.length === 0) {
@@ -349,7 +381,8 @@
         updateMapFromTable();
 
         // Автоматически сохраняем сформированную структуру в базу при первом входе
-        if (isFirstSetup) {
+        // или если только что починили столбцы без подписи
+        if (isFirstSetup || columnsRepaired) {
             saveTable(false);
         }
     }
@@ -359,9 +392,10 @@
         if (typeof col.title === 'object' && col.title !== null) {
             return col.title[lang] || col.title['en'] || Object.values(col.title)[0] || col.id;
         }
+        if (col.title) return col.title;
         const t = LOCALES[lang] || LOCALES['en'];
         if (t && t['col_' + col.id]) return t['col_' + col.id];
-        return col.title;
+        return col.id || '';
     }
 
     function changeLanguage(langCode) {
