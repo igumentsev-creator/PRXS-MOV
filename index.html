@@ -40,7 +40,6 @@
   <h2>Get Access to the Program</h2>
   <p>Pay via Monobank. A unique order code will be automatically added to your payment comment.</p>
   
-  <!-- Сумма изменена на 140 грн в соответствии с вашей инструкцией в первом коде -->
   <div class="price-tag">140 UAH <span style="font-size: 16px; color: #64748b; font-weight: normal;">(~$3 USD)</span></div>
 
   <div class="order-code-box">
@@ -96,8 +95,11 @@
       
       const data = await response.json();
 
-      if (response.ok && data.success && data.workspaceId) {
-        showAccess(data.workspaceId);
+      // ИСПРАВЛЕННЫЙ БЛОК: Проверяем наличие data.url вместо data.workspaceId
+      if (response.ok && data.success && data.url) {
+        // Вытягиваем ID (всё, что идет после "id=") из полученной ссылки
+        const extractedId = data.url.split('id=')[1];
+        showAccess(extractedId);
       } else {
         alert("Payment not found yet. The bank may take 1-2 minutes to process it. Please wait a bit and try clicking again.");
         confirmBtn.disabled = false;
